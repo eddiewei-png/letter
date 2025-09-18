@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A Letter for You</title>
+  <title>A Love Letter for You</title>
+
   <style>
     body {
       background: #fff0f5;
@@ -17,6 +18,7 @@
       padding: 20px;
       text-align: center;
     }
+
     #container {
       max-width: 700px;
       background: #ffffffee;
@@ -24,23 +26,28 @@
       padding: 30px 40px;
       box-shadow: 0 4px 15px rgba(250, 50, 120, 0.2);
     }
+
     h1 {
       font-size: 2.3rem;
       margin-bottom: 1rem;
     }
+
     #letter p {
       font-size: 1.2rem;
       margin: 0.5em 0;
     }
-.word {
-  opacity: 0;
-  display: inline-block;
-  margin-right: 6px;
-  transition: opacity 0.8s ease-in-out;
-}
-.word.visible {
-  opacity: 1;
-}
+
+    /* PURE FADE-IN PER WORD */
+    .word {
+      opacity: 0;
+      display: inline-block;
+      margin-right: 6px;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .word.visible {
+      opacity: 1;
+    }
 
     #heart {
       font-size: 2.5rem;
@@ -48,12 +55,14 @@
       margin-top: 30px;
       animation: beat 1.2s infinite;
     }
+
     @keyframes beat {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.15); }
     }
   </style>
 </head>
+
 <body>
   <div id="container">
     <h1>💌 A Letter for You</h1>
@@ -78,52 +87,41 @@
     const letterDiv = document.getElementById("letter");
     let sentenceIndex = 0;
 
-   function showSentenceWords(sentence, callback) {
-  const p = document.createElement("p");
-  letterDiv.appendChild(p);
+    function showSentenceWords(sentence, callback) {
+      const p = document.createElement("p");
+      letterDiv.appendChild(p);
 
-  const words = sentence.split(" ");
-  const spans = [];
+      const words = sentence.split(" ");
+      const spans = [];
 
-  words.forEach((word, i) => {
-    const span = document.createElement("span");
-    span.textContent = word + " ";
-    span.classList.add("word");
-    p.appendChildfunction showSentenceWords(sentence, callback) {
-  const p = document.createElement("p");
-  letterDiv.appendChild(p);
+      words.forEach((word) => {
+        const span = document.createElement("span");
+        span.textContent = word + " ";
+        span.classList.add("word");
+        p.appendChild(span);
+        spans.push(span);
+      });
 
-  const words = sentence.split(" ");
-  const spans = [];
-
-  words.forEach((word, i) => {
-    const span = document.createElement("span");
-    span.textContent = word + " ";
-    span.classList.add("word");
-    p.appendChild(span);
-    spans.push(span);
-  });
-
-  setTimeout(() => {
-    spans.forEach((span, i) => {
       setTimeout(() => {
-        span.classList.add("visible");
-      }, i * 250); // 250ms between each word
-    });
-  }, 50);
+        spans.forEach((span, i) => {
+          setTimeout(() => {
+            span.classList.add("visible");
+          }, i * 300); // 300ms delay between each word
+        });
+      }, 50);
 
-  const totalDelay = words.length * 250 + 1000;
-  setTimeout(() => {
-    callback();
-  }, totalDelay);
-}
-    
+      const totalDelay = words.length * 300 + 1200;
+      setTimeout(() => {
+        callback();
+      }, totalDelay);
+    }
+
     function showNextSentence() {
       if (sentenceIndex < sentences.length) {
-        const current = sentences[sentenceIndex];
-        showSentenceWords(current, () => {
+        const sentence = sentences[sentenceIndex];
+        showSentenceWords(sentence, () => {
           sentenceIndex++;
-          setTimeout(showNextSentence, 1000); // wait 1s between sentences
+          setTimeout(showNextSentence, 1000);
         });
       }
     }
@@ -132,6 +130,3 @@
   </script>
 </body>
 </html>
-
-
-
