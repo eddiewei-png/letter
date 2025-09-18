@@ -32,15 +32,17 @@
       font-size: 1.2rem;
       margin: 0.5em 0;
     }
-    .word {
-      opacity: 0;
-      display: inline-block;
-      margin-right: 6px;
-      transition: opacity 0.6s ease;
-    }
-    .word.visible {
-      opacity: 1;
-    }
+   .word {
+  opacity: 0;
+  display: inline-block;
+  margin-right: 6px;
+  transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+  transform: translateY(10px); /* slight rise */
+}
+.word.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
     #heart {
       font-size: 2.5rem;
       color: #ff4d6d;
@@ -77,28 +79,36 @@
     const letterDiv = document.getElementById("letter");
     let sentenceIndex = 0;
 
-    function showSentenceWords(sentence, callback) {
-      const p = document.createElement("p");
-      letterDiv.appendChild(p);
+   function showSentenceWords(sentence, callback) {
+  const p = document.createElement("p");
+  letterDiv.appendChild(p);
 
-      const words = sentence.split(" ");
-      words.forEach((word, i) => {
-        const span = document.createElement("span");
-        span.textContent = word;
-        span.classList.add("word");
-        p.appendChild(span);
+  const words = sentence.split(" ");
+  const spans = [];
 
-        setTimeout(() => {
-          span.classList.add("visible");
-        }, i * 300); // each word appears 300ms after the previous
-      });
+  words.forEach((word, i) => {
+    const span = document.createElement("span");
+    span.textContent = word + " ";
+    span.classList.add("word");
+    p.appendChild(span);
+    spans.push(span);
+  });
 
-      // Wait until the last word fades in, then move to the next sentence
-      const totalDelay = words.length * 300 + 1000;
+  // Ensure all spans are added to the DOM before triggering transition
+  setTimeout(() => {
+    spans.forEach((span, i) => {
       setTimeout(() => {
-        callback();
-      }, totalDelay);
-    }
+        span.classList.add("visible");
+      }, i * 250); // 250ms between words
+    });
+  }, 50);
+
+  // Total delay = time to show all words + 1s buffer before next sentence
+  const totalDelay = words.length * 250 + 1000;
+  setTimeout(() => {
+    callback();
+  }, totalDelay);
+}
 
     function showNextSentence() {
       if (sentenceIndex < sentences.length) {
@@ -114,3 +124,4 @@
   </script>
 </body>
 </html>
+
