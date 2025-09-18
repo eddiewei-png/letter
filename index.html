@@ -42,7 +42,7 @@
       opacity: 0;
       display: inline-block;
       margin-right: 6px;
-      transition: opacity 3s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: opacity 2.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
     
 @keyframes glow {
@@ -80,6 +80,12 @@
     <div id="letter"></div>
     <div id="heart">❤️</div>
   </div>
+
+    <!-- 🎵 Background music -->
+  <audio autoplay loop hidden>
+    <source src="https://cdn.pixabay.com/download/audio/2023/03/01/audio_7852e8c6b6.mp3?filename=gentle-melody-112229.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
     const sentences = [
@@ -141,6 +147,7 @@
   </script>
 </body>
 </html>
+
 
 
 
