@@ -23,6 +23,7 @@
       background: var(--light-bg);
       color: var(--pink);
       text-align: left;
+      position: relative;
     }
 
     .full-screen {
@@ -66,6 +67,7 @@
       margin: 80px auto;
       display: none;
       text-align: left;
+      position: relative;
     }
 
     h1 {
@@ -78,32 +80,28 @@
       font-size: 1.8rem;
       color: var(--pink);
       margin: 1.2em 0;
-      overflow: hidden;
-      white-space: nowrap;
-      width: 0;
-      animation: write 3s steps(50, end) forwards;
       position: relative;
+      white-space: normal;
     }
 
-    .write-effect::after {
-      content: '';
+    #letter p span.word {
+      white-space: nowrap;
+      margin-right: 0.25em;
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Pen icon */
+    #pen {
       position: absolute;
-      height: 100%;
-      width: 5px;
-      right: 0;
-      top: 0;
-      background: transparent;
-      animation: pen 3s steps(50, end) forwards;
-    }
-
-    @keyframes write {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes pen {
-      from { right: 100%; }
-      to { right: 0; }
+      font-size: 1.8rem;
+      transition: left 0.15s ease, top 0.15s ease;
+      pointer-events: none;
+      user-select: none;
+      z-index: 20;
+      /* Adjust vertical position for better pen tip placement */
+      transform: translateY(-30%);
+      opacity: 0;
     }
 
     #heart {
@@ -129,6 +127,7 @@
       #startBtn { padding: 12px 20px; font-size: 1rem; }
       #container { padding: 20px; margin: 60px 10px; }
       #heart { font-size: 2rem; }
+      #pen { font-size: 1.4rem; }
     }
   </style>
 </head>
@@ -136,7 +135,7 @@
 <body>
   <!-- Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitingg...</h1>
+    <h1>💌 You have a letter waitingggg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -145,6 +144,9 @@
     <h1>💌 A Letter for u</h1>
     <div id="letter"></div>
     <div id="heart">❤️</div>
+
+    <!-- Pen icon -->
+    <div id="pen">✍️</div>
 
     <!-- Background Music -->
     <audio id="background-music" loop autoplay>
@@ -167,20 +169,61 @@
     ];
 
     const letterDiv = document.getElementById("letter");
+    const pen = document.getElementById("pen");
     let sentenceIndex = 0;
+
+    function writeWord(wordSpan, word, letterIndex = 0, callback) {
+      if (letterIndex > word.length) {
+        callback();
+        return;
+      }
+      wordSpan.textContent = word.slice(0, letterIndex);
+
+      // Move pen to end of current text:
+      const rect = wordSpan.getBoundingClientRect();
+      const containerRect = letterDiv.getBoundingClientRect();
+
+      pen.style.left = (rect.right - containerRect.left) + 'px';
+      pen.style.top = (rect.top - containerRect.top) + 'px';
+      pen.style.opacity = '1';
+
+      setTimeout(() => {
+        writeWord(wordSpan, word, letterIndex + 1, callback);
+      }, 150); // adjust speed here
+    }
+
+    function showSentence(sentence, callback) {
+      const p = document.createElement("p");
+      letterDiv.appendChild(p);
+
+      const words = sentence.split(" ");
+      let wordIndex = 0;
+
+      function showNextWord() {
+        if (wordIndex >= words.length) {
+          pen.style.opacity = '0'; // hide pen when done sentence
+          setTimeout(callback, 800);
+          return;
+        }
+        const wordSpan = document.createElement("span");
+        wordSpan.classList.add("word");
+        p.appendChild(wordSpan);
+
+        writeWord(wordSpan, words[wordIndex], 0, () => {
+          wordSpan.textContent += " ";
+          wordIndex++;
+          showNextWord();
+        });
+      }
+
+      showNextWord();
+    }
 
     function showNextSentence() {
       if (sentenceIndex >= sentences.length) return;
-
-      const p = document.createElement("p");
-      p.textContent = sentences[sentenceIndex];
-      p.classList.add("write-effect");
-      letterDiv.appendChild(p);
-
-      p.addEventListener("animationend", function handleAnimationEnd() {
-        p.removeEventListener("animationend", handleAnimationEnd);
+      showSentence(sentences[sentenceIndex], () => {
         sentenceIndex++;
-        setTimeout(showNextSentence, 800);
+        showNextSentence();
       });
     }
 
