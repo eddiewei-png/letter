@@ -98,15 +98,17 @@
 
     /* Faint pen stroke effect */
     #letter p::after {
-      content: '';
-      position: absolute;
-      height: 100%;
-      width: 5px;
-      right: 0;
-      top: 0;
-      background: rgba(255, 105, 180, 0.15);
-      animation: pen 3s steps(40, end) forwards;
-    }
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  right: 0;
+  top: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,105,180,0) 0%, rgba(255,105,180,0.15) 50%, rgba(255,105,180,0) 100%);
+  animation: pen 3s steps(40, end) forwards;
+}
+
 
     @keyframes pen {
       from { right: 100%; }
@@ -229,5 +231,6 @@
 
 </body>
 </html>
+
 
 
