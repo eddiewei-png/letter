@@ -164,7 +164,7 @@
 
   <!-- Intro / Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitinggg...</h1>
+    <h1>💌 You have a letter waiting...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -217,10 +217,10 @@
       if (i < spans.length) {
         spans[i].classList.add("visible");
         i++;
-        setTimeout(showNextWord, 900); // adjust 600ms for speed between words
+        setTimeout(showNextWord, 700); // adjust 600ms for speed between words
       } else {
         // after all words shown, wait 1.5s before callback (next sentence)
-        setTimeout(callback, 750);
+        setTimeout(callback, 500);
       }
     }
 
@@ -253,6 +253,7 @@
 
 </body>
 </html>
+
 
 
 
