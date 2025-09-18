@@ -42,7 +42,7 @@
       opacity: 0;
       display: inline-block;
       margin-right: 6px;
-      transition: opacity 2s ease;
+      transition: opacity 3s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
     
 @keyframes glow {
@@ -56,7 +56,8 @@
 
 .word.visible {
   opacity: 1;
-  animation: glow 2s ease-in-out infinite;
+  animation: glow 3s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 
     #heart {
@@ -140,6 +141,7 @@
   </script>
 </body>
 </html>
+
 
 
 
