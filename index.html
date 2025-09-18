@@ -217,10 +217,10 @@
       if (i < spans.length) {
         spans[i].classList.add("visible");
         i++;
-        setTimeout(showNextWord, 300); // adjust 600ms for speed between words
+        setTimeout(showNextWord, 900); // adjust 600ms for speed between words
       } else {
         // after all words shown, wait 1.5s before callback (next sentence)
-        setTimeout(callback, 1500);
+        setTimeout(callback, 750);
       }
     }
 
@@ -253,6 +253,7 @@
 
 </body>
 </html>
+
 
 
 
