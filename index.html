@@ -106,7 +106,7 @@
   right: 0;
   top: 0;
   background: transparent;  /* <-- Make the bar transparent */
-  animation: pen 6s steps(40, end) forwards;
+  animation: pen 15s steps(60, end) forwards;
 }
 
 
@@ -164,7 +164,7 @@
 
   <!-- Intro / Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waiting...</h1>
+    <h1>💌 You have a letter waitinggg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -217,7 +217,7 @@
       if (i < spans.length) {
         spans[i].classList.add("visible");
         i++;
-        setTimeout(showNextWord, 600); // adjust 600ms for speed between words
+        setTimeout(showNextWord, 300); // adjust 600ms for speed between words
       } else {
         // after all words shown, wait 1.5s before callback (next sentence)
         setTimeout(callback, 1500);
@@ -253,6 +253,7 @@
 
 </body>
 </html>
+
 
 
 
