@@ -44,6 +44,15 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.15); }
   }
+  p {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+p.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
 </style>
 </head>
 <body>
@@ -72,19 +81,17 @@
 
   function showNextSentence() {
     if (index < sentences.length) {
-      const p = document.createElement("p");
-      p.textContent = sentences[index];
-      p.style.opacity = 0;
-      letterDiv.appendChild(p);
+  const p = document.createElement("p");
+  p.textContent = sentences[index];
+  p.classList.add('hidden'); // initially hidden style
+  letterDiv.appendChild(p);
 
-      // Fade-in effect
-      setTimeout(() => {
-        p.style.transition = "opacity 0.5s ease-in-out";
-        p.style.opacity = 1;
-      }, 100);
+  setTimeout(() => {
+    p.classList.add('visible'); // triggers fade + slide in
+  }, 100);
 
-      index++;
-      setTimeout(showNextSentence, 1500); // Show next sentence after 1.5 seconds
+  index++;
+  setTimeout(showNextSentence, 3000); // Show next sentence after 1.5 seconds
     }
   }
 
@@ -92,5 +99,6 @@
 </script>
 </body>
 </html>
+
 
 
