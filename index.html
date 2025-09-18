@@ -121,6 +121,7 @@
       color: #ff4d6d;
       margin-top: 24px;
       animation: beat 1.2s infinite;
+      text-align: center;
     }
 
     @keyframes beat {
@@ -163,7 +164,7 @@
 
   <!-- Intro / Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitingg...</h1>
+    <h1>💌 You have a letter waiting...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -193,28 +194,48 @@
       "[Your Name]"
     ];
 
-    const letterDiv = document.getElementById("letter");
-    let sentenceIndex = 0;
+      const letterDiv = document.getElementById("letter");
+  let sentenceIndex = 0;
 
-    function showWrittenSentence(sentence, callback) {
-      const p = document.createElement("p");
-      p.textContent = sentence;
-      letterDiv.appendChild(p);
+  function showSentenceWords(sentence, callback) {
+    const p = document.createElement("p");
+    letterDiv.appendChild(p);
 
-      setTimeout(() => {
-        callback();
-      }, 3500); // Slightly more than animation time
-    }
+    const words = sentence.split(" ");
+    const spans = [];
 
-    function showNextSentence() {
-      if (sentenceIndex < sentences.length) {
-        const sentence = sentences[sentenceIndex];
-        showWrittenSentence(sentence, () => {
-          sentenceIndex++;
-          setTimeout(showNextSentence, 1000);
-        });
+    words.forEach((word) => {
+      const span = document.createElement("span");
+      span.textContent = word + " ";
+      span.classList.add("word");
+      p.appendChild(span);
+      spans.push(span);
+    });
+
+    let i = 0;
+    function showNextWord() {
+      if (i < spans.length) {
+        spans[i].classList.add("visible");
+        i++;
+        setTimeout(showNextWord, 600); // adjust 600ms for speed between words
+      } else {
+        // after all words shown, wait 1.5s before callback (next sentence)
+        setTimeout(callback, 1500);
       }
     }
+
+    showNextWord();
+  }
+
+  function showNextSentence() {
+    if (sentenceIndex < sentences.length) {
+      const sentence = sentences[sentenceIndex];
+      showSentenceWords(sentence, () => {
+        sentenceIndex++;
+        showNextSentence();
+      });
+    }
+  }
 
     // Tap to begin
     document.getElementById("startBtn").addEventListener("click", () => {
@@ -232,6 +253,7 @@
 
 </body>
 </html>
+
 
 
 
