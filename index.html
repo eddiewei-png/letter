@@ -71,22 +71,60 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.15); }
     }
+
+     #playBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #d419a0;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    #scPlayer {
+      display: none; /* hidden initially */
+      width: 100%;
+      height: 300px;
+      border: none;
+    }
   </style>
 </head>
 
 <body>
   <div id="container">
-    <h1>💌 A Letter for uu</h1>
+    <h1>💌 A Letter for u</h1>
     <div id="letter"></div>
     <div id="heart">❤️</div>
   </div>
 
-    <!-- 🎵 Background music -->
-  <audio autoplay loop hidden>
-    <source src="https://cdn.pixabay.com/download/audio/2023/03/01/audio_7852e8c6b6.mp3?filename=gentle-melody-112229.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+   <!-- Play button -->
+  <button id="playBtn">▶️ Play Music</button>
 
+  <!-- Hidden SoundCloud iframe -->
+  <iframe
+    id="scPlayer"
+    width="100%"
+    height="300"
+    scrolling="no"
+    frameborder="no"
+    allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A1534035517&color=%23d419a0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+  ></iframe>
+
+  <script>
+    const playBtn = document.getElementById('playBtn');
+    const scPlayer = document.getElementById('scPlayer');
+
+    playBtn.addEventListener('click', () => {
+      scPlayer.style.display = 'block';      // Show the player
+      playBtn.style.display = 'none';        // Hide the play button
+
+      // Reload iframe with autoplay enabled
+      scPlayer.src = scPlayer.src.replace('auto_play=false', 'auto_play=true');
+    });
+  </script>
+  
   <script>
     const sentences = [
       "Dear [Their Name],",
@@ -123,7 +161,7 @@
         spans.forEach((span, i) => {
           setTimeout(() => {
             span.classList.add("visible");
-          }, i * 300); // 300ms delay between each word
+          }, i * 250); // 300ms delay between each word
         });
       }, 50);
 
@@ -147,6 +185,7 @@
   </script>
 </body>
 </html>
+
 
 
 
