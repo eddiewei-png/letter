@@ -83,17 +83,14 @@
       overflow: hidden;
       white-space: nowrap;
       width: 0;
-      animation: write 4s steps(60, end) forwards;
       position: relative;
     }
 
-    @keyframes write {
-      from { width: 0; }
-      to { width: 100%; }
+    .write-effect {
+      animation: write 4s steps(60, end) forwards;
     }
 
-    /* Remove the visible pen line */
-    #letter p::after {
+    .write-effect::after {
       content: '';
       position: absolute;
       height: 100%;
@@ -102,6 +99,15 @@
       top: 0;
       background: transparent;
       animation: pen 4s steps(60, end) forwards;
+    }
+
+    @keyframes write {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
     }
 
     @keyframes pen {
@@ -156,7 +162,7 @@
 
   <!-- Intro / Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitingg...</h1>
+    <h1>💌 You have a letter waitinggg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -194,11 +200,13 @@
 
       const p = document.createElement("p");
       p.textContent = sentences[sentenceIndex];
+      p.classList.add("write-effect");
       letterDiv.appendChild(p);
 
       p.addEventListener("animationend", () => {
+        p.classList.remove("write-effect"); // Prevent re-animation
         sentenceIndex++;
-        setTimeout(showNextSentence, 600); // pause between sentences
+        setTimeout(showNextSentence, 600); // Delay before next line
       });
     }
 
@@ -208,7 +216,7 @@
 
       const audio = document.getElementById("background-music");
       audio.play().catch(() => {
-        console.log("Autoplay blocked.");
+        console.log("Autoplay blocked by browser.");
       });
 
       showNextSentence();
@@ -217,4 +225,3 @@
 
 </body>
 </html>
-
