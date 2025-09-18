@@ -42,12 +42,22 @@
       opacity: 0;
       display: inline-block;
       margin-right: 6px;
-      transition: opacity 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: opacity 2s ease;
     }
+    
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 8px #ff6fa7, 0 0 12px #ffb3d9;
+  }
+  50% {
+    text-shadow: 0 0 12px #ffb3d9, 0 0 20px #ff6fa7;
+  }
+}
 
-    .word.visible {
-      opacity: 1;
-    }
+.word.visible {
+  opacity: 1;
+  animation: glow 2s ease-in-out infinite;
+}
 
     #heart {
       font-size: 2.5rem;
@@ -130,6 +140,7 @@
   </script>
 </body>
 </html>
+
 
 
 
