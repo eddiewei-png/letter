@@ -140,7 +140,7 @@
 
   <!-- Landing -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitingggg...</h1>
+    <h1>💌 You have a letter waitingg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -174,18 +174,19 @@
     let sentenceIndex = 0;
 
     function showNextSentence() {
-      if (sentenceIndex >= sentences.length) return;
+  if (sentenceIndex >= sentences.length) return;
 
-      const p = document.createElement("p");
-      p.textContent = sentences[sentenceIndex];
-      p.style.animationDelay = "0s"; // starts immediately
-      letterDiv.appendChild(p);
+  const p = document.createElement("p");
+  p.textContent = sentences[sentenceIndex];
+  letterDiv.appendChild(p);
 
-      sentenceIndex++;
+  // Wait for this sentence to finish its animation
+  p.addEventListener("animationend", () => {
+    sentenceIndex++;
+    setTimeout(showNextSentence, 500); // short pause before next line
+  });
+}
 
-      // show next sentence faster (shorter delay)
-      setTimeout(showNextSentence, 4500); // 3s per line instead of 5+
-    }
 
     document.getElementById("startBtn").addEventListener("click", () => {
       document.getElementById("intro").style.display = "none";
@@ -200,4 +201,5 @@
 
 </body>
 </html>
+
 
