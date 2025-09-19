@@ -127,7 +127,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -136,7 +136,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   <div id="letter"></div>
   <div id="heart">❤️</div>
 
-  <audio id="background-music">
+  <audio id="background-music" loop>
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
   </audio>
 </div>
@@ -168,6 +168,7 @@ for(let i=0;i<3;i++){
 }
 let trailIndex = 0;
 
+// Write a letter with smooth animation
 function writeLetter(span, letter){
   return new Promise(resolve => {
     span.textContent = letter;
@@ -190,6 +191,50 @@ function writeLetter(span, letter){
   });
 }
 
-// Show sentence with all letters
-async function showSentence(sentence, delayPerLetter){
-  const p = document.createElement("
+// Show a sentence letter by letter
+async function showSentence(sentence, delay=150){
+  const p = document.createElement("p");
+  letterDiv.appendChild(p);
+
+  for(let i=0;i<sentence.length;i++){
+    const span = document.createElement("span");
+    span.classList.add("letter");
+    p.appendChild(span);
+    await writeLetter(span, sentence[i]);
+    await new Promise(r => setTimeout(r, delay));
+  }
+}
+
+// Show all sentences
+async function showAllText(){
+  for(sentenceIndex=0;sentenceIndex<sentences.length;sentenceIndex++){
+    await showSentence(sentences[sentenceIndex], 200); // slower for smooth writing
+    await new Promise(r => setTimeout(r, 300)); // pause between sentences
+  }
+  inkTrails.forEach(ink=>ink.style.display='none');
+}
+
+// Ripple effect + start
+const startBtn = document.getElementById("startBtn");
+startBtn.addEventListener("click", function(e){
+  const rect = this.getBoundingClientRect();
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+  ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + "px";
+  ripple.style.left = e.clientX - rect.left - rect.width/2 + "px";
+  ripple.style.top = e.clientY - rect.top - rect.height/2 + "px";
+  this.appendChild(ripple);
+  setTimeout(()=>ripple.remove(), 600);
+
+  document.getElementById("intro").style.display = 'none';
+  document.getElementById("container").style.display = 'block';
+
+  const audio = document.getElementById("background-music");
+  audio.play().catch(()=>console.log("Autoplay blocked"));
+
+  showAllText();
+});
+</script>
+
+</body>
+</html>
