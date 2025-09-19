@@ -20,7 +20,7 @@ body {
   color: var(--pink);
   text-align: left;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Full screen intro */
@@ -38,8 +38,8 @@ body {
 /* Start icon button */
 #startBtn {
   position: relative;
-  width: 80px; 
-  height: 80px;
+  width: 100px; 
+  height: 100px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
@@ -51,8 +51,8 @@ body {
   animation: pulse 1.5s infinite;
 }
 #startBtn img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
 }
 
 /* Pulse animation for icon */
@@ -62,18 +62,19 @@ body {
   100% { transform: scale(1); }
 }
 
-/* Ripple effect */
+/* Water ripple effect */
 .ripple {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 105, 180, 0.4);
+  background: rgba(255,105,180,0.3);
   transform: scale(0);
-  animation: ripple-animation 1s ease-out forwards;
+  animation: ripple-animation 1.2s ease-out forwards;
   pointer-events: none;
   z-index: 5;
 }
 @keyframes ripple-animation {
   0% { transform: scale(0); opacity: 0.6; }
+  80% { transform: scale(15); opacity: 0.4; }
   100% { transform: scale(20); opacity: 0; }
 }
 
@@ -242,12 +243,12 @@ startBtn.addEventListener("click", function(e){
     ripple.className = 'ripple';
     ripple.style.left = centerX + 'px';
     ripple.style.top = centerY + 'px';
-    ripple.style.animationDelay = `${i*0.2}s`;
+    ripple.style.animationDelay = `${i*0.3}s`; // slower bloom
     document.body.appendChild(ripple);
     ripple.addEventListener('animationend', ()=> ripple.remove());
   }
 
-  // Fade in letter page after small delay
+  // Fade in letter page timed with last ripple start
   setTimeout(()=>{
     document.getElementById("intro").style.display='none';
     document.getElementById("container").classList.add('show');
