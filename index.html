@@ -188,34 +188,40 @@ let trailIndex = 0;
     resolve();
   });
 }*/
-function writeLetter(span, letter){
+function writeLetter(span, letter) {
   return new Promise(resolve => {
     span.textContent = letter;
-    requestAnimationFrame(()=>{
+
+    requestAnimationFrame(() => {
       span.style.opacity = '1';
+
       const rect = span.getBoundingClientRect();
       const containerRect = letterDiv.getBoundingClientRect();
-      
+
+      // Pick one of the ink trails (cycled)
       const ink = inkTrails[trailIndex % inkTrails.length];
-      
-      // Set size to match font
-      const fontSize = parseFloat(window.getComputedStyle(span).fontSize);
-      ink.style.height = fontSize + 'px';
-      ink.style.width = (fontSize / 4) + 'px'; // optional thinner trail
-      
-      // Position the trail
-      ink.style.left = (rect.right - containerRect.left - 1)+'px';
-      ink.style.top = (rect.top - containerRect.top)+'px';
-      
+
+      // Set the trail size to match the letter
+      ink.style.height = rect.height + 'px';
+      ink.style.width  = rect.width / 4 + 'px'; // thin vertical trail
+
+      // Position the trail at the right end of the letter
+      ink.style.left = (rect.right - containerRect.left - 1) + 'px';
+      ink.style.top  = (rect.top - containerRect.top) + 'px';
+
       // Show trail
       ink.style.opacity = 1;
       trailIndex++;
-      setTimeout(()=> ink.style.opacity = 0, 400);
+
+      // Fade out after a short delay
+      setTimeout(() => {
+        ink.style.opacity = 0;
+      }, 400);
     });
+
     resolve();
   });
 }
-
 
 async function showSentence(sentence, delay=200){
   const p = document.createElement("p");
@@ -280,6 +286,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
