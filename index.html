@@ -18,8 +18,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--light-bg);
   color: var(--pink);
-  text-align: left;
-  position: relative;
+  text-align: center;
 }
 
 .full-screen {
@@ -30,46 +29,36 @@ body {
   display: flex; justify-content: center; align-items: center;
   flex-direction: column;
   z-index: 10;
-  padding: 20px;
 }
 
 #startBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
   position: relative;
   overflow: hidden;
-  padding: 14px 26px;
-  font-size: 1.1rem;
-  background-color: var(--pink);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
-  transition: background 0.3s;
-  display: flex;
-  align-items: center;
 }
-#startBtn:hover { background-color: #ff85c1; }
+#startBtn img {
+  width: 120px; /* your icon size */
+  height: 120px;
+}
 
 /* Ripple effect */
 .ripple {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple-animation 1.2s linear;
-  background: rgba(255,105,180,0.4);
+  animation: ripple-animation 1s linear;
+  background: rgba(255, 105, 180, 0.4);
   pointer-events: none;
 }
 @keyframes ripple-animation {
   to {
-    transform: scale(15);
+    transform: scale(8);
     opacity: 0;
   }
-}
-
-#startBtn img {
-  width: 80px;
-  height: 80px;
-  margin-right: 8px;
 }
 
 #container {
@@ -87,8 +76,6 @@ body {
   transition: opacity 1s ease-in;
 }
 
-h1 { font-size: 2rem; margin-bottom: 1rem; }
-
 #letter {
   font-family: 'Great Vibes', cursive;
   font-size: 1.8rem;
@@ -99,7 +86,6 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 
 #letter p {
   margin: 1.2em 0;
-  position: relative;
 }
 
 #letter p span.letter {
@@ -114,21 +100,16 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
 @media (max-width: 600px) {
-  h1 { font-size: 1.6rem; }
   #letter p { font-size: 1.4rem; }
-  #startBtn { padding: 12px 20px; font-size: 1rem; }
-  #container { padding: 20px; margin: 60px 10px; }
-  #heart { font-size: 2rem; }
+  #startBtn img { width: 80px; height: 80px; }
 }
 </style>
 </head>
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
-    Open the Letter
   </button>
 </div>
 
@@ -158,60 +139,58 @@ const sentences = [
 
 const letterDiv = document.getElementById("letter");
 
-// Write letters smoothly
+// Smooth letter writing
 async function showSentence(sentence, delay=150){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
   for(let i=0;i<sentence.length;i++){
     const span = document.createElement("span");
-    span.className = "letter";
+    span.classList.add("letter");
     span.textContent = sentence[i];
     p.appendChild(span);
+    requestAnimationFrame(()=>{ span.style.opacity = '1'; span.style.transform='translateY(0)'; });
     await new Promise(r => setTimeout(r, delay));
-    span.style.opacity = 1;
-    span.style.transform = "translateY(0)";
   }
 }
 
+// Show all sentences
 async function showAllText(){
-  for(const sentence of sentences){
-    await showSentence(sentence, 150);
-    await new Promise(r=>setTimeout(r, 300));
+  for(let i=0;i<sentences.length;i++){
+    await showSentence(sentences[i], 200);
+    await new Promise(r => setTimeout(r, 300));
   }
 }
 
-// Start button ripple and show letter
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
-  const rect = startBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  const centerY = rect.top + rect.height/2;
-  const rippleCount = 5;
-  const delayStep = 200; // ms between ripples
-
-  for(let i=0;i<rippleCount;i++){
+  const rect = this.getBoundingClientRect();
+  
+  // create 5 ripples
+  for(let i=0;i<5;i++){
     const ripple = document.createElement("span");
     ripple.className = "ripple";
-    ripple.style.left = centerX + "px";
-    ripple.style.top = centerY + "px";
-    ripple.style.animationDelay = (i*delayStep/1000)+"s";
+    ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + "px";
+    ripple.style.left = e.clientX - rect.left - rect.width/2 + "px";
+    ripple.style.top = e.clientY - rect.top - rect.height/2 + "px";
+    ripple.style.animationDelay = (i*0.15) + "s";
     document.body.appendChild(ripple);
-    setTimeout(()=>ripple.remove(), 2000);
+    setTimeout(()=>ripple.remove(), 1200);
   }
 
-  // Fade in container after first ripple starts
+  // Fade in letter page after ripples start
   setTimeout(()=>{
-    document.getElementById("intro").style.display = "none";
+    document.getElementById("intro").style.display = 'none';
     const container = document.getElementById("container");
-    container.style.display = "block";
-    setTimeout(()=>container.style.opacity=1,50);
+    container.style.display = 'block';
+    setTimeout(()=>{ container.style.opacity = 1; }, 50);
 
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, delayStep);
+  }, 300); // small delay to let ripple start
 });
 </script>
+
 </body>
 </html>
