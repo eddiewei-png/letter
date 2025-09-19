@@ -57,23 +57,32 @@ body {
   margin-right: 8px;
 }
 
-/* Water ripple effect: multi concentric circles */
+/* Enhanced blooming water ripple */
 .water-ripple {
   position: fixed;
   top: 50%;
   left: 50%;
   border-radius: 50%;
-  background: rgba(255, 105, 180, 0.5);
-  transform: translate(-50%, -50%) scale(0);
+  background: rgba(255,105,180,0.3);
+  transform: translate(-50%, -50%) scale(0.2);
   pointer-events: none;
   z-index: 9999;
-  filter: blur(8px);
+  filter: blur(12px); /* soft bloom edges */
 }
 
-@keyframes ripple-wave {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
-  70% { transform: translate(-50%, -50%) scale(15); opacity: 0.4; }
-  100% { transform: translate(-50%, -50%) scale(30); opacity: 0; }
+@keyframes ripple-bloom {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
 }
 
 #container {
@@ -144,7 +153,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitinggggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -230,38 +239,37 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with ripple + fade-in
-const startBtn = document.getElementById("startBtn");
-startBtn.addEventListener("click", function() {
-  const numRipples = 3;
-  const baseDelay = 0;
-  const delayStep = 0.4;
+// Enhanced bloom ripple
+function createBloomRipples() {
+  const numRipples = 5; 
+  const delayStep = 0.3;
 
-  for(let i = 0; i < numRipples; i++){
+  for (let i = 0; i < numRipples; i++) {
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
-    ripple.style.width = ripple.style.height = 100 + i*50 + "px";
-    ripple.style.animation = `ripple-wave 2.5s ease-out ${baseDelay + i*delayStep}s forwards`;
+    ripple.style.width = ripple.style.height = 100 + i*60 + "px";
+    ripple.style.animation = `ripple-bloom 2.5s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
-    setTimeout(()=>ripple.remove(), 3500);
+    setTimeout(() => ripple.remove(), 3500);
   }
+}
 
-  // Show letter container after ripple ends with fade-in
+const startBtn = document.getElementById("startBtn");
+startBtn.addEventListener("click", function() {
+  createBloomRipples();
+
+  // Show container after first ripple visible
   setTimeout(()=>{
     document.getElementById("intro").style.display = "none";
     const container = document.getElementById("container");
     container.style.display = "block";
-
-    // Trigger fade-in
-    requestAnimationFrame(()=>{ 
-      container.classList.add("fade-in");
-    });
+    requestAnimationFrame(()=>container.classList.add("fade-in"));
 
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 1500); // slightly after first ripple visible
+  }, 800); // delay slightly after ripple starts
 });
 </script>
 
