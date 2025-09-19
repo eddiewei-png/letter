@@ -57,7 +57,7 @@ body {
   margin-right: 8px;
 }
 
-/* Water ripple effect: multiple concentric circles */
+/* Water ripple effect: multi concentric circles */
 .water-ripple {
   position: fixed;
   top: 50%;
@@ -87,6 +87,12 @@ body {
   display: none;
   text-align: left;
   position: relative;
+  opacity: 0;             /* start invisible */
+  transition: opacity 1.5s ease; /* smooth fade-in */
+}
+
+#container.fade-in {
+  opacity: 1;
 }
 
 h1 { font-size: 2rem; margin-bottom: 1rem; }
@@ -224,28 +230,38 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with multi-wave ripple
+// Start button click with ripple + fade-in
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function() {
-  for(let i=0;i<3;i++){ // create 3 concentric ripples
+  const numRipples = 3;
+  const baseDelay = 0;
+  const delayStep = 0.4;
+
+  for(let i = 0; i < numRipples; i++){
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
-    ripple.style.width = ripple.style.height = 100 + i*50 + "px"; // progressively bigger
-    ripple.style.animation = `ripple-wave 2.5s ease-out ${i*0.2}s forwards`;
+    ripple.style.width = ripple.style.height = 100 + i*50 + "px";
+    ripple.style.animation = `ripple-wave 2.5s ease-out ${baseDelay + i*delayStep}s forwards`;
     document.body.appendChild(ripple);
-    setTimeout(()=>ripple.remove(), 3000);
+    setTimeout(()=>ripple.remove(), 3500);
   }
 
-  // Delay showing letter until ripple completes
+  // Show letter container after ripple ends with fade-in
   setTimeout(()=>{
     document.getElementById("intro").style.display = "none";
-    document.getElementById("container").style.display = "block";
+    const container = document.getElementById("container");
+    container.style.display = "block";
+
+    // Trigger fade-in
+    requestAnimationFrame(()=>{ 
+      container.classList.add("fade-in");
+    });
 
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 1000); // start showing after first ripple wave visible
+  }, 1500); // slightly after first ripple visible
 });
 </script>
 
