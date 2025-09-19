@@ -98,12 +98,23 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   position: relative;
 }
 
-#letter p span.letter {
+#letter p span.word {
   display: inline-block;
-  white-space: pre;
+  white-space: nowrap;
   opacity: 0;
   transform: translateY(5px);
   transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.ink-trail {
+  position: absolute;
+  width: 4px;
+  height: 1.8rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -120,7 +131,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon" style="width:80px; height:80px;">
   </button>
@@ -152,36 +163,65 @@ const sentences = [
 
 const letterDiv = document.getElementById("letter");
 
-// Write letters smoothly
-async function writeLetter(letter){
-  const span = document.createElement("span");
-  span.className = 'letter';
-  span.textContent = letter;
-  letterDiv.appendChild(span);
-  requestAnimationFrame(()=>{
-    span.style.opacity = 1;
-    span.style.transform = 'translateY(0)';
-  });
-  await new Promise(r => setTimeout(r, 200));
+// Ink trails
+const inkTrails = [];
+for(let i=0;i<3;i++){
+  const ink = document.createElement("span");
+  ink.classList.add("ink-trail");
+  letterDiv.appendChild(ink);
+  inkTrails.push(ink);
+}
+let trailIndex = 0;
+
+// Smooth ink-letter effect
+function writeWord(wordSpan, word, letterIndex = 0, callback) {
+  if(letterIndex > word.length){ callback(); return; }
+  wordSpan.textContent = word.slice(0, letterIndex);
+
+  // Move ink trail
+  const rect = wordSpan.getBoundingClientRect();
+  const containerRect = letterDiv.getBoundingClientRect();
+
+  const ink = inkTrails[trailIndex % inkTrails.length];
+  ink.style.left = (rect.right - containerRect.left) + 'px';
+  ink.style.top = (rect.top - containerRect.top) + 'px';
+  ink.style.opacity = 1;
+  trailIndex++;
+  setTimeout(()=>{ ink.style.opacity = 0; }, 400);
+
+  setTimeout(()=>writeWord(wordSpan, word, letterIndex+1, callback), 150);
 }
 
-async function showSentence(sentence){
+function showSentence(sentence, callback){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
-  for(let char of sentence){
-    await writeLetter(char);
+
+  const words = sentence.split(" ");
+  let wordIndex = 0;
+
+  function showNextWord(){
+    if(wordIndex >= words.length){ setTimeout(callback, 400); return; }
+    const wordSpan = document.createElement("span");
+    wordSpan.classList.add("word");
+    p.appendChild(wordSpan);
+
+    writeWord(wordSpan, words[wordIndex], 0, ()=>{
+      wordSpan.textContent += " ";
+      wordIndex++;
+      showNextWord();
+    });
   }
+  showNextWord();
 }
 
 async function showAllText(){
   for(let sentence of sentences){
-    await showSentence(sentence);
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r=>showSentence(sentence,r));
   }
 }
 
 // Ripple effect from button
-function createBloomRipples(e) {
+function createBloomRipples(e){
   const startBtn = document.getElementById("startBtn");
   const rect = startBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -190,7 +230,7 @@ function createBloomRipples(e) {
   const delayStep = 0.3;
   const baseSize = Math.max(window.innerWidth, window.innerHeight);
 
-  for(let i=0; i<numRipples; i++){
+  for(let i=0;i<numRipples;i++){
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
     ripple.style.width = ripple.style.height = baseSize + "px";
@@ -216,9 +256,7 @@ function createBloomRipples(e) {
   }
 }
 
-const startBtn = document.getElementById("startBtn");
-startBtn.addEventListener("click", createBloomRipples);
+document.getElementById("startBtn").addEventListener("click", createBloomRipples);
 </script>
-
 </body>
 </html>
