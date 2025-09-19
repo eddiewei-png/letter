@@ -44,7 +44,7 @@ body {
   transform: scale(1.1); /* optional hover effect */
 }
 
-/* Enhanced water ripple */
+/* Uniform water ripple */
 .water-ripple {
   position: fixed;
   top: 50%;
@@ -61,10 +61,6 @@ body {
   0% {
     transform: translate(-50%, -50%) scale(0.2);
     opacity: 0.6;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.4;
   }
   100% {
     transform: translate(-50%, -50%) scale(3);
@@ -139,8 +135,8 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggg...</h1>
-  <!-- Custom icon as the start button -->
+  <h1>💌 You have a letter waitingg...</h1>
+  <!-- Custom icon as start button -->
   <img id="startBtn" src="stella.png" alt="Start Icon" style="width:100px; height:100px;">
 </div>
 
@@ -223,26 +219,19 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Enhanced bloom ripple
+// Uniform-speed bloom ripple
 function createBloomRipples() {
-  const numRipples = 5;
+  const numRipples = 3;
   const baseSize = Math.max(window.innerWidth, window.innerHeight);
   const delayStep = 0.3;
 
   for (let i = 0; i < numRipples; i++) {
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
-
-    if(i === 0){
-      ripple.style.width = ripple.style.height = baseSize + "px";
-      ripple.style.animation = `ripple-bloom 2s ease-out 0s forwards`;
-    } else {
-      ripple.style.width = ripple.style.height = (baseSize - i*60) + "px";
-      ripple.style.animation = `ripple-bloom 3s ease-out ${i*delayStep}s forwards`;
-    }
-
+    ripple.style.width = ripple.style.height = baseSize + "px";
+    ripple.style.animation = `ripple-bloom 2s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 5000);
+    setTimeout(() => ripple.remove(), 2500);
   }
 }
 
@@ -251,6 +240,7 @@ const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function() {
   createBloomRipples();
 
+  // Show letter page after ripples
   setTimeout(()=>{
     document.getElementById("intro").style.display = "none";
     const container = document.getElementById("container");
@@ -261,7 +251,7 @@ startBtn.addEventListener("click", function() {
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 2500);
+  }, 2500); // matches ripple duration
 });
 </script>
 
