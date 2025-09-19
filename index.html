@@ -113,7 +113,17 @@ body, html {
 #letter { font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: #ff69b4; white-space: pre-wrap; position: relative; }
 #letter p { margin: 1.2em 0; position: relative; }
 #letter p span.letter { display: inline-block; white-space: pre; opacity: 0; transform: translateY(5px); transition: opacity 0.15s ease, transform 0.15s ease; }
-.ink-trail { position: absolute; width: 4px; height: 1.8rem; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity: 0; transition: all 0.3s ease-out; }
+/*.ink-trail { position: absolute; width: 4px; height: 1.8rem; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity: 0; transition: all 0.3s ease-out; }*/
+.ink-trail {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  width: 4px;      /* initial width, will be overridden by JS */
+  height: 1.8rem;  /* initial height, will be overridden by JS */
+}
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
 @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -161,7 +171,7 @@ for(let i=0;i<3;i++){
 }
 let trailIndex = 0;
 
-function writeLetter(span, letter){
+/*function writeLetter(span, letter){
   return new Promise(resolve => {
     span.textContent = letter;
     requestAnimationFrame(()=>{
@@ -177,7 +187,35 @@ function writeLetter(span, letter){
     });
     resolve();
   });
+}*/
+function writeLetter(span, letter){
+  return new Promise(resolve => {
+    span.textContent = letter;
+    requestAnimationFrame(()=>{
+      span.style.opacity = '1';
+      const rect = span.getBoundingClientRect();
+      const containerRect = letterDiv.getBoundingClientRect();
+      
+      const ink = inkTrails[trailIndex % inkTrails.length];
+      
+      // Set size to match font
+      const fontSize = parseFloat(window.getComputedStyle(span).fontSize);
+      ink.style.height = fontSize + 'px';
+      ink.style.width = (fontSize / 4) + 'px'; // optional thinner trail
+      
+      // Position the trail
+      ink.style.left = (rect.right - containerRect.left - 1)+'px';
+      ink.style.top = (rect.top - containerRect.top)+'px';
+      
+      // Show trail
+      ink.style.opacity = 1;
+      trailIndex++;
+      setTimeout(()=> ink.style.opacity = 0, 400);
+    });
+    resolve();
+  });
 }
+
 
 async function showSentence(sentence, delay=200){
   const p = document.createElement("p");
@@ -242,6 +280,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
