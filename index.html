@@ -12,6 +12,7 @@
   --white-bg: #ffffffee;
 }
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -72,6 +73,9 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 #letter p span.letter {
   display: inline-block;
   white-space: pre;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -89,7 +93,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -120,11 +124,17 @@ const sentences = [
 const letterDiv = document.getElementById("letter");
 let sentenceIndex = 0;
 
+// Smoothly write a letter with fade-in effect
 function writeLetter(span, letter, callback){
   span.textContent = letter;
-  setTimeout(callback, 80); // speed of each letter
+  requestAnimationFrame(() => {
+    span.style.opacity = '1';
+    span.style.transform = 'translateY(0)';
+  });
+  setTimeout(callback, 100); // adjust speed here
 }
 
+// Write a whole sentence letter by letter
 function showSentence(sentence, callback){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
