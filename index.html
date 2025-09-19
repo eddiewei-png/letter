@@ -153,7 +153,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -239,7 +239,7 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Enhanced bloom ripple
+// Enhanced bloom ripple (slower)
 function createBloomRipples() {
   const numRipples = 5;
   const baseSize = Math.max(window.innerWidth, window.innerHeight);
@@ -251,14 +251,14 @@ function createBloomRipples() {
 
     if(i === 0){
       ripple.style.width = ripple.style.height = baseSize + "px";
-      ripple.style.animation = `ripple-bloom 1.5s ease-out 0s forwards`;
+      ripple.style.animation = `ripple-bloom 2s ease-out 0s forwards`; // slower first wave
     } else {
       ripple.style.width = ripple.style.height = (baseSize - i*60) + "px";
-      ripple.style.animation = `ripple-bloom 2.5s ease-out ${i*delayStep}s forwards`;
+      ripple.style.animation = `ripple-bloom 3s ease-out ${i*delayStep}s forwards`; // slower subsequent waves
     }
 
     document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 4000);
+    setTimeout(() => ripple.remove(), 5000);
   }
 }
 
@@ -277,7 +277,7 @@ startBtn.addEventListener("click", function() {
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 2000); // delay ~2s to let ripples bloom
+  }, 2500); // slightly longer delay to match slower ripple
 });
 </script>
 
