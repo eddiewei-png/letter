@@ -149,16 +149,16 @@ body, html {
 <script>
 // Letter sentences
 const sentences = [
-  ["Line 1 行一", "Line 1 English"],   // bilingual line 1
-  ["Line 2 行二", "Line 2 English"],   // bilingual line 2
+  ["Line 1 行一", "Line 1 English"],
+  ["Line 2 行二", "Line 2 English"],
   ["Line 3 行三", "Line 3 English"],
-  "Line 4 行四",
-  "Line 5 行五",
-  "Line 6 行六",
-  "Line 7 行七",
-  "Line 8 行八",
-  "Line 9 行九",
-  "[Your Name]"
+  ["Line 4 行四"],   // single line is still an array
+  ["Line 5 行五"],
+  ["Line 6 行六"],
+  ["Line 7 行七"],
+  ["Line 8 行八"],
+  ["Line 9 行九"],
+  ["[Your Name]"]
 ];
 
 const letterDiv = document.getElementById("letter");
@@ -324,6 +324,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
