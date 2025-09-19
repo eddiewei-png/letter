@@ -13,9 +13,7 @@
       --white-bg: #ffffffee;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -23,7 +21,6 @@
       background: var(--light-bg);
       color: var(--pink);
       text-align: left;
-      position: relative;
     }
 
     .full-screen {
@@ -53,9 +50,7 @@
       margin-top: 20px;
     }
 
-    #startBtn:hover {
-      background-color: #ff85c1;
-    }
+    #startBtn:hover { background-color: #ff85c1; }
 
     #container {
       max-width: 90%;
@@ -70,10 +65,7 @@
       position: relative;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
 
     #letter p {
       font-family: 'Great Vibes', cursive;
@@ -87,45 +79,24 @@
     #letter p span.word {
       white-space: nowrap;
       margin-right: 0.25em;
-      position: relative;
       display: inline-block;
+      position: relative;
     }
 
-    /* Brush ink trail */
-    .trail {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: var(--pink);
-      border-radius: 50%;
-      opacity: 0.6;
-      pointer-events: none;
-      animation: fadeTrail 0.6s forwards;
-      z-index: 5;
-    }
-
-    @keyframes fadeTrail {
-      0% { opacity: 0.6; transform: scale(1); }
-      100% { opacity: 0; transform: scale(2); }
-    }
-
-    /* Paintbrush icon */
+    /* Brush icon */
     #pen {
       position: absolute;
-      width: 28px;
-      height: 28px;
-      transition: left 0.25s ease-out, top 0.25s ease-out, transform 0.25s ease-out;
+      width: 32px;
+      height: 32px;
+      fill: var(--pink);
       pointer-events: none;
       user-select: none;
       z-index: 20;
       opacity: 0;
-      transform: translate(-80%, -100%) rotate(-15deg);
-    }
-
-    #pen svg {
-      width: 100%;
-      height: 100%;
-      fill: var(--pink);
+      /* smoother glide */
+      transition: left 0.3s ease-out, top 0.3s ease-out;
+      /* align brush tip with text bottom-right */
+      transform: translate(-70%, -30%);
     }
 
     #heart {
@@ -141,9 +112,7 @@
       50% { transform: scale(1.15); }
     }
 
-    audio {
-      display: none;
-    }
+    audio { display: none; }
 
     @media (max-width: 600px) {
       h1 { font-size: 1.6rem; }
@@ -151,7 +120,7 @@
       #startBtn { padding: 12px 20px; font-size: 1rem; }
       #container { padding: 20px; margin: 60px 10px; }
       #heart { font-size: 2rem; }
-      #pen { width: 22px; height: 22px; }
+      #pen { width: 26px; height: 26px; }
     }
   </style>
 </head>
@@ -159,7 +128,7 @@
 <body>
   <!-- Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitingg...</h1>
+    <h1>💌 You have a letter waitinggg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -169,12 +138,10 @@
     <div id="letter"></div>
     <div id="heart">❤️</div>
 
-    <!-- Paintbrush icon -->
-    <div id="pen">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M21.78 2.22a.75.75 0 0 0-1.06 0l-9.5 9.5a.75.75 0 0 0-.18.29l-1.5 4a.75.75 0 0 0 .95.95l4-1.5a.75.75 0 0 0 .29-.18l9.5-9.5a.75.75 0 0 0 0-1.06l-2.5-2.5ZM19.5 4.56l1.44 1.44-8.97 8.97-2.13.8.8-2.13 8.97-8.97Zm-15.62 9.1a.75.75 0 0 0-.68.43c-.62 1.24-1.35 2.46-2.34 3.46a.75.75 0 0 0 .3 1.23c1.53.55 3.2.72 4.72.72 1.73 0 3.44-.22 4.85-.5a.75.75 0 0 0 .55-.55c.28-1.41.5-3.12.5-4.85 0-1.52-.17-3.19-.72-4.72a.75.75 0 0 0-1.23-.3c-1 .99-2.22 1.72-3.46 2.34a.75.75 0 0 0-.39.39c-.17.34-.41.78-.59 1.23Z"/>
-      </svg>
-    </div>
+    <!-- Paintbrush icon from SVGRepo -->
+    <svg id="pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M20.71,4.63l-1.34-1.34a2.11,2.11,0,0,0-3,0l-1.17,1.17,4.24,4.24,1.17-1.17A2.11,2.11,0,0,0,20.71,4.63ZM3,17.25V21H6.75l9.86-9.86-3.75-3.75ZM14,7l3,3L7,20H4V17Z"/>
+    </svg>
 
     <!-- Background Music -->
     <audio id="background-music" loop autoplay>
@@ -199,17 +166,6 @@
     const letterDiv = document.getElementById("letter");
     const pen = document.getElementById("pen");
     let sentenceIndex = 0;
-    let lastX = 0, lastY = 0;
-
-    function leaveTrail(x, y) {
-      const trail = document.createElement("div");
-      trail.classList.add("trail");
-      trail.style.left = x + "px";
-      trail.style.top = y + "px";
-      letterDiv.appendChild(trail);
-
-      setTimeout(() => trail.remove(), 600);
-    }
 
     function writeWord(wordSpan, word, letterIndex = 0, callback) {
       if (letterIndex > word.length) {
@@ -218,31 +174,12 @@
       }
       wordSpan.textContent = word.slice(0, letterIndex);
 
+      // Move brush to end of current text
       const rect = wordSpan.getBoundingClientRect();
       const containerRect = letterDiv.getBoundingClientRect();
-      const x = rect.right - containerRect.left;
-      const y = rect.bottom - containerRect.top;
-
-      // calculate movement direction
-      const dx = x - lastX;
-      const dy = y - lastY;
-      let angle = -15;
-      if (Math.abs(dx) > Math.abs(dy)) {
-        angle = dx > 0 ? -20 : -160;
-      } else {
-        angle = dy > 0 ? -100 : 70;
-      }
-
-      pen.style.left = x + "px";
-      pen.style.top = y + "px";
-      pen.style.opacity = "1";
-      pen.style.transform = `translate(-80%, -100%) rotate(${angle}deg)`;
-
-      // leave a little ink drop
-      leaveTrail(x, y);
-
-      lastX = x;
-      lastY = y;
+      pen.style.left = (rect.right - containerRect.left) + 'px';
+      pen.style.top = (rect.bottom - containerRect.top) + 'px';
+      pen.style.opacity = '1';
 
       setTimeout(() => {
         writeWord(wordSpan, word, letterIndex + 1, callback);
@@ -258,7 +195,7 @@
 
       function showNextWord() {
         if (wordIndex >= words.length) {
-          pen.style.opacity = "0";
+          pen.style.opacity = '0';
           setTimeout(callback, 800);
           return;
         }
@@ -272,7 +209,6 @@
           showNextWord();
         });
       }
-
       showNextWord();
     }
 
