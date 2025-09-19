@@ -137,7 +137,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon" style="width:80px; height:80px;">
   </button>
@@ -237,7 +237,7 @@ function createBloomRipples(e){
     ripple.style.width = ripple.style.height = baseSize + "px";
     ripple.style.left = centerX + "px";
     ripple.style.top = centerY + "px";
-    ripple.style.animation = `ripple-bloom 3s ease-out ${i*delayStep}s forwards`;
+    ripple.style.animation = `ripple-bloom 4s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
     setTimeout(()=>ripple.remove(), 3500 + i*delayStep*1000);
 
@@ -261,3 +261,4 @@ document.getElementById("startBtn").addEventListener("click", createBloomRipples
 </script>
 </body>
 </html>
+
