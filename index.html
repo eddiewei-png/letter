@@ -23,7 +23,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Fullscreen intro */
+/* Full screen intro */
 .full-screen {
   position: fixed;
   top: 0; left: 0;
@@ -35,38 +35,46 @@ body {
   padding: 20px;
 }
 
-/* Start button as icon */
+/* Start icon button */
 #startBtn {
   position: relative;
-  width: 100px;
-  height: 100px;
-  border: none;
+  width: 80px; 
+  height: 80px;
   border-radius: 50%;
+  border: none;
   cursor: pointer;
-  background: url('stella.png') no-repeat center/cover;
-  animation: pulse 1.5s infinite alternate;
-  outline: none;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  animation: pulse 1.5s infinite;
 }
+#startBtn img {
+  width: 80px;
+  height: 80px;
+}
+
+/* Pulse animation for icon */
 @keyframes pulse {
-  from { transform: scale(1); box-shadow: 0 0 20px rgba(255,105,180,0.4);}
-  to { transform: scale(1.1); box-shadow: 0 0 35px rgba(255,105,180,0.7);}
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }
 
 /* Ripple effect */
 .ripple {
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
+  background: rgba(255, 105, 180, 0.4);
+  transform: scale(0);
+  animation: ripple-animation 1s ease-out forwards;
   pointer-events: none;
-  transform: translate(-50%, -50%) scale(0);
-  transform-origin: center center;
-  border: 4px solid rgba(255, 105, 180, 0.6);
-  background: rgba(255, 182, 193, 0.2);
-  z-index: 9;
-  animation: rippleExpand 3s ease-out forwards;
+  z-index: 5;
 }
-@keyframes rippleExpand {
-  from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-  to { transform: translate(-50%, -50%) scale(25); opacity: 0; }
+@keyframes ripple-animation {
+  0% { transform: scale(0); opacity: 0.6; }
+  100% { transform: scale(20); opacity: 0; }
 }
 
 /* Letter page */
@@ -78,7 +86,6 @@ body {
   padding: 24px;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
   margin: 80px auto;
-  display: none;
   text-align: left;
   position: relative;
   opacity: 0;
@@ -135,7 +142,9 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <button id="startBtn"></button>
+  <button id="startBtn">
+    <img src="stella.png" alt="Start Icon">
+  </button>
 </div>
 
 <div id="container">
@@ -199,7 +208,7 @@ function writeLetter(span, letter){
 }
 
 // Show a sentence letter by letter
-async function showSentence(sentence, delay=150){
+async function showSentence(sentence, delay=200){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
 
@@ -221,35 +230,31 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click
+// Start button click with big ripple
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
   const rect = this.getBoundingClientRect();
-  const buttonX = rect.left + rect.width / 2;
-  const buttonY = rect.top + rect.height / 2;
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
 
-  // Create 5 ripples from the button
-  for(let i=0;i<5;i++){
-    setTimeout(() => {
-      const ripple = document.createElement("span");
-      ripple.className = "ripple";
-      const maxDim = Math.max(window.innerWidth, window.innerHeight) * 2;
-      ripple.style.width = ripple.style.height = maxDim + "px";
-      ripple.style.left = buttonX + "px";
-      ripple.style.top = buttonY + "px";
-      document.body.appendChild(ripple);
-      setTimeout(()=>ripple.remove(), 3000);
-    }, i*200); // staggered start for ripples
+  for(let i=0;i<5;i++){ // 5 ripples
+    const ripple = document.createElement("span");
+    ripple.className = 'ripple';
+    ripple.style.left = centerX + 'px';
+    ripple.style.top = centerY + 'px';
+    ripple.style.animationDelay = `${i*0.2}s`;
+    document.body.appendChild(ripple);
+    ripple.addEventListener('animationend', ()=> ripple.remove());
   }
 
-  // Fade in letter page during last ripple
-  setTimeout(() => {
-    document.getElementById("intro").style.display = 'none';
-    document.getElementById("container").classList.add("show");
+  // Fade in letter page after small delay
+  setTimeout(()=>{
+    document.getElementById("intro").style.display='none';
+    document.getElementById("container").classList.add('show');
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 800); // start fade in during last ripple
+  }, 800); 
 });
 </script>
 
