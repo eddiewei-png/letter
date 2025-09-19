@@ -62,15 +62,15 @@ body {
   position: fixed;
   border-radius: 50%;
   transform: scale(0);
-  animation: page-ripple-animation 2s linear;
-  background: rgba(255, 255, 255, 0.15);
+  animation: page-ripple-animation 2s ease-out;
+  background: rgba(255, 105, 180, 0.2); /* visible pink */
   pointer-events: none;
   z-index: 999;
 }
 
 @keyframes page-ripple-animation {
   to {
-    transform: scale(20);
+    transform: scale(50); /* spreads across entire page */
     opacity: 0;
   }
 }
@@ -137,7 +137,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -150,7 +150,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   <div id="heart">❤️</div>
 
   <audio id="background-music" loop>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/%E9%83%81%E5%8F%AF%E5%94%AF%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E7%94%B5%E8%A7%86%E5%89%A7%E4%B8%BB%E9%A2%98%E6%9B%B2%E9%AB%98%E9%9F%B3%E8%B4%A8%E6%AD%8C%E8%AF%8D%E7%89%88Yisa%20Yu%20x%20%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E5%88%98%E4%BA%A6%E8%8F%B2Liu%20Yifei%E6%9D%8E%E7%8E%B0Li%20Xian%20%E4%B8%BB%E6%BC%94.mp3" type="audio/mpeg">
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
   </audio>
 </div>
 
@@ -228,12 +228,16 @@ const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
   const ripple = document.createElement("span");
   ripple.className = "page-ripple";
-  const size = 200;
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - size/2) + "px";
-  ripple.style.top = (e.clientY - size/2) + "px";
+
+  // Dynamic size to cover entire page
+  const maxDim = Math.max(window.innerWidth, window.innerHeight) * 2;
+  ripple.style.width = ripple.style.height = maxDim + "px";
+
+  ripple.style.left = (e.clientX - maxDim/2) + "px";
+  ripple.style.top = (e.clientY - maxDim/2) + "px";
+
   document.body.appendChild(ripple);
-  setTimeout(()=>ripple.remove(), 2000);
+  setTimeout(()=>ripple.remove(), 3000);
 
   // Show letter and play music
   document.getElementById("intro").style.display = 'none';
