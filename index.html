@@ -51,24 +51,32 @@
     100%{ transform:scale(1); filter: drop-shadow(0 0 0 rgba(255,105,180,0)); }
   }
 
-  /* Ripple - fixed so it spans viewport; initial transform centers it and scale(0) -> scale(1) */
-  .ripple{
-    position:fixed;
-    border-radius:50%;
-    pointer-events:none;
-    transform:translate(-50%,-50%) scale(0);
-    transform-origin:center center;
-    /* visual style: thin ring */
-    border: 3px solid rgba(255,105,180,0.32);
-    background: rgba(255,105,180,0.03);
-    z-index:9999;
-    animation: rippleExpand 1100ms ease-out forwards;
-    animation-fill-mode:both;
+/* Ripple smoother */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center center;
+  border: 3px solid rgba(255,105,180,0.35);
+  background: rgba(255,105,180,0.06);
+  z-index: 9999;
+  animation: rippleExpand 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes rippleExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.9;
   }
-  @keyframes rippleExpand{
-    0%{ transform:translate(-50%,-50%) scale(0); opacity:1; }
-    100%{ transform:translate(-50%,-50%) scale(1); opacity:0; }
+  70% {
+    opacity: 0.5;
   }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
 
   /* Letter container */
   #container{
@@ -234,8 +242,9 @@ startBtn.addEventListener('click', function (ev){
   const centerY = rect.top + rect.height/2;
 
   // ripple parameters
-  const rippleCount = 5;
-  const delayStep = 180; // ms between ripple starts
+  const rippleCount = 4;      // fewer, more spaced ripples
+const delayStep = 400;      // slower wave gap (ms)
+ // ms between ripple starts
   // make ripple big enough: diagonal of viewport (so it reaches corners)
   const diagonal = Math.sqrt(window.innerWidth**2 + window.innerHeight**2);
   const size = Math.ceil(diagonal * 2); // px
@@ -275,3 +284,4 @@ startBtn.addEventListener('click', function (ev){
 </script>
 </body>
 </html>
+
