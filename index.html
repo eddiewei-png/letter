@@ -62,12 +62,16 @@ body {
 
 h1 { font-size: 2rem; margin-bottom: 1rem; }
 
-#letter p {
+#letter {
   font-family: 'Great Vibes', cursive;
   font-size: 1.8rem;
   color: var(--pink);
-  margin: 1.2em 0;
   white-space: pre-wrap;
+  position: relative;
+}
+
+#letter p {
+  margin: 1.2em 0;
   position: relative;
 }
 
@@ -79,21 +83,16 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-#cursor {
-  display: inline-block;
+/* Ink trail span */
+.ink-trail {
+  position: absolute;
   width: 2px;
   height: 1.8rem;
   background-color: #ff69b4;
-  vertical-align: bottom;
-  margin-left: 1px;
-  opacity: 1;
-  animation: blink 1s infinite;
-  transition: all 0.1s ease;
-}
-
-@keyframes blink {
-  0%,50%,100% { opacity: 1; }
-  25%,75% { opacity: 0; }
+  opacity: 0.5;
+  border-radius: 1px;
+  pointer-events: none;
+  transition: all 0.3s ease-out;
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -111,7 +110,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingegg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -142,30 +141,34 @@ const sentences = [
 const letterDiv = document.getElementById("letter");
 let sentenceIndex = 0;
 
-// Cursor element
-const cursor = document.createElement("span");
-cursor.id = "cursor";
-cursor.textContent = "";
-document.body.appendChild(cursor);
+// Create ink trail element
+const ink = document.createElement("span");
+ink.classList.add("ink-trail");
+letterDiv.appendChild(ink);
 
-// Random slow handwriting delay
-function getRandomDelay(min = 120, max = 250){
+// Random slower handwriting delay
+function getRandomDelay(min = 150, max = 300){
   return Math.random() * (max - min) + min;
 }
 
-// Write a letter with handwriting effect
+// Write a single letter
 function writeLetter(span, letter, callback){
   span.textContent = letter;
   requestAnimationFrame(() => {
-    const jitter = (Math.random() * 2 - 1); // -1px to 1px vertical jitter
+    const jitter = (Math.random() * 2 - 1);
     span.style.transform = `translateY(${jitter}px)`;
     span.style.opacity = '1';
-    // Move cursor after this letter
+    // Move ink trail to current letter
     const rect = span.getBoundingClientRect();
-    cursor.style.position = 'absolute';
-    cursor.style.left = rect.right + 'px';
-    cursor.style.top = rect.top + 'px';
+    const containerRect = letterDiv.getBoundingClientRect();
+    ink.style.left = (rect.right - containerRect.left) + 'px';
+    ink.style.top = (rect.top - containerRect.top) + 'px';
+    ink.style.opacity = 0.5;
   });
+  // Fade out ink trail slightly after letter appears
+  setTimeout(() => {
+    ink.style.opacity = 0;
+  }, getRandomDelay(100,200));
   setTimeout(callback, getRandomDelay());
 }
 
@@ -193,7 +196,7 @@ function showSentence(sentence, callback){
 
 function showNextSentence(){
   if(sentenceIndex >= sentences.length){
-    cursor.style.display = 'none'; // hide cursor when done
+    ink.style.display = 'none';
     return;
   }
   showSentence(sentences[sentenceIndex], () => {
