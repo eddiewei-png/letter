@@ -190,33 +190,27 @@ let trailIndex = 0;
 }*/
 function writeLetter(span, letter) {
   return new Promise(resolve => {
-    span.textContent = letter;
+    span.textContent += letter; // append instead of overwrite
 
     requestAnimationFrame(() => {
       span.style.opacity = '1';
 
-      const rect = span.getBoundingClientRect();
       const containerRect = letterDiv.getBoundingClientRect();
+      const range = document.createRange();
+      range.setStart(span.firstChild || span, span.textContent.length - 1);
+      range.setEnd(span.firstChild || span, span.textContent.length);
+      const rect = range.getBoundingClientRect();
 
-      // Pick one of the ink trails (cycled)
       const ink = inkTrails[trailIndex % inkTrails.length];
 
-      // Set the trail size to match the letter
       ink.style.height = rect.height + 'px';
-      ink.style.width  = rect.width / 4 + 'px'; // thin vertical trail
-
-      // Position the trail at the right end of the letter
-      ink.style.left = (rect.right - containerRect.left - 1) + 'px';
+      ink.style.width  = rect.width / 2 + 'px';
+      ink.style.left = (rect.right - containerRect.left) + 'px';
       ink.style.top  = (rect.top - containerRect.top) + 'px';
-
-      // Show trail
       ink.style.opacity = 1;
       trailIndex++;
 
-      // Fade out after a short delay
-      setTimeout(() => {
-        ink.style.opacity = 0;
-      }, 400);
+      setTimeout(() => ink.style.opacity = 0, 400);
     });
 
     resolve();
@@ -242,30 +236,28 @@ async function showSentence(lines, delay=200){
   const pContainer = document.createElement("p");
   letterDiv.appendChild(pContainer);
 
-  // Create a span for each line inside the paragraph
+  // make sure lines is always an array
+  if (!Array.isArray(lines)) lines = [lines];
+
   const spans = lines.map(line => {
     const span = document.createElement("span");
-    span.classList.add("letter-line"); // optional new class for styling
-    span.style.display = 'inline-block';
-    span.style.marginRight = '8px'; // spacing between lines
+    span.style.display = 'block';       // stack vertically
+    span.style.marginBottom = '0.2em';  // spacing between lines
     pContainer.appendChild(span);
     return { span, text: line };
   });
 
   const maxLength = Math.max(...lines.map(l => l.length));
 
-  // Type letters simultaneously
   for (let i = 0; i < maxLength; i++) {
     for (let j = 0; j < spans.length; j++) {
       const { span, text } = spans[j];
-      if (i < text.length) {
-        await writeLetter(span, text[i]);
-      }
+      if (i < text.length) await writeLetter(span, text[i]);
     }
     await new Promise(r => setTimeout(r, delay));
-    // Auto-scroll
-    const container = document.getElementById("container");
-    container.scrollTop = container.scrollHeight;
+
+    // auto-scroll
+    letterDiv.parentElement.scrollTop = letterDiv.parentElement.scrollHeight;
   }
 }
 
@@ -324,6 +316,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
