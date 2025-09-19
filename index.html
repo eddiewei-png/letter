@@ -72,7 +72,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   white-space: pre;
 }
 
-/* Paintbrush */
+/* Paintbrush container */
 #pen {
   position: absolute;
   width: 36px;
@@ -81,9 +81,13 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   user-select: none;
   z-index: 20;
   opacity: 0;
-  transform: rotate(-20deg);
-  transform-origin: 80% 95%; /* Adjusted so tip aligns with letters */
-  transition: left 0.05s linear, top 0.05s linear;
+}
+
+#pen svg {
+  width: 100%;
+  height: 100%;
+  transform: translateY(20%) rotate(-20deg); /* adjust to align tip */
+  transform-origin: bottom center;
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -104,7 +108,7 @@ audio { display: none; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -113,16 +117,19 @@ audio { display: none; }
   <div id="letter"></div>
   <div id="heart">❤️</div>
 
-  <svg id="pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-    <path d="M20.5 54.6c.9-9.9 5.4-9.7 3-12c-2.3-2.3.3-.3-12.3 3.3c-4.5 1.3-6.4 5.3-6.7 8.8c-.1 1-.8 5.6-4.5 7c0 0 7.8.8 11.7 0c4-.3 8.4-2.3 8.8-7.1" fill="#3e4347"/>
-    <path d="M11.6 45.7s2.8.3 2.4 2.4c-.4 2.1 2.2.1 2.3 1.7c.1 1.7 2.9.6 2.8 2.2c-.1 1.7 1.8 1 1.5 2.5c-.3 1.5-.7 3.2-1.9 4.2c-1.1 1 .4-4.8-.9-3.6c-1.3 1.2-1-2.9-2.8-2.1c-1.9.8-.3-3.3-2.4-2.4c-2.1.9-1.4-3-2.7-2.7c-1.3.4-1.1-.9-1.1-.9s1.1-.8 2.8-1.3" fill="#94989b"/>
-    <path d="M4.6 53.8s-.7 6.3-4.6 7.8c0 0 8.4 1.1 12.4-.1c0 0 2-.7-.2-1.8s-.4-2-1.6-1.8c-1.2.1 1.2-1.7-.7-1.5c-1.9.2-.4-2.5-1.7-1.9c-1.3.7-.9-2-1.6-1.1c-.6.8-.4-.9-1-.7s-.8.2-1 1.1" fill="#ed4c5c"/>
-    <path d="M10.8 59.9s-.4.3-1.1.6c-.3.1-.7.3-1.2.4c-.4 0-.8.1-1.3.1s-.9 0-1.4-.1c-.4-.1-.9-.2-1.2-.3c-.7-.2-1.1-.4-1.1-.4s.5-.2 1.2-.3c.7-.1 1.6-.2 2.5-.3c.9 0 1.8 0 2.5.1c.6.1 1.1.2 1.1.2" fill="#ffc7ce"/>
-    <path d="M21.2 51.1l-6.4-6.4S42.6 13.9 52.2 4c2.6-2.7 7-2.7 9.7 0c2.7 2.7 2.7 7.1 0 9.7c-9.9 9.5-40.7 37.4-40.7 37.4" fill="#89664c"/>
-    <path d="M20.2 50l-4.3-4.3S43.4 16.3 52.7 6.6c2.6-2.6 6.2-3.3 8-1.4c1.8 1.8 1.2 5.4-1.4 8C49.6 22.6 20.2 50 20.2 50" fill="#d3976e"/>
-    <path fill="#c7d3d8" d="M13.894 44.98l3.465-3.466l7.07 7.071l-3.464 3.465z"/>
-    <path fill="#ffffff" d="M15.167 46.25l3.465-3.464l4.525 4.526l-3.465 3.464z"/>
-  </svg>
+  <!-- Paintbrush container -->
+  <div id="pen">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <path d="M20.5 54.6c.9-9.9 5.4-9.7 3-12c-2.3-2.3.3-.3-12.3 3.3c-4.5 1.3-6.4 5.3-6.7 8.8c-.1 1-.8 5.6-4.5 7c0 0 7.8.8 11.7 0c4-.3 8.4-2.3 8.8-7.1" fill="#3e4347"/>
+      <path d="M11.6 45.7s2.8.3 2.4 2.4c-.4 2.1 2.2.1 2.3 1.7c.1 1.7 2.9.6 2.8 2.2c-.1 1.7 1.8 1 1.5 2.5c-.3 1.5-.7 3.2-1.9 4.2c-1.1 1 .4-4.8-.9-3.6c-1.3 1.2-1-2.9-2.8-2.1c-1.9.8-.3-3.3-2.4-2.4c-2.1.9-1.4-3-2.7-2.7c-1.3.4-1.1-.9-1.1-.9s1.1-.8 2.8-1.3" fill="#94989b"/>
+      <path d="M4.6 53.8s-.7 6.3-4.6 7.8c0 0 8.4 1.1 12.4-.1c0 0 2-.7-.2-1.8s-.4-2-1.6-1.8c-1.2.1 1.2-1.7-.7-1.5c-1.9.2-.4-2.5-1.7-1.9c-1.3.7-.9-2-1.6-1.1c-.6.8-.4-.9-1-.7s-.8.2-1 1.1" fill="#ed4c5c"/>
+      <path d="M10.8 59.9s-.4.3-1.1.6c-.3.1-.7.3-1.2.4c-.4 0-.8.1-1.3.1s-.9 0-1.4-.1c-.4-.1-.9-.2-1.2-.3c-.7-.2-1.1-.4-1.1-.4s.5-.2 1.2-.3c.7-.1 1.6-.2 2.5-.3c.9 0 1.8 0 2.5.1c.6.1 1.1.2 1.1.2" fill="#ffc7ce"/>
+      <path d="M21.2 51.1l-6.4-6.4S42.6 13.9 52.2 4c2.6-2.7 7-2.7 9.7 0c2.7 2.7 2.7 7.1 0 9.7c-9.9 9.5-40.7 37.4-40.7 37.4" fill="#89664c"/>
+      <path d="M20.2 50l-4.3-4.3S43.4 16.3 52.7 6.6c2.6-2.6 6.2-3.3 8-1.4c1.8 1.8 1.2 5.4-1.4 8C49.6 22.6 20.2 50 20.2 50" fill="#d3976e"/>
+      <path fill="#c7d3d8" d="M13.894 44.98l3.465-3.466l7.07 7.071l-3.464 3.465z"/>
+      <path fill="#ffffff" d="M15.167 46.25l3.465-3.464l4.525 4.526l-3.465 3.464z"/>
+    </svg>
+  </div>
 
   <audio id="background-music" loop autoplay>
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
@@ -147,54 +154,56 @@ const letterDiv = document.getElementById("letter");
 const pen = document.getElementById("pen");
 let sentenceIndex = 0;
 
-function writeLetter(span, letter, callback) {
-  span.textContent = letter;
-
+function writeLetter(span, text, index=0, callback){
+  if(index > text.length){
+    callback();
+    return;
+  }
+  span.textContent = text.slice(0,index);
   const rect = span.getBoundingClientRect();
   const containerRect = letterDiv.getBoundingClientRect();
-
   pen.style.left = (rect.right - containerRect.left) + 'px';
   pen.style.top = (rect.bottom - containerRect.top) + 'px';
   pen.style.opacity = '1';
-
-  setTimeout(callback, 100);
+  setTimeout(()=>writeLetter(span,text,index+1,callback),120);
 }
 
-function showSentence(sentence, callback) {
+function showSentence(sentence,callback){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
-  const letters = sentence.split('');
-  let i = 0;
-
-  function next() {
-    if (i >= letters.length) {
-      pen.style.opacity = '0';
-      setTimeout(callback, 500);
+  let i=0;
+  function nextLetter(){
+    if(i>=sentence.length){
+      pen.style.opacity='0';
+      setTimeout(callback,500);
       return;
     }
-    const span = document.createElement('span');
-    span.classList.add('letter');
+    const span = document.createElement("span");
+    span.classList.add("letter");
     p.appendChild(span);
-    writeLetter(span, letters[i], () => { i++; next(); });
+    writeLetter(span,sentence[i],0,()=>{
+      i++;
+      nextLetter();
+    });
   }
-  next();
+  nextLetter();
 }
 
-function showNextSentence() {
-  if (sentenceIndex >= sentences.length) return;
-  showSentence(sentences[sentenceIndex], () => {
+function showNextSentence(){
+  if(sentenceIndex >= sentences.length) return;
+  showSentence(sentences[sentenceIndex],()=>{
     sentenceIndex++;
     showNextSentence();
   });
 }
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  document.getElementById("intro").style.display = "none";
-  document.getElementById("container").style.display = "block";
-  document.getElementById("background-music").play().catch(()=>{});
+document.getElementById("startBtn").addEventListener("click",()=>{
+  document.getElementById("intro").style.display='none';
+  document.getElementById("container").style.display='block';
+  const audio = document.getElementById("background-music");
+  audio.play().catch(()=>console.log("Autoplay blocked."));
   showNextSentence();
 });
 </script>
-
 </body>
 </html>
