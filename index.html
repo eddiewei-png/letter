@@ -18,8 +18,8 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--light-bg);
   color: var(--pink);
-  position: relative;
   text-align: left;
+  position: relative;
 }
 
 .full-screen {
@@ -34,6 +34,8 @@ body {
 }
 
 #startBtn {
+  position: relative;
+  overflow: hidden;
   padding: 14px 26px;
   font-size: 1.1rem;
   background-color: var(--pink);
@@ -46,6 +48,21 @@ body {
   margin-top: 20px;
 }
 #startBtn:hover { background-color: #ff85c1; }
+
+/* Ripple effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
 
 #container {
   max-width: 90%;
@@ -80,7 +97,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   white-space: pre;
   opacity: 0;
   transform: translateY(5px);
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 /* Ink trail effect */
@@ -110,7 +127,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -119,8 +136,8 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   <div id="letter"></div>
   <div id="heart">❤️</div>
 
-  <audio id="background-music" loop autoplay>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/%E9%83%81%E5%8F%AF%E5%94%AF%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E7%94%B5%E8%A7%86%E5%89%A7%E4%B8%BB%E9%A2%98%E6%9B%B2%E9%AB%98%E9%9F%B3%E8%B4%A8%E6%AD%8C%E8%AF%8D%E7%89%88Yisa%20Yu%20x%20%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E5%88%98%E4%BA%A6%E8%8F%B2Liu%20Yifei%E6%9D%8E%E7%8E%B0Li%20Xian%20%E4%B8%BB%E6%BC%94.mp3" type="audio/mpeg">
+  <audio id="background-music">
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
   </audio>
 </div>
 
@@ -141,7 +158,7 @@ const sentences = [
 const letterDiv = document.getElementById("letter");
 let sentenceIndex = 0;
 
-// Create multiple ink trail elements
+// Ink trails
 const inkTrails = [];
 for(let i=0;i<3;i++){
   const ink = document.createElement("span");
@@ -149,80 +166,30 @@ for(let i=0;i<3;i++){
   letterDiv.appendChild(ink);
   inkTrails.push(ink);
 }
-
 let trailIndex = 0;
 
-// Handwriting speed
-function getRandomDelay(min = 80, max = 180){
-  return Math.random() * (max - min) + min;
-}
+function writeLetter(span, letter){
+  return new Promise(resolve => {
+    span.textContent = letter;
+    requestAnimationFrame(() => {
+      const jitter = (Math.random() * 2 - 1);
+      span.style.transform = `translateY(${jitter}px)`;
+      span.style.opacity = '1';
 
-// Write a single letter
-function writeLetter(span, letter, callback){
-  span.textContent = letter;
-  requestAnimationFrame(() => {
-    const jitter = (Math.random() * 2 - 1);
-    span.style.transform = `translateY(${jitter}px)`;
-    span.style.opacity = '1';
+      const rect = span.getBoundingClientRect();
+      const containerRect = letterDiv.getBoundingClientRect();
 
-    const rect = span.getBoundingClientRect();
-    const containerRect = letterDiv.getBoundingClientRect();
-
-    // Move ink trail
-    const ink = inkTrails[trailIndex % inkTrails.length];
-    ink.style.left = (rect.right - containerRect.left - 1) + 'px';
-    ink.style.top = (rect.top - containerRect.top) + 'px';
-    ink.style.opacity = 1;
-    trailIndex++;
-
-    // Fade out ink trail
-    setTimeout(() => { ink.style.opacity = 0; }, 300);
-  });
-  setTimeout(callback, getRandomDelay());
-}
-
-// Write a sentence
-function showSentence(sentence, callback){
-  const p = document.createElement("p");
-  letterDiv.appendChild(p);
-  let i = 0;
-
-  function nextLetter(){
-    if(i >= sentence.length){
-      setTimeout(callback, 300);
-      return;
-    }
-    const span = document.createElement("span");
-    span.classList.add("letter");
-    p.appendChild(span);
-    writeLetter(span, sentence[i], () => {
-      i++;
-      nextLetter();
+      const ink = inkTrails[trailIndex % inkTrails.length];
+      ink.style.left = (rect.right - containerRect.left - 1) + 'px';
+      ink.style.top = (rect.top - containerRect.top) + 'px';
+      ink.style.opacity = 1;
+      trailIndex++;
+      setTimeout(()=>{ ink.style.opacity = 0; }, 400);
     });
-  }
-  nextLetter();
-}
-
-function showNextSentence(){
-  if(sentenceIndex >= sentences.length){
-    inkTrails.forEach(ink=>ink.style.display='none');
-    return;
-  }
-  showSentence(sentences[sentenceIndex], () => {
-    sentenceIndex++;
-    showNextSentence();
+    resolve();
   });
 }
 
-document.getElementById("startBtn").addEventListener("click", ()=>{
-  document.getElementById("intro").style.display = 'none';
-  document.getElementById("container").style.display = 'block';
-  const audio = document.getElementById("background-music");
-  audio.play().catch(()=>console.log("Autoplay blocked."));
-  showNextSentence();
-});
-</script>
-
-</body>
-</html>
-
+// Show sentence with all letters
+async function showSentence(sentence, delayPerLetter){
+  const p = document.createElement("
