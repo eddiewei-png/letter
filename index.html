@@ -37,27 +37,27 @@ body {
 #startBtn {
   position: relative;
   overflow: visible;
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   background: transparent;
+  transition: transform 0.3s ease;
+}
+
+#startBtn:hover {
+  transform: scale(1.1);
 }
 
 #startBtn img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   display: block;
-  transition: transform 0.3s ease;
+  border-radius: 50%;
 }
 
-#startBtn:hover img {
-  transform: scale(1.1);
-}
-
-/* Water ripple effect */
+/* Full-page ripple effect */
 .ripple {
   position: absolute;
   border-radius: 50%;
@@ -70,7 +70,7 @@ body {
 
 @keyframes ripple-bloom {
   to {
-    transform: scale(25);
+    transform: scale(var(--scale));
     opacity: 0;
   }
 }
@@ -130,6 +130,7 @@ body {
   #letter p { font-size: 1.4rem; }
   #container { padding: 20px; margin: 60px 10px; }
   #heart { font-size: 2rem; }
+  #startBtn { width: 80px; height: 80px; }
 }
 </style>
 </head>
@@ -228,30 +229,31 @@ startBtn.addEventListener("click", function(e){
   const centerX = rect.left + rect.width/2;
   const centerY = rect.top + rect.height/2;
 
-  // Create 5 concentric ripples
   const rippleCount = 5;
+  const maxDim = Math.max(window.innerWidth, window.innerHeight);
+
   for(let i=0;i<rippleCount;i++){
     const ripple = document.createElement("span");
     ripple.className = "ripple";
+    ripple.style.setProperty('--scale', maxDim/20); // scale proportional to viewport
     ripple.style.left = centerX + "px";
     ripple.style.top = centerY + "px";
-    ripple.style.animationDelay = (i*0.2) + "s"; // staggered blooms
+    ripple.style.animationDelay = (i*0.15) + "s";
     document.body.appendChild(ripple);
-    ripple.addEventListener("animationend", ()=>ripple.remove());
+    ripple.addEventListener('animationend', ()=>ripple.remove());
+
+    if(i === rippleCount-1){
+      // Last ripple triggers fade-in of letter page
+      setTimeout(()=>{
+        document.getElementById("intro").style.display = 'none';
+        const container = document.getElementById("container");
+        container.style.display = 'block';
+        setTimeout(()=>container.style.opacity='1', 50);
+        document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+        showAllText();
+      }, i*150);
+    }
   }
-
-  // Fade in letter container during last ripple
-  setTimeout(()=>{
-    document.getElementById("intro").style.display = 'none';
-    const container = document.getElementById("container");
-    container.style.display = 'block';
-    setTimeout(()=>{ container.style.opacity = '1'; }, 50);
-
-    const audio = document.getElementById("background-music");
-    audio.play().catch(()=>console.log("Autoplay blocked"));
-
-    showAllText();
-  }, (rippleCount-1)*200); // start fading in during last ripple
 });
 </script>
 
