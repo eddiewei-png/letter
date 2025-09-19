@@ -60,17 +60,24 @@ body {
 /* Full-page water ripple */
 .page-ripple {
   position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
   border-radius: 50%;
-  transform: scale(0);
-  animation: page-ripple-animation 2s ease-out;
-  background: rgba(255,105,180,0.5);
+  background: rgba(255, 105, 180, 0.4);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-spread 2s ease-out forwards;
   pointer-events: none;
-  z-index: 9999; /* above everything */
+  z-index: 9999;
+  filter: blur(8px);
 }
-@keyframes page-ripple-animation {
-  0% { transform: scale(0); opacity: 0.6; }
-  50% { transform: scale(50); opacity: 0.4; }
-  100% { transform: scale(80); opacity: 0; }
+
+@keyframes ripple-spread {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(30); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(60); opacity: 0; }
 }
 
 #container {
@@ -135,7 +142,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -221,20 +228,13 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with full-page ripple
+// Start button click with visible full-page ripple
 const startBtn = document.getElementById("startBtn");
-startBtn.addEventListener("click", function(e){
+startBtn.addEventListener("click", function() {
   const ripple = document.createElement("span");
   ripple.className = "page-ripple";
-
-  const maxDim = Math.max(window.innerWidth, window.innerHeight) * 2;
-  ripple.style.width = ripple.style.height = maxDim + "px";
-  ripple.style.left = (e.clientX - maxDim/2) + "px";
-  ripple.style.top = (e.clientY - maxDim/2) + "px";
-
   document.body.appendChild(ripple);
 
-  // Wait for ripple animation to finish
   setTimeout(()=>{
     ripple.remove();
     document.getElementById("intro").style.display = 'none';
@@ -242,7 +242,7 @@ startBtn.addEventListener("click", function(e){
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 2000); // matches ripple duration
+  }, 2000); // wait for ripple to finish
 });
 </script>
 
