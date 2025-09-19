@@ -57,27 +57,23 @@ body {
   margin-right: 8px;
 }
 
-/* Full-page water ripple */
-.page-ripple {
+/* Water ripple effect: multiple concentric circles */
+.water-ripple {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 100px;
-  height: 100px;
   border-radius: 50%;
   background: rgba(255, 105, 180, 0.5);
-  box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
   transform: translate(-50%, -50%) scale(0);
-  animation: ripple-spread 2s ease-out forwards;
   pointer-events: none;
   z-index: 9999;
   filter: blur(8px);
 }
 
-@keyframes ripple-spread {
+@keyframes ripple-wave {
   0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
-  50% { transform: translate(-50%, -50%) scale(20); opacity: 0.5; }
-  100% { transform: translate(-50%, -50%) scale(50); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(15); opacity: 0.4; }
+  100% { transform: translate(-50%, -50%) scale(30); opacity: 0; }
 }
 
 #container {
@@ -142,7 +138,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -228,15 +224,20 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with full-page ripple
+// Start button click with multi-wave ripple
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function() {
-  const ripple = document.createElement("span");
-  ripple.className = "page-ripple";
-  document.body.appendChild(ripple);
+  for(let i=0;i<3;i++){ // create 3 concentric ripples
+    const ripple = document.createElement("span");
+    ripple.className = "water-ripple";
+    ripple.style.width = ripple.style.height = 100 + i*50 + "px"; // progressively bigger
+    ripple.style.animation = `ripple-wave 2.5s ease-out ${i*0.2}s forwards`;
+    document.body.appendChild(ripple);
+    setTimeout(()=>ripple.remove(), 3000);
+  }
 
+  // Delay showing letter until ripple completes
   setTimeout(()=>{
-    ripple.remove();
     document.getElementById("intro").style.display = "none";
     document.getElementById("container").style.display = "block";
 
@@ -244,7 +245,7 @@ startBtn.addEventListener("click", function() {
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 2000); // wait for ripple animation
+  }, 1000); // start showing after first ripple wave visible
 });
 </script>
 
