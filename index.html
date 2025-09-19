@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Letter for u</title>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root {
   --pink: #ff69b4;
@@ -19,6 +19,7 @@ body {
   color: var(--pink);
   position: relative;
 }
+
 .full-screen {
   position: fixed;
   top: 0; left: 0;
@@ -29,6 +30,7 @@ body {
   z-index: 10;
   padding: 20px;
 }
+
 #startBtn {
   padding: 14px 26px;
   font-size: 1.1rem;
@@ -86,7 +88,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 #pen svg {
   width: 100%;
   height: 100%;
-  transform: translateY(20%) rotate(-20deg); /* adjust to align tip */
+  transform: translateY(-45%) rotate(-20deg); /* tip aligned to baseline */
   transform-origin: bottom center;
 }
 
@@ -108,7 +110,7 @@ audio { display: none; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -154,34 +156,31 @@ const letterDiv = document.getElementById("letter");
 const pen = document.getElementById("pen");
 let sentenceIndex = 0;
 
-function writeLetter(span, text, index=0, callback){
-  if(index > text.length){
-    callback();
-    return;
-  }
-  span.textContent = text.slice(0,index);
+function writeLetter(span, letter, callback){
+  span.textContent = letter;
   const rect = span.getBoundingClientRect();
   const containerRect = letterDiv.getBoundingClientRect();
   pen.style.left = (rect.right - containerRect.left) + 'px';
   pen.style.top = (rect.bottom - containerRect.top) + 'px';
   pen.style.opacity = '1';
-  setTimeout(()=>writeLetter(span,text,index+1,callback),120);
+  setTimeout(callback, 120);
 }
 
-function showSentence(sentence,callback){
+function showSentence(sentence, callback){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
-  let i=0;
+  let i = 0;
+
   function nextLetter(){
-    if(i>=sentence.length){
-      pen.style.opacity='0';
-      setTimeout(callback,500);
+    if(i >= sentence.length){
+      pen.style.opacity = '0';
+      setTimeout(callback, 500);
       return;
     }
     const span = document.createElement("span");
     span.classList.add("letter");
     p.appendChild(span);
-    writeLetter(span,sentence[i],0,()=>{
+    writeLetter(span, sentence[i], () => {
       i++;
       nextLetter();
     });
@@ -191,19 +190,20 @@ function showSentence(sentence,callback){
 
 function showNextSentence(){
   if(sentenceIndex >= sentences.length) return;
-  showSentence(sentences[sentenceIndex],()=>{
+  showSentence(sentences[sentenceIndex], () => {
     sentenceIndex++;
     showNextSentence();
   });
 }
 
-document.getElementById("startBtn").addEventListener("click",()=>{
-  document.getElementById("intro").style.display='none';
-  document.getElementById("container").style.display='block';
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  document.getElementById("intro").style.display = 'none';
+  document.getElementById("container").style.display = 'block';
   const audio = document.getElementById("background-music");
   audio.play().catch(()=>console.log("Autoplay blocked."));
   showNextSentence();
 });
 </script>
+
 </body>
 </html>
