@@ -57,23 +57,19 @@ body {
   margin-right: 8px;
 }
 
-/* Realistic water ripple effect */
+/* Full-page water ripple */
 .page-ripple {
   position: fixed;
   border-radius: 50%;
   transform: scale(0);
-  animation: page-ripple-animation 3s ease-out;
-  background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0.2) 60%, rgba(255,105,180,0) 100%);
+  animation: page-ripple-animation 2s ease-out;
+  background: rgba(255,105,180,0.5);
   pointer-events: none;
-  z-index: 999;
-  filter: blur(3px);
-  mix-blend-mode: lighten;
-  box-shadow: 0 0 30px rgba(255,105,180,0.5);
+  z-index: 9999; /* above everything */
 }
-
 @keyframes page-ripple-animation {
   0% { transform: scale(0); opacity: 0.6; }
-  50% { transform: scale(60); opacity: 0.4; }
+  50% { transform: scale(50); opacity: 0.4; }
   100% { transform: scale(80); opacity: 0; }
 }
 
@@ -139,7 +135,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitinggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -225,20 +221,20 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with delayed ripple effect
+// Start button click with full-page ripple
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
   const ripple = document.createElement("span");
   ripple.className = "page-ripple";
 
-  const maxDim = Math.max(window.innerWidth, window.innerHeight) * 3;
+  const maxDim = Math.max(window.innerWidth, window.innerHeight) * 2;
   ripple.style.width = ripple.style.height = maxDim + "px";
   ripple.style.left = (e.clientX - maxDim/2) + "px";
   ripple.style.top = (e.clientY - maxDim/2) + "px";
 
   document.body.appendChild(ripple);
 
-  // Wait for ripple to finish before switching page
+  // Wait for ripple animation to finish
   setTimeout(()=>{
     ripple.remove();
     document.getElementById("intro").style.display = 'none';
@@ -246,7 +242,7 @@ startBtn.addEventListener("click", function(e){
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 3000); // matches ripple animation duration
+  }, 2000); // matches ripple duration
 });
 </script>
 
