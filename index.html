@@ -109,12 +109,18 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 .ink-trail {
   position: absolute;
   width: 4px;
-  height: 1.8rem;
+  height: 2rem;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%);
+  background: radial-gradient(circle, rgba(255,105,180,0.8) 0%, rgba(255,105,180,0) 60%);
   opacity: 0;
-  transition: all 0.3s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.ink-trail.secondary {
+  width: 3px;
+  height: 1.5rem;
+  background: radial-gradient(circle, rgba(255,105,180,0.5) 0%, rgba(255,105,180,0) 60%);
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -131,7 +137,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitinggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon" style="width:80px; height:80px;">
   </button>
@@ -163,33 +169,35 @@ const sentences = [
 
 const letterDiv = document.getElementById("letter");
 
-// Ink trails
+// Create multiple ink trails for flowing effect
 const inkTrails = [];
-for(let i=0;i<3;i++){
+for(let i=0;i<5;i++){
   const ink = document.createElement("span");
   ink.classList.add("ink-trail");
+  if(i>2) ink.classList.add("secondary"); // smaller trailing dots
   letterDiv.appendChild(ink);
   inkTrails.push(ink);
 }
 let trailIndex = 0;
 
-// Smooth ink-letter effect
-function writeWord(wordSpan, word, letterIndex = 0, callback) {
+// Smooth ink-letter effect with soft flowing trail
+function writeWord(span, word, letterIndex = 0, callback) {
   if(letterIndex > word.length){ callback(); return; }
-  wordSpan.textContent = word.slice(0, letterIndex);
+  span.textContent = word.slice(0, letterIndex);
+  span.style.opacity = '1';
+  span.style.transform = `translateY(${Math.random()*2-1}px)`; // slight jitter
 
-  // Move ink trail
-  const rect = wordSpan.getBoundingClientRect();
+  const rect = span.getBoundingClientRect();
   const containerRect = letterDiv.getBoundingClientRect();
+  // Update all ink trails
+  inkTrails.forEach((ink,i)=>{
+    ink.style.left = (rect.right - containerRect.left + Math.random()*2 -1) + 'px';
+    ink.style.top = (rect.top - containerRect.top + Math.random()*2 -1) + 'px';
+    ink.style.opacity = 1 - i*0.15; // fading trail
+    setTimeout(()=>{ ink.style.opacity = 0; }, 500 + i*50);
+  });
 
-  const ink = inkTrails[trailIndex % inkTrails.length];
-  ink.style.left = (rect.right - containerRect.left) + 'px';
-  ink.style.top = (rect.top - containerRect.top) + 'px';
-  ink.style.opacity = 1;
-  trailIndex++;
-  setTimeout(()=>{ ink.style.opacity = 0; }, 400);
-
-  setTimeout(()=>writeWord(wordSpan, word, letterIndex+1, callback), 150);
+  setTimeout(()=>writeWord(span, word, letterIndex+1, callback), 120); // faster writing
 }
 
 function showSentence(sentence, callback){
@@ -227,7 +235,7 @@ function createBloomRipples(e){
   const centerX = rect.left + rect.width/2;
   const centerY = rect.top + rect.height/2;
   const numRipples = 5;
-  const delayStep = 0.3;
+  const delayStep = 0.2;
   const baseSize = Math.max(window.innerWidth, window.innerHeight);
 
   for(let i=0;i<numRipples;i++){
