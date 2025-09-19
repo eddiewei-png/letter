@@ -20,6 +20,7 @@ body {
   color: var(--pink);
   text-align: left;
   position: relative;
+  overflow-x: hidden;
 }
 
 .full-screen {
@@ -34,8 +35,8 @@ body {
 }
 
 #startBtn {
-  position: relative; /* required for ripple */
-  overflow: hidden;   /* keeps ripple inside */
+  position: relative;
+  overflow: hidden;
   padding: 14px 26px;
   font-size: 1.1rem;
   background-color: var(--pink);
@@ -50,28 +51,28 @@ body {
 }
 #startBtn:hover { background-color: #ff85c1; }
 
-/* Water-drop ripple effect */
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple-animation 1.8s linear; /* slower ripple */
-  background: rgba(255, 255, 255, 0.8); /* more visible */
-  pointer-events: none;
-  z-index: 5;
-}
-
-@keyframes ripple-animation {
-  to {
-    transform: scale(8); /* bigger expansion */
-    opacity: 0;
-  }
-}
-
 #startBtn img {
   width: 40px;
   height: 40px;
   margin-right: 8px;
+}
+
+/* Full-page ripple effect */
+.page-ripple {
+  position: fixed;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: page-ripple-animation 2s linear;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes page-ripple-animation {
+  to {
+    transform: scale(20);
+    opacity: 0;
+  }
 }
 
 #container {
@@ -136,7 +137,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitinggggg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -149,7 +150,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   <div id="heart">❤️</div>
 
   <audio id="background-music" loop>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/%E9%83%81%E5%8F%AF%E5%94%AF%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E7%94%B5%E8%A7%86%E5%89%A7%E4%B8%BB%E9%A2%98%E6%9B%B2%E9%AB%98%E9%9F%B3%E8%B4%A8%E6%AD%8C%E8%AF%8D%E7%89%88Yisa%20Yu%20x%20%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E5%88%98%E4%BA%A6%E8%8F%B2Liu%20Yifei%E6%9D%8E%E7%8E%B0Li%20Xian%20%E4%B8%BB%E6%BC%94.mp3" type="audio/mpeg">
   </audio>
 </div>
 
@@ -216,25 +217,23 @@ async function showSentence(sentence, delay=150){
 
 async function showAllText(){
   for(let sentence of sentences){
-    await showSentence(sentence, 200); // slightly slower for smooth writing
-    await new Promise(r => setTimeout(r, 300)); // pause between sentences
+    await showSentence(sentence, 200);
+    await new Promise(r => setTimeout(r, 300));
   }
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with ripple
+// Start button click with full-page ripple
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
-  const rect = this.getBoundingClientRect();
   const ripple = document.createElement("span");
-  ripple.className = "ripple";
-  const size = Math.max(rect.width, rect.height) * 1.5;
+  ripple.className = "page-ripple";
+  const size = 200;
   ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size/2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size/2) + "px";
-  this.appendChild(ripple);
-
-  setTimeout(()=>ripple.remove(), 1800); // match animation duration
+  ripple.style.left = (e.clientX - size/2) + "px";
+  ripple.style.top = (e.clientY - size/2) + "px";
+  document.body.appendChild(ripple);
+  setTimeout(()=>ripple.remove(), 2000);
 
   // Show letter and play music
   document.getElementById("intro").style.display = 'none';
