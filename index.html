@@ -149,9 +149,9 @@ body, html {
 <script>
 // Letter sentences
 const sentences = [
-  "Line 1 行一",
-  "Line 2 行二",
-  "Line 3 行三",
+  ["Line 1 行一", "Line 1 English"],   // bilingual line 1
+  ["Line 2 行二", "Line 2 English"],   // bilingual line 2
+  ["Line 3 行三", "Line 3 English"],
   "Line 4 行四",
   "Line 5 行五",
   "Line 6 行六",
@@ -223,7 +223,7 @@ function writeLetter(span, letter) {
   });
 }
 
-async function showSentence(sentence, delay=200){
+/*async function showSentence(sentence, delay=200){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
   for(let i=0;i<sentence.length;i++){
@@ -237,15 +237,53 @@ async function showSentence(sentence, delay=200){
     const container = document.getElementById("container");
     container.scrollTop = container.scrollHeight;
   }
+}*/
+async function showSentence(lines, delay=200){
+  const pContainer = document.createElement("p");
+  letterDiv.appendChild(pContainer);
+
+  // Create a span for each line inside the paragraph
+  const spans = lines.map(line => {
+    const span = document.createElement("span");
+    span.classList.add("letter-line"); // optional new class for styling
+    span.style.display = 'inline-block';
+    span.style.marginRight = '8px'; // spacing between lines
+    pContainer.appendChild(span);
+    return { span, text: line };
+  });
+
+  const maxLength = Math.max(...lines.map(l => l.length));
+
+  // Type letters simultaneously
+  for (let i = 0; i < maxLength; i++) {
+    for (let j = 0; j < spans.length; j++) {
+      const { span, text } = spans[j];
+      if (i < text.length) {
+        await writeLetter(span, text[i]);
+      }
+    }
+    await new Promise(r => setTimeout(r, delay));
+    // Auto-scroll
+    const container = document.getElementById("container");
+    container.scrollTop = container.scrollHeight;
+  }
 }
 
-async function showAllText(){
+/*async function showAllText(){
   for(let s=0;s<sentences.length;s++){
     await showSentence(sentences[s], 200);
     await new Promise(r=>setTimeout(r, 300));
   }
   inkTrails.forEach(ink=>ink.style.display='none');
+}*/
+async function showAllText(){
+  for(let s=0; s<sentences.length; s++){
+    await showSentence(sentences[s], 200);
+    await new Promise(r=>setTimeout(r, 300));
+  }
+  inkTrails.forEach(ink=>ink.style.display='none');
 }
+
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click", function(e){
@@ -286,6 +324,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
