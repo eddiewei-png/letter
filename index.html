@@ -72,6 +72,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   white-space: pre;
 }
 
+/* Paintbrush */
 #pen {
   position: absolute;
   width: 36px;
@@ -80,8 +81,8 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   user-select: none;
   z-index: 20;
   opacity: 0;
+  transform: translate(-50%, -100%) rotate(-20deg); /* aligns tip with letter */
   transition: left 0.05s linear, top 0.05s linear;
-  transform: rotate(-20deg);
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -102,7 +103,7 @@ audio { display: none; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingggg...</h1>
+  <h1>💌 You have a letter waiting...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -151,12 +152,9 @@ function writeLetter(span, letter, callback) {
   const rect = span.getBoundingClientRect();
   const containerRect = letterDiv.getBoundingClientRect();
 
-  // Dynamic offset so brush tip touches each letter naturally
-  const offsetX = -span.offsetWidth * 0.1;
-  const offsetY = -span.offsetHeight * 0.6;
-
-  pen.style.left = (rect.right - containerRect.left + offsetX) + 'px';
-  pen.style.top = (rect.top - containerRect.top + offsetY + span.offsetHeight) + 'px';
+  // Use rect.bottom directly; transform(-50%, -100%) aligns tip
+  pen.style.left = (rect.right - containerRect.left) + 'px';
+  pen.style.top = (rect.bottom - containerRect.top) + 'px';
   pen.style.opacity = '1';
 
   setTimeout(callback, 100);
