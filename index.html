@@ -1,136 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ripple + Icon Button + Text</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111;
-      overflow: hidden;
-      color: white;
-      font-family: sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter for u</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #ff69b4;
+  --light-bg: #fff0f5;
+  --white-bg: #ffffffee;
+}
+* { box-sizing: border-box; }
 
-    /* Animated text ink-trail */
-    .trail {
-      position: fixed;
-      pointer-events: none;
-      font-size: 2rem;
-      white-space: pre;
-      animation: fade 2s forwards;
-      color: #0ff;
-      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    }
-    @keyframes fade {
-      to { opacity: 0; transform: translateY(-20px); }
-    }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--light-bg);
+  color: var(--pink);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
 
-    /* Icon button */
-    #startBtn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      outline: none;
-      position: relative;
-      z-index: 2;
-    }
-    #startBtn img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-      box-shadow: 0 0 20px rgba(0,255,255,0.7);
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 20px rgba(0,255,255,0.7);}
-      50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(0,255,255,1);}
-      100% { transform: scale(1); box-shadow: 0 0 20px rgba(0,255,255,0.7);}
-    }
+.full-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--light-bg);
+  display: flex; justify-content: center; align-items: center;
+  flex-direction: column;
+  z-index: 10;
+  padding: 20px;
+}
 
-    /* Ripple */
-    .ripple {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      background: rgba(0,255,255,0.3);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      animation: rippleAnim 2s ease-out forwards;
-      z-index: 1;
-    }
-    @keyframes rippleAnim {
-      to {
-        transform: translate(-50%, -50%) scale(100);
-        opacity: 0;
-      }
-    }
+#startBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  animation: pulse 2s infinite;
+}
+#startBtn img {
+  width: 120px;
+  height: 120px;
+}
 
-    /* Letter page */
-    #letterPage {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 2s ease;
-      z-index: 3;
-    }
-    #letterPage.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  </style>
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(255,105,180,0.6)); }
+  100% { transform: scale(1); }
+}
+
+/* Ripple */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-animation 1.8s ease-out forwards;
+  background: rgba(255, 105, 180, 0.4);
+  pointer-events: none;
+  z-index: 5;
+}
+@keyframes ripple-animation {
+  to {
+    transform: scale(12);
+    opacity: 0;
+  }
+}
+
+#container {
+  max-width: 90%;
+  width: 700px;
+  background: var(--white-bg);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+  margin: 80px auto;
+  display: none;
+  text-align: left;
+  position: relative;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+h1 { font-size: 2rem; margin-bottom: 1rem; }
+
+#letter {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  color: var(--pink);
+  white-space: pre-wrap;
+  position: relative;
+}
+
+#letter p {
+  margin: 1.2em 0;
+  position: relative;
+}
+
+#letter p span.letter {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.ink-trail {
+  position: absolute;
+  width: 4px;
+  height: 1.8rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+#heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
+@keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.6rem; }
+  #letter p { font-size: 1.4rem; }
+  #container { padding: 20px; margin: 60px 10px; }
+  #heart { font-size: 2rem; }
+}
+</style>
 </head>
 <body>
+
+<div id="intro" class="full-screen">
+  <h1>💌 You have a letter waiting...</h1>
   <button id="startBtn">
-    <img src="your-icon.jpeg" alt="Start">
+    <img src="stella.png" alt="Start Icon">
   </button>
+</div>
 
-  <div id="letterPage">✨ Your Letter Page ✨</div>
+<div id="container">
+  <h1>💌 A Letter for u</h1>
+  <div id="letter"></div>
+  <div id="heart">❤️</div>
 
-  <script>
-    // Ink trail effect
-    document.addEventListener("mousemove", e => {
-      const trail = document.createElement("div");
-      trail.className = "trail";
-      trail.style.left = e.pageX + "px";
-      trail.style.top = e.pageY + "px";
-      trail.textContent = "Your Magic Text";
-      document.body.appendChild(trail);
-      setTimeout(() => trail.remove(), 2000);
+  <audio id="background-music" loop>
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/%E9%83%81%E5%8F%AF%E5%94%AF%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E7%94%B5%E8%A7%86%E5%89%A7%E4%B8%BB%E9%A2%98%E6%9B%B2%E9%AB%98%E9%9F%B3%E8%B4%A8%E6%AD%8C%E8%AF%8D%E7%89%88Yisa%20Yu%20x%20%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E5%88%98%E4%BA%A6%E8%8F%B2Liu%20Yifei%E6%9D%8E%E7%8E%B0Li%20Xian%20%E4%B8%BB%E6%BC%94.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+const sentences = [
+  "Dear [Their Name],",
+  "Wherever you are when you read this, I want you to know something simple and true:",
+  "I love you.",
+  "Not just sometimes, but deeply and always.",
+  "You are my calm in chaos, my spark in silence, and my favorite thought.",
+  "This letter is here so you can come back to it anytime you need a reminder.",
+  "Whenever you miss me or just want to feel loved, this will say it for you:",
+  "I love you. I'm with you. I'm proud of u.",
+  "Forever yours,",
+  "[Your Name]"
+];
+
+const letterDiv = document.getElementById("letter");
+let sentenceIndex = 0;
+
+// Ink trails
+const inkTrails = [];
+for(let i=0;i<3;i++){
+  const ink = document.createElement("span");
+  ink.classList.add("ink-trail");
+  letterDiv.appendChild(ink);
+  inkTrails.push(ink);
+}
+let trailIndex = 0;
+
+// Write a letter with smooth animation
+function writeLetter(span, letter){
+  return new Promise(resolve => {
+    span.textContent = letter;
+    requestAnimationFrame(() => {
+      const jitter = (Math.random() * 2 - 1);
+      span.style.transform = `translateY(${jitter}px)`;
+      span.style.opacity = '1';
+
+      const rect = span.getBoundingClientRect();
+      const containerRect = letterDiv.getBoundingClientRect();
+
+      const ink = inkTrails[trailIndex % inkTrails.length];
+      ink.style.left = (rect.right - containerRect.left - 1) + 'px';
+      ink.style.top = (rect.top - containerRect.top) + 'px';
+      ink.style.opacity = 1;
+      trailIndex++;
+      setTimeout(()=>{ ink.style.opacity = 0; }, 400);
     });
+    resolve();
+  });
+}
 
-    const btn = document.getElementById("startBtn");
-    const letterPage = document.getElementById("letterPage");
+// Show a sentence letter by letter
+async function showSentence(sentence, delay=150){
+  const p = document.createElement("p");
+  letterDiv.appendChild(p);
 
-    btn.addEventListener("click", () => {
-      // Create ripple effect
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          const ripple = document.createElement("div");
-          ripple.className = "ripple";
-          document.body.appendChild(ripple);
-          setTimeout(() => ripple.remove(), 2000);
-        }, i * 400);
-      }
+  for(let i=0;i<sentence.length;i++){
+    const span = document.createElement("span");
+    span.classList.add("letter");
+    p.appendChild(span);
+    await writeLetter(span, sentence[i]);
+    await new Promise(r => setTimeout(r, delay));
+  }
+}
 
-      // Show letter page on last ripple
-      setTimeout(() => {
-        letterPage.classList.add("show");
-      }, 2000 + (5-1)*400);
-    });
-  </script>
+// Show all sentences
+async function showAllText(){
+  for(sentenceIndex=0;sentenceIndex<sentences.length;sentenceIndex++){
+    await showSentence(sentences[sentenceIndex], 200); 
+    await new Promise(r => setTimeout(r, 300)); 
+  }
+  inkTrails.forEach(ink=>ink.style.display='none');
+}
+
+// Ripple + transition
+const startBtn = document.getElementById("startBtn");
+startBtn.addEventListener("click", function(e){
+  const rect = this.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+
+  for(let i=0;i<3;i++){
+    setTimeout(()=>{
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      ripple.style.width = ripple.style.height = Math.max(window.innerWidth, window.innerHeight)*2 + "px";
+      ripple.style.left = centerX - (parseInt(ripple.style.width)/2) + "px";
+      ripple.style.top = centerY - (parseInt(ripple.style.height)/2) + "px";
+      document.body.appendChild(ripple);
+      setTimeout(()=>ripple.remove(), 1800);
+    }, i*400);
+  }
+
+  setTimeout(()=>{
+    document.getElementById("intro").style.display = 'none';
+    const container = document.getElementById("container");
+    container.style.display = 'block';
+    setTimeout(()=> container.style.opacity = 1, 50);
+
+    const audio = document.getElementById("background-music");
+    audio.play().catch(()=>console.log("Autoplay blocked"));
+
+    showAllText();
+  }, 1200); // fade in during last ripple
+});
+</script>
+
 </body>
 </html>
