@@ -51,10 +51,41 @@
       box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
       transition: background 0.3s;
       margin-top: 20px;
+      position: relative;
+      overflow: hidden;
     }
 
     #startBtn:hover {
       background-color: #ff85c1;
+    }
+
+    /* Ripple effect */
+    #startBtn::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.6);
+      display: block;
+      border-radius: 50%;
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #startBtn:active::after {
+      animation: ripple 0.6s linear;
+    }
+
+    @keyframes ripple {
+      from {
+        transform: scale(0);
+        opacity: 0.6;
+      }
+      to {
+        transform: scale(15);
+        opacity: 0;
+      }
     }
 
     #container {
@@ -91,20 +122,19 @@
       display: inline-block;
     }
 
-    /* Paintbrush icon */
+    /* Paintbrush SVG */
     #pen {
       position: absolute;
-      width: 30px;
-      height: 30px;
-      fill: var(--pink);
-      transition: left 0.25s ease-out, top 0.25s ease-out;
+      width: 28px;
+      height: 28px;
+      transition: left 0.2s ease-out, top 0.2s ease-out;
       pointer-events: none;
       user-select: none;
       z-index: 20;
       opacity: 0;
 
-      /* Align brush tip with baseline */
-      transform: translate(-100%, -80%);
+      /* Align brush tip to writing point */
+      transform: translate(-80%, -95%) rotate(-25deg);
     }
 
     #heart {
@@ -138,7 +168,7 @@
 <body>
   <!-- Landing Page -->
   <div id="intro" class="full-screen">
-    <h1>💌 You have a letter waitinggg...</h1>
+    <h1>💌 You have a letter waitingggg...</h1>
     <button id="startBtn">Tap to Begin</button>
   </div>
 
@@ -148,23 +178,21 @@
     <div id="letter"></div>
     <div id="heart">❤️</div>
 
-    <!-- Paintbrush icon (from SVGRepo) -->
+    <!-- Paintbrush icon -->
     <svg id="pen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
-  <path d="M20.5 54.6c.9-9.9 5.4-9.7 3-12c-2.3-2.3.3-.3-12.3 3.3c-4.5 1.3-6.4 5.3-6.7 8.8c-.1 1-.8 5.6-4.5 7c0 0 7.8.8 11.7 0c4-.3 8.4-2.3 8.8-7.1" fill="#3e4347"></path>
-  <path d="M11.6 45.7s2.8.3 2.4 2.4c-.4 2.1 2.2.1 2.3 1.7c.1 1.7 2.9.6 2.8 2.2c-.1 1.7 1.8 1 1.5 2.5c-.3 1.5-.7 3.2-1.9 4.2c-1.1 1 .4-4.8-.9-3.6c-1.3 1.2-1-2.9-2.8-2.1c-1.9.8-.3-3.3-2.4-2.4c-2.1.9-1.4-3-2.7-2.7c-1.3.4-1.1-.9-1.1-.9s1.1-.8 2.8-1.3" fill="#94989b"></path>
-  <path d="M4.6 53.8s-.7 6.3-4.6 7.8c0 0 8.4 1.1 12.4-.1c0 0 2-.7-.2-1.8s-.4-2-1.6-1.8c-1.2.1 1.2-1.7-.7-1.5c-1.9.2-.4-2.5-1.7-1.9c-1.3.7-.9-2-1.6-1.1c-.6.8-.4-.9-1-.7s-.8.2-1 1.1" fill="#ed4c5c"></path>
-  <path d="M10.8 59.9s-.4.3-1.1.6c-.3.1-.7.3-1.2.4c-.4 0-.8.1-1.3.1s-.9 0-1.4-.1c-.4-.1-.9-.2-1.2-.3c-.7-.2-1.1-.4-1.1-.4s.5-.2 1.2-.3c.7-.1 1.6-.2 2.5-.3c.9 0 1.8 0 2.5.1c.6.1 1.1.2 1.1.2" fill="#ffc7ce"></path>
-  <path d="M21.2 51.1l-6.4-6.4S42.6 13.9 52.2 4c2.6-2.7 7-2.7 9.7 0c2.7 2.7 2.7 7.1 0 9.7c-9.9 9.5-40.7 37.4-40.7 37.4" fill="#89664c"></path>
-  <path d="M20.2 50l-4.3-4.3S43.4 16.3 52.7 6.6c2.6-2.6 6.2-3.3 8-1.4c1.8 1.8 1.2 5.4-1.4 8C49.6 22.6 20.2 50 20.2 50" fill="#d3976e"></path>
-  <path fill="#c7d3d8" d="M13.894 44.98l3.465-3.466l7.07 7.071l-3.464 3.465z"></path>
-  <path fill="#ffffff" d="M15.167 46.25l3.465-3.464l4.525 4.526l-3.465 3.464z"></path>
-</svg>
-
-
+      <path d="M20.5 54.6c.9-9.9 5.4-9.7 3-12c-2.3-2.3.3-.3-12.3 3.3c-4.5 1.3-6.4 5.3-6.7 8.8c-.1 1-.8 5.6-4.5 7c0 0 7.8.8 11.7 0c4-.3 8.4-2.3 8.8-7.1" fill="#3e4347"></path>
+      <path d="M11.6 45.7s2.8.3 2.4 2.4c-.4 2.1 2.2.1 2.3 1.7c.1 1.7 2.9.6 2.8 2.2c-.1 1.7 1.8 1 1.5 2.5c-.3 1.5-.7 3.2-1.9 4.2c-1.1 1 .4-4.8-.9-3.6c-1.3 1.2-1-2.9-2.8-2.1c-1.9.8-.3-3.3-2.4-2.4c-2.1.9-1.4-3-2.7-2.7c-1.3.4-1.1-.9-1.1-.9s1.1-.8 2.8-1.3" fill="#94989b"></path>
+      <path d="M4.6 53.8s-.7 6.3-4.6 7.8c0 0 8.4 1.1 12.4-.1c0 0 2-.7-.2-1.8s-.4-2-1.6-1.8c-1.2.1 1.2-1.7-.7-1.5c-1.9.2-.4-2.5-1.7-1.9c-1.3.7-.9-2-1.6-1.1c-.6.8-.4-.9-1-.7s-.8.2-1 1.1" fill="#ed4c5c"></path>
+      <path d="M10.8 59.9s-.4.3-1.1.6c-.3.1-.7.3-1.2.4c-.4 0-.8.1-1.3.1s-.9 0-1.4-.1c-.4-.1-.9-.2-1.2-.3c-.7-.2-1.1-.4-1.1-.4s.5-.2 1.2-.3c.7-.1 1.6-.2 2.5-.3c.9 0 1.8 0 2.5.1c.6.1 1.1.2 1.1.2" fill="#ffc7ce"></path>
+      <path d="M21.2 51.1l-6.4-6.4S42.6 13.9 52.2 4c2.6-2.7 7-2.7 9.7 0c2.7 2.7 2.7 7.1 0 9.7c-9.9 9.5-40.7 37.4-40.7 37.4" fill="#89664c"></path>
+      <path d="M20.2 50l-4.3-4.3S43.4 16.3 52.7 6.6c2.6-2.6 6.2-3.3 8-1.4c1.8 1.8 1.2 5.4-1.4 8C49.6 22.6 20.2 50 20.2 50" fill="#d3976e"></path>
+      <path fill="#c7d3d8" d="M13.894 44.98l3.465-3.466l7.07 7.071l-3.464 3.465z"></path>
+      <path fill="#ffffff" d="M15.167 46.25l3.465-3.464l4.525 4.526l-3.465 3.464z"></path>
+    </svg>
 
     <!-- Background Music -->
     <audio id="background-music" loop autoplay>
-      <source src="your-music.mp3" type="audio/mpeg">
+      <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/%E9%83%81%E5%8F%AF%E5%94%AF%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E7%94%B5%E8%A7%86%E5%89%A7%E4%B8%BB%E9%A2%98%E6%9B%B2%E9%AB%98%E9%9F%B3%E8%B4%A8%E6%AD%8C%E8%AF%8D%E7%89%88Yisa%20Yu%20x%20%E5%8E%BB%E6%9C%89%E9%A3%8E%E7%9A%84%E5%9C%B0%E6%96%B9%E5%88%98%E4%BA%A6%E8%8F%B2Liu%20Yifei%E6%9D%8E%E7%8E%B0Li%20Xian%20%E4%B8%BB%E6%BC%94.mp3" type="audio/mpeg">
     </audio>
   </div>
 
@@ -193,17 +221,16 @@
       }
       wordSpan.textContent = word.slice(0, letterIndex);
 
-      // Move brush tip to end of current text:
+      // Move brush to baseline end of text
       const rect = wordSpan.getBoundingClientRect();
       const containerRect = letterDiv.getBoundingClientRect();
-
       pen.style.left = (rect.right - containerRect.left) + "px";
-      pen.style.top = (rect.top - containerRect.top + rect.height * 0.8) + "px"; // closer to baseline
+      pen.style.top = (rect.bottom - containerRect.top) + "px";
       pen.style.opacity = "1";
 
       setTimeout(() => {
         writeWord(wordSpan, word, letterIndex + 1, callback);
-      }, 150); // typing speed
+      }, 150);
     }
 
     function showSentence(sentence, callback) {
@@ -215,7 +242,7 @@
 
       function showNextWord() {
         if (wordIndex >= words.length) {
-          pen.style.opacity = "0"; // hide brush when done sentence
+          pen.style.opacity = "0"; // hide brush after finishing
           setTimeout(callback, 800);
           return;
         }
@@ -255,4 +282,3 @@
   </script>
 </body>
 </html>
-
