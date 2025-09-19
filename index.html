@@ -81,7 +81,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   z-index: 20;
   opacity: 0;
   transition: left 0.05s linear, top 0.05s linear;
-  transform: rotate(-20deg); /* rotate brush */
+  transform: rotate(-20deg);
 }
 
 #heart { font-size: 2.3rem; color: #ff4d6d; margin-top: 24px; animation: beat 1.2s infinite; text-align: center; }
@@ -102,7 +102,7 @@ audio { display: none; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggg...</h1>
+  <h1>💌 You have a letter waitingggg...</h1>
   <button id="startBtn">Tap to Begin</button>
 </div>
 
@@ -151,12 +151,12 @@ function writeLetter(span, letter, callback) {
   const rect = span.getBoundingClientRect();
   const containerRect = letterDiv.getBoundingClientRect();
 
-  // Adjust so brush tip touches the letter baseline
-  const offsetX = -6;
-  const offsetY = -24;
+  // Dynamic offset so brush tip touches each letter naturally
+  const offsetX = -span.offsetWidth * 0.1;
+  const offsetY = -span.offsetHeight * 0.6;
 
   pen.style.left = (rect.right - containerRect.left + offsetX) + 'px';
-  pen.style.top = (rect.bottom - containerRect.top + offsetY) + 'px';
+  pen.style.top = (rect.top - containerRect.top + offsetY + span.offsetHeight) + 'px';
   pen.style.opacity = '1';
 
   setTimeout(callback, 100);
