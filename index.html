@@ -139,7 +139,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -225,7 +225,7 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with realistic ripple
+// Start button click with delayed ripple effect
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
   const ripple = document.createElement("span");
@@ -233,19 +233,20 @@ startBtn.addEventListener("click", function(e){
 
   const maxDim = Math.max(window.innerWidth, window.innerHeight) * 3;
   ripple.style.width = ripple.style.height = maxDim + "px";
-
   ripple.style.left = (e.clientX - maxDim/2) + "px";
   ripple.style.top = (e.clientY - maxDim/2) + "px";
 
   document.body.appendChild(ripple);
-  setTimeout(()=>ripple.remove(), 3000);
 
-  document.getElementById("intro").style.display = 'none';
-  document.getElementById("container").style.display = 'block';
-  const audio = document.getElementById("background-music");
-  audio.play().catch(()=>console.log("Autoplay blocked"));
-
-  showAllText();
+  // Wait for ripple to finish before switching page
+  setTimeout(()=>{
+    ripple.remove();
+    document.getElementById("intro").style.display = 'none';
+    document.getElementById("container").style.display = 'block';
+    const audio = document.getElementById("background-music");
+    audio.play().catch(()=>console.log("Autoplay blocked"));
+    showAllText();
+  }, 3000); // matches ripple animation duration
 });
 </script>
 
