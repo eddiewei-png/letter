@@ -135,7 +135,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitingg...</h1>
+  <h1>💌 You have a letter waitinggg...</h1>
   <!-- Custom icon as start button -->
   <img id="startBtn" src="stella.png" alt="Start Icon" style="width:100px; height:100px;">
 </div>
@@ -219,7 +219,7 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Uniform-speed bloom ripple
+// Uniform-speed bloom ripple (slower)
 function createBloomRipples() {
   const numRipples = 3;
   const baseSize = Math.max(window.innerWidth, window.innerHeight);
@@ -229,9 +229,9 @@ function createBloomRipples() {
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
     ripple.style.width = ripple.style.height = baseSize + "px";
-    ripple.style.animation = `ripple-bloom 2s ease-out ${i*delayStep}s forwards`;
+    ripple.style.animation = `ripple-bloom 3s ease-out ${i*delayStep}s forwards`; // slower
     document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 2500);
+    setTimeout(() => ripple.remove(), 3500); // matches slower duration
   }
 }
 
@@ -251,7 +251,7 @@ startBtn.addEventListener("click", function() {
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 2500); // matches ripple duration
+  }, 3500); // matches slower ripple duration
 });
 </script>
 
