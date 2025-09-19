@@ -153,7 +153,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
     Open the Letter
@@ -239,18 +239,18 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Enhanced bloom ripple
+// Faster bloom ripple
 function createBloomRipples() {
   const numRipples = 5; 
-  const delayStep = 0.3;
+  const delayStep = 0.15; // shorter delay between ripples
 
   for (let i = 0; i < numRipples; i++) {
     const ripple = document.createElement("span");
     ripple.className = "water-ripple";
     ripple.style.width = ripple.style.height = 100 + i*60 + "px";
-    ripple.style.animation = `ripple-bloom 2.5s ease-out ${i*delayStep}s forwards`;
+    ripple.style.animation = `ripple-bloom 1.5s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 3500);
+    setTimeout(() => ripple.remove(), 2000);
   }
 }
 
@@ -258,7 +258,7 @@ const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function() {
   createBloomRipples();
 
-  // Show container after first ripple visible
+  // Show container after first ripple starts
   setTimeout(()=>{
     document.getElementById("intro").style.display = "none";
     const container = document.getElementById("container");
@@ -269,7 +269,7 @@ startBtn.addEventListener("click", function() {
     audio.play().catch(()=>console.log("Autoplay blocked"));
 
     showAllText();
-  }, 800); // delay slightly after ripple starts
+  }, 600); // slightly after ripple
 });
 </script>
 
