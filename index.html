@@ -49,6 +49,7 @@ body {
   align-items: center;
   background: none;
   animation: pulse 1.5s infinite;
+  z-index: 20;
 }
 #startBtn img {
   width: 100px;
@@ -64,18 +65,22 @@ body {
 
 /* Water ripple effect */
 .ripple {
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   background: rgba(255,105,180,0.3);
-  transform: scale(0);
+  width: 0;
+  height: 0;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%) scale(0);
   animation: ripple-animation 1.2s ease-out forwards;
   pointer-events: none;
-  z-index: 5;
+  z-index: 15;
 }
 @keyframes ripple-animation {
-  0% { transform: scale(0); opacity: 0.6; }
-  80% { transform: scale(15); opacity: 0.4; }
-  100% { transform: scale(20); opacity: 0; }
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
+  80% { transform: translate(-50%, -50%) scale(30); opacity: 0.4; }
+  100% { transform: translate(-50%, -50%) scale(35); opacity: 0; }
 }
 
 /* Letter page */
@@ -91,6 +96,7 @@ body {
   position: relative;
   opacity: 0;
   transition: opacity 1s ease-in;
+  z-index: 10;
 }
 
 #container.show { opacity: 1; }
@@ -231,31 +237,31 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click with big ripple
+// Start button click with full-page ripple
 const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", function(e){
   const rect = this.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
   const centerY = rect.top + rect.height/2;
 
-  for(let i=0;i<5;i++){ // 5 ripples
+  for(let i=0;i<5;i++){
     const ripple = document.createElement("span");
     ripple.className = 'ripple';
     ripple.style.left = centerX + 'px';
     ripple.style.top = centerY + 'px';
-    ripple.style.animationDelay = `${i*0.3}s`; // slower bloom
+    ripple.style.animationDelay = `${i*0.2}s`; 
     document.body.appendChild(ripple);
     ripple.addEventListener('animationend', ()=> ripple.remove());
   }
 
-  // Fade in letter page timed with last ripple start
+  // Fade in letter page slightly after first ripple starts
   setTimeout(()=>{
     document.getElementById("intro").style.display='none';
     document.getElementById("container").classList.add('show');
     const audio = document.getElementById("background-music");
     audio.play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 800); 
+  }, 300);
 });
 </script>
 
