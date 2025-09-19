@@ -98,11 +98,11 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   position: relative;
 }
 
-#letter p span.word {
+#letter p span.letter {
   display: inline-block;
-  white-space: nowrap;
+  white-space: pre;
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateY(3px);
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
@@ -114,7 +114,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
   pointer-events: none;
   background: radial-gradient(circle, rgba(255,105,180,0.8) 0%, rgba(255,105,180,0) 60%);
   opacity: 0;
-  transition: all 0.2s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .ink-trail.secondary {
@@ -137,7 +137,7 @@ h1 { font-size: 2rem; margin-bottom: 1rem; }
 <body>
 
 <div id="intro" class="full-screen">
-  <h1>💌 You have a letter waitinggg...</h1>
+  <h1>💌 You have a letter waitingg...</h1>
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon" style="width:80px; height:80px;">
   </button>
@@ -169,66 +169,59 @@ const sentences = [
 
 const letterDiv = document.getElementById("letter");
 
-// Create multiple ink trails for flowing effect
+// Create multiple ink trails
 const inkTrails = [];
 for(let i=0;i<5;i++){
   const ink = document.createElement("span");
   ink.classList.add("ink-trail");
-  if(i>2) ink.classList.add("secondary"); // smaller trailing dots
+  if(i>2) ink.classList.add("secondary");
   letterDiv.appendChild(ink);
   inkTrails.push(ink);
 }
 let trailIndex = 0;
 
-// Smooth ink-letter effect with soft flowing trail
-function writeWord(span, word, letterIndex = 0, callback) {
-  if(letterIndex > word.length){ callback(); return; }
-  span.textContent = word.slice(0, letterIndex);
-  span.style.opacity = '1';
-  span.style.transform = `translateY(${Math.random()*2-1}px)`; // slight jitter
-
-  const rect = span.getBoundingClientRect();
-  const containerRect = letterDiv.getBoundingClientRect();
-  // Update all ink trails
-  inkTrails.forEach((ink,i)=>{
-    ink.style.left = (rect.right - containerRect.left + Math.random()*2 -1) + 'px';
-    ink.style.top = (rect.top - containerRect.top + Math.random()*2 -1) + 'px';
-    ink.style.opacity = 1 - i*0.15; // fading trail
-    setTimeout(()=>{ ink.style.opacity = 0; }, 500 + i*50);
-  });
-
-  setTimeout(()=>writeWord(span, word, letterIndex+1, callback), 120); // faster writing
-}
-
-function showSentence(sentence, callback){
+// Smooth letter-by-letter animation
+async function writeSentence(sentence){
   const p = document.createElement("p");
   letterDiv.appendChild(p);
 
-  const words = sentence.split(" ");
-  let wordIndex = 0;
+  for(let i=0;i<sentence.length;i++){
+    const span = document.createElement("span");
+    span.classList.add("letter");
+    p.appendChild(span);
 
-  function showNextWord(){
-    if(wordIndex >= words.length){ setTimeout(callback, 400); return; }
-    const wordSpan = document.createElement("span");
-    wordSpan.classList.add("word");
-    p.appendChild(wordSpan);
+    // Add actual letter
+    span.textContent = sentence[i];
 
-    writeWord(wordSpan, words[wordIndex], 0, ()=>{
-      wordSpan.textContent += " ";
-      wordIndex++;
-      showNextWord();
+    // Ink trails follow
+    const rect = span.getBoundingClientRect();
+    const containerRect = letterDiv.getBoundingClientRect();
+    inkTrails.forEach((ink,j)=>{
+      ink.style.left = (rect.right - containerRect.left + (Math.random()*2-1)) + 'px';
+      ink.style.top = (rect.top - containerRect.top + (Math.random()*2-1)) + 'px';
+      ink.style.opacity = 1 - j*0.15;
+      setTimeout(()=>{ ink.style.opacity = 0; }, 600 + j*50);
     });
+
+    // Animate the letter
+    requestAnimationFrame(()=> {
+      span.style.opacity = 1;
+      span.style.transform = `translateY(${Math.random()*2-1}px)`;
+    });
+
+    await new Promise(r=>setTimeout(r, 150)); // slower for smooth writing
   }
-  showNextWord();
 }
 
+// Show all sentences sequentially
 async function showAllText(){
   for(let sentence of sentences){
-    await new Promise(r=>showSentence(sentence,r));
+    await writeSentence(sentence);
+    await new Promise(r=>setTimeout(r, 300));
   }
 }
 
-// Ripple effect from button
+// Ripple animation
 function createBloomRipples(e){
   const startBtn = document.getElementById("startBtn");
   const rect = startBtn.getBoundingClientRect();
@@ -244,9 +237,9 @@ function createBloomRipples(e){
     ripple.style.width = ripple.style.height = baseSize + "px";
     ripple.style.left = centerX + "px";
     ripple.style.top = centerY + "px";
-    ripple.style.animation = `ripple-bloom 4.5s ease-out ${i*delayStep}s forwards`;
+    ripple.style.animation = `ripple-bloom 3s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
-    setTimeout(()=>ripple.remove(), 4800 + i*delayStep*1000);
+    setTimeout(()=>ripple.remove(), 3500 + i*delayStep*1000);
 
     if(i === numRipples-1){
       setTimeout(()=>{
