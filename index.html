@@ -237,7 +237,7 @@ function createBloomRipples(e){
     ripple.style.width = ripple.style.height = baseSize + "px";
     ripple.style.left = centerX + "px";
     ripple.style.top = centerY + "px";
-    ripple.style.animation = `ripple-bloom 4s ease-out ${i*delayStep}s forwards`;
+    ripple.style.animation = `ripple-bloom 6s ease-out ${i*delayStep}s forwards`;
     document.body.appendChild(ripple);
     setTimeout(()=>ripple.remove(), 3500 + i*delayStep*1000);
 
@@ -261,4 +261,5 @@ document.getElementById("startBtn").addEventListener("click", createBloomRipples
 </script>
 </body>
 </html>
+
 
