@@ -54,6 +54,16 @@ body, html {
   100% { transform: scale(1); drop-shadow: 0 0 0 rgba(255,105,180,0.6); }
 }
 
+  /* Fade out animation */
+.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.8); }
+}
+
 /* Ripple effect */
 .ripple {
   position: fixed;
@@ -211,18 +221,28 @@ document.getElementById("startBtn").addEventListener("click", function(e){
   }
 
   // Hide button and show letter during last ripple
-  setTimeout(()=>{
+  /*setTimeout(()=>{
     this.style.display='none';
     const container = document.getElementById("container");
     container.classList.add('show');
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 1200); // fade in during last ripple
+  }, 1200); // fade in during last ripple */
+  setTimeout(()=>{
+  this.classList.add('fade-out');
+  setTimeout(()=> this.style.display='none', 1000); // wait for fade-out to finish
+
+  const container = document.getElementById("container");
+  container.classList.add('show');
+  document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+  showAllText();
+}, 1200); // trigger during last ripple
 });
 </script>
 
 </body>
 </html>
+
 
 
 
