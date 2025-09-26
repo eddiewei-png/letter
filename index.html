@@ -57,19 +57,23 @@ body, html {
   /* Click Here hint below start button */
 #click-hint {
   position: absolute;
-  top: 40%; /* below start button */
+  top: 40%; /* adjust to sit above the start button */
   left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 2.1rem;
-  color: #ff69b4;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;           /* bigger font */
+  color: #ff69b4;            
   text-align: center;
-  pointer-events: none;
-  animation: beat-glow 1.2s infinite;
-  text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493; /* glowing effect */
+  animation: beat 1.2s infinite;
+  cursor: pointer;
   z-index: 101;
 }
 
+#click-hint br {
+  line-height: 1.2; /* adjust spacing between lines */
+}
+  
 @keyframes beat-glow {
   0%, 100% { transform: translateX(-50%) scale(1); text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4; }
   50% { transform: translateX(-50%) scale(1.2); text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4; }
@@ -159,7 +163,9 @@ body, html {
 </button>
 
 <!-- Indicator -->
-  <div id="click-hint">Click Here ↓</div>
+  <div id="click-hint">Touch here
+  <br>↓
+  </div>
 
 <!-- Letter page -->
 <div id="container">
@@ -341,6 +347,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
