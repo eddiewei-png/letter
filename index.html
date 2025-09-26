@@ -74,12 +74,21 @@ body, html {
   z-index: 100;
 }
 
-  .start-container {
+.start-wrapper {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
-  flex-direction: column;  /* stack vertically */
-  align-items: center;     /* center horizontally */
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 12px;               /* spacing between text and icon */
+}
+
+.start-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* spacing between text and icon */
 }
 
 /* Fade out */
@@ -162,11 +171,15 @@ body, html {
 <body>
 
 <!-- Start button with hint -->
-<div class="start-container">
-  <div id="click-hint">
-    Click Here <br> ↓
+<div class="start-wrapper">
+  <div class="start-container">
+    <div id="click-hint">
+      Click Here <br> ↓
+    </div>
+    <button id="startBtn">
+      <img src="your-icon.png" alt="Start">
+    </button>
   </div>
-  <button id="startBtn"><img src="stella.png" alt="Start Icon"></button>
 </div>
   
 <!-- Letter page -->
@@ -287,6 +300,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 </script>
 </body>
 </html>
+
 
 
 
