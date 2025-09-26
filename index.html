@@ -38,8 +38,8 @@ body, html {
   opacity: 0;
   pointer-events: none;
   width: 90vw;                /* scale with screen width */
-  max-width: 315px;           /* don’t exceed original size */
-  aspect-ratio: 315 / 557;    /* keeps the image proportion correct */
+  max-width: 360px;           /* don’t exceed original size */
+  aspect-ratio: 360 / 650;    /* keeps the image proportion correct */
   margin: 20px auto;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
@@ -66,7 +66,7 @@ body, html {
 }
 #letter-wrapper::-webkit-scrollbar { display:none; }
 
-#letter { font-family:'Great Vibes', cursive; font-size:1.8rem; color:#ff69b4; white-space:pre-wrap; position:relative; }
+#letter { font-family:'Great Vibes', cursive; font-size:1.2rem; color:#ff69b4; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
 #letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
 
@@ -96,7 +96,6 @@ body, html {
   <div id="letter-wrapper">
     <h1>Sample Letter</h1>
     <div id="letter"></div>
-    <div id="heart"><img src="stellalou.png" alt="Heart Icon"></div>
   </div>
   <audio id="background-music" loop>
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/YisaYu-LiXian.mp3" type="audio/mpeg">
@@ -210,6 +209,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
