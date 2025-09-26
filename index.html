@@ -37,14 +37,15 @@ body, html {
 #container {
   opacity: 0;
   pointer-events: none;
-  width: 400px;       /* fixed width */
-  height: 500px;      /* fixed height matching your background image */
+  width: 90vw;                /* scale with screen width */
+  max-width: 315px;           /* don’t exceed original size */
+  aspect-ratio: 315 / 557;    /* keeps the image proportion correct */
   margin: 20px auto;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
 
-  background: url("stellalou-letter-bg.png") no-repeat top center;
-  background-size: 400px 500px;  /* match container size exactly */
+  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background-size: 100% 100%;  /* always fill the container */
   background-color: transparent;
 
   display: flex;
@@ -209,5 +210,6 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
