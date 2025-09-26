@@ -32,7 +32,7 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px; /* spacing between text and icon */
+  gap: 12px;
   text-align: center;
 }
 
@@ -54,14 +54,14 @@ body, html {
   cursor: pointer;
   border: none;
   background: none;
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
 }
 #startBtn img {
-  width: 150%;
-  height: 150%;
+  width: 160%;
+  height: 160%;
   border-radius: 50%;
-  filter: drop-shadow(0 0 10px rgba(255,105,180,0.7));
+  filter: drop-shadow(0 0 12px rgba(255,105,180,0.7));
 }
 
 /* Heart icon */
@@ -76,7 +76,9 @@ body, html {
 }
 
 /* Fade out */
-.fade-out { fadeOut 1s forwards ease-in-out; }
+.fade-out {
+  animation: fadeOut 1s forwards ease-in-out;
+}
 @keyframes fadeOut {
   from { opacity: 1; transform: scale(1); }
   to   { opacity: 0; transform: scale(0.8); }
@@ -250,11 +252,12 @@ async function showAllText(){
 }
 
 // Start button click
-document.getElementById("startBtn").addEventListener("click", function(e){
+document.getElementById("startBtn").addEventListener("click", function(){
   const container = document.getElementById("container");
   const startContainer = document.getElementById("start-container");
-  this.disabled = true;                  // disable button
-  this.style.pointerEvents = "none";     // block all further clicks
+
+  this.disabled = true;
+  this.style.pointerEvents = "none";
 
   // ripples
   const rect = this.getBoundingClientRect();
@@ -270,18 +273,15 @@ document.getElementById("startBtn").addEventListener("click", function(e){
     ripple.addEventListener('animationend', ()=> ripple.remove());
   }
 
-  // hide hint + button, show letter
+  // fade out button + text
   startContainer.classList.add('fade-out');
   setTimeout(() => {
     startContainer.style.display = 'none';
     container.classList.add('show');
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-    }, 1000); // wait for fade to finish
-  }, 1000);
+  }, 1000); // wait for fade to finish
 });
 </script>
 </body>
 </html>
-
-
