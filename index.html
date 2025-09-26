@@ -294,7 +294,7 @@ async function showSentence(lines, delay=200){
 }*/
 async function showAllText(){
   for(let s=0; s<sentences.length; s++){
-    await showSentence(sentences[s], 200);
+    await showSentence(sentences[s], 400);
     await new Promise(r=>setTimeout(r, 300));
   }
   inkTrails.forEach(ink=>ink.style.display='none');
@@ -340,6 +340,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
