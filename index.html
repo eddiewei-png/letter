@@ -57,17 +57,29 @@ body, html {
   /* Click Here hint below start button */
 #click-hint {
   position: absolute;
-  top: 40%; /* adjust to sit above the start button */
   left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;           /* bigger font */
-  color: #ff69b4;            
+  bottom: 160px; /* place above the button */
+  transform: translateX(-50%);
   text-align: center;
-  font-weight: bold;
-  text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493; /* glowing effect */
-  animation: beat 1.2s infinite;
-  cursor: pointer;
   z-index: 101;
+  cursor: pointer;
+}
+
+.hint-text {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff69b4;
+  text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493; /* glowing */
+  animation: beat 1.2s infinite;
+}
+
+.hint-arrow {
+  display: block;
+  font-size: 2.5rem;  /* bigger arrow */
+  color: #ff1493;
+  text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493;
+  animation: beat 1.2s infinite;
 }
 
 #click-hint br {
@@ -163,9 +175,10 @@ body, html {
 </button>
 
 <!-- Indicator -->
-  <div id="click-hint">Touch here
-  <br>↓
-  </div>
+  <div id="click-hint">
+  <span class="hint-text">Click Here</span>
+  <span class="hint-arrow">↓</span>
+</div>
 
 <!-- Letter page -->
 <div id="container">
@@ -347,6 +360,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
