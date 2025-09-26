@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My project</title>
+<title>Letter Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 body, html {
@@ -15,7 +15,7 @@ body, html {
   overflow: hidden;
 }
 
-/* Start wrapper */
+/* Start button wrapper */
 .start-wrapper {
   position: absolute;
   top: 50%; left: 50%;
@@ -42,20 +42,10 @@ body, html {
   animation: beat 1.2s infinite;
   pointer-events: none;
 }
-@keyframes beat {
-  0%,100%{ transform: scale(1);}
-  50%{ transform: scale(1.15);}
-}
+@keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 
 /* Wiggle animation */
-@keyframes wiggle {
-  0%,100%{ transform: rotate(0deg);}
-  15%{ transform: rotate(-8deg);}
-  30%{ transform: rotate(6deg);}
-  45%{ transform: rotate(-6deg);}
-  60%{ transform: rotate(5deg);}
-  75%{ transform: rotate(-3deg);}
-}
+@keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);}}
 
 /* Start button */
 #startBtn {
@@ -74,80 +64,50 @@ body, html {
 }
 
 /* Fade out */
-.fade-out {
-  animation: fadeOut 1.8s forwards ease-in-out;
-}
-@keyframes fadeOut {
-  from { opacity:1; transform: scale(1);}
-  to { opacity:0; transform: scale(0.8);}
-}
+.fade-out {animation: fadeOut 1.8s forwards ease-in-out;}
+@keyframes fadeOut {from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(0.8);}}
 
-/* Ripple effect */
-.ripple {
-  position: fixed;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%);
-  width: 40px;
-  height: 40px;
-  transform: translate(-50%, -50%) scale(1);
-  animation: ripple-anim 4s ease-out forwards;
-  pointer-events: none;
-  z-index: 9999;
-}
-@keyframes ripple-anim {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-  100% { transform: translate(-50%, -50%) scale(80); opacity: 0; }
-}
-  
 /* Letter container */
 #container {
   opacity: 0;
   pointer-events: none;
   position: relative;
-  width: 90%;              /* container width relative to screen */
-  max-width: 700px;        /* optional max width */
+  width: 90%;
+  max-width: 700px;
   margin: 20px auto;
   border-radius: 12px;
   overflow: hidden;
   z-index: 10;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
 
-  /* Background image */
-  background: url("stellalou-letter-bg.png") no-repeat top center;
-  background-size: 100% auto;   /* full width, height adjusts automatically */
+  /* Background image fully visible */
+  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background-size: contain;  /* full image always visible */
   background-color: transparent;
   text-align: left;
 }
 
-/* Inner scrollable wrapper */
+/* Scrollable letter wrapper */
 #letter-wrapper {
-  max-height: 80vh;          /* optional: limit scroll area height */
+  max-height: 80vh;  /* scrollable if content is taller than viewport */
   overflow-y: auto;
   padding: 40px;
   box-sizing: border-box;
-
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE 10+ */
+  scrollbar-width: none;   /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
-#letter-wrapper::-webkit-scrollbar {
-  display: none;               /* Chrome, Safari, Opera */
-}
+#letter-wrapper::-webkit-scrollbar {display:none;} /* Chrome/Safari/Opera */
 
 /* Letter text */
-#letter { 
-  font-family: 'Great Vibes', cursive; 
-  font-size: 1.8rem; 
-  color: #ff69b4; 
-  white-space: pre-wrap; 
-  position: relative; 
+#letter {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  color: #ff69b4;
+  white-space: pre-wrap;
+  position: relative;
 }
 #letter p { margin: 1.2em 0; position: relative; }
-#letter p span.letter { 
-  display: inline-block; 
-  opacity: 0; 
-  transform: translateY(5px); 
-  transition: opacity 0.15s ease, transform 0.15s ease; 
-}
+#letter p span.letter { display: inline-block; opacity: 0; transform: translateY(5px); transition: opacity 0.15s ease, transform 0.15s ease; }
 
 /* Ink trail */
 .ink-trail {
@@ -164,14 +124,13 @@ body, html {
 /* Heart icon */
 #heart { text-align: center; margin-top: 24px; }
 #heart img { width: 80px; height: 80px; animation: beat-img 1.2s infinite; }
-@keyframes beat-img { 0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
+@keyframes beat-img {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 
-#container.show { opacity: 1; pointer-events: auto; }
 </style>
 </head>
 <body>
 
-<!-- Start button -->
+<!-- Start -->
 <div class="start-wrapper">
   <div class="start-container" id="start-container">
     <div id="click-hint">Click Here <br> ↓</div>
@@ -179,7 +138,7 @@ body, html {
   </div>
 </div>
 
-<!-- Letter page -->
+<!-- Letter -->
 <div id="container">
   <div id="letter-wrapper">
     <h1>Sample Letter</h1>
@@ -192,11 +151,11 @@ body, html {
 </div>
 
 <script>
-// Sample sentences
+// Sample letter lines
 const sentences = [
-  ["Line 1 行一", "Line 1 English"],
-  ["Line 2 行二行二行二", "Line 2 English"],
-  ["Line 3 行三", "Line 3 English"],
+  ["Line 1 行一","Line 1 English"],
+  ["Line 2 行二行二行二","Line 2 English"],
+  ["Line 3 行三","Line 3 English"],
   ["Line 4 行四"],
   ["Line 5 行五"],
   ["[Your Name]"]
@@ -212,65 +171,65 @@ for(let i=0;i<3;i++){
 }
 let trailIndex = 0;
 
-function writeLetter(span, letter) {
-  return new Promise(resolve => {
+function writeLetter(span, letter){
+  return new Promise(resolve=>{
     span.textContent += letter;
-    requestAnimationFrame(() => {
-      span.style.opacity = '1';
+    requestAnimationFrame(()=>{
+      span.style.opacity='1';
       const containerRect = letterDiv.getBoundingClientRect();
       const range = document.createRange();
-      range.setStart(span.firstChild || span, span.textContent.length - 1);
-      range.setEnd(span.firstChild || span, span.textContent.length);
+      range.setStart(span.firstChild||span,span.textContent.length-1);
+      range.setEnd(span.firstChild||span,span.textContent.length);
       const rect = range.getBoundingClientRect();
-      const ink = inkTrails[trailIndex % inkTrails.length];
-      ink.style.height = rect.height + 'px';
-      ink.style.width  = rect.width / 2 + 'px';
-      ink.style.left = (rect.right - containerRect.left) + 'px';
-      ink.style.top  = (rect.top - containerRect.top) + 'px';
-      ink.style.opacity = 1;
+      const ink = inkTrails[trailIndex%inkTrails.length];
+      ink.style.height = rect.height+'px';
+      ink.style.width = rect.width/2+'px';
+      ink.style.left = (rect.right-containerRect.left)+'px';
+      ink.style.top = (rect.top-containerRect.top)+'px';
+      ink.style.opacity=1;
       trailIndex++;
-      setTimeout(() => ink.style.opacity = 0, 400);
+      setTimeout(()=>ink.style.opacity=0,400);
     });
     resolve();
   });
 }
 
 async function showSentence(lines, delay=200){
-  const pContainer = document.createElement("p");
+  const pContainer=document.createElement("p");
   letterDiv.appendChild(pContainer);
-  if (!Array.isArray(lines)) lines = [lines];
-  const spans = lines.map(line => {
-    const span = document.createElement("span");
-    span.style.display = 'block';
-    span.style.marginBottom = '0.2em';
+  if(!Array.isArray(lines)) lines=[lines];
+  const spans=lines.map(line=>{
+    const span=document.createElement("span");
+    span.style.display='block';
+    span.style.marginBottom='0.2em';
     pContainer.appendChild(span);
-    return { span, text: line };
+    return {span,text:line};
   });
-  const maxLength = Math.max(...lines.map(l => l.length));
-  for (let i = 0; i < maxLength; i++) {
-    for (let { span, text } of spans) {
-      if (i < text.length) await writeLetter(span, text[i]);
+  const maxLength=Math.max(...lines.map(l=>l.length));
+  for(let i=0;i<maxLength;i++){
+    for(let {span,text} of spans){
+      if(i<text.length) await writeLetter(span,text[i]);
     }
-    await new Promise(r => setTimeout(r, delay));
+    await new Promise(r=>setTimeout(r,delay));
     letterDiv.parentElement.scrollTop = letterDiv.parentElement.scrollHeight;
   }
 }
 
 async function showAllText(){
-  for(let s=0; s<sentences.length; s++){
-    await showSentence(sentences[s], 300);
-    await new Promise(r=>setTimeout(r, 300));
+  for(let s=0;s<sentences.length;s++){
+    await showSentence(sentences[s],300);
+    await new Promise(r=>setTimeout(r,300));
   }
   inkTrails.forEach(ink=>ink.style.display='none');
 }
 
-// Start button click
-document.getElementById("startBtn").addEventListener("click", function(){
+// Start button
+document.getElementById("startBtn").addEventListener("click",function(){
   const container = document.getElementById("container");
   const startContainer = document.getElementById("start-container");
 
-  this.disabled = true;
-  this.style.pointerEvents = "none";
+  this.disabled=true;
+  this.style.pointerEvents="none";
 
   // Ripple effect
   const rect = this.getBoundingClientRect();
@@ -278,25 +237,23 @@ document.getElementById("startBtn").addEventListener("click", function(){
   const centerY = rect.top + rect.height/2;
   for(let i=0;i<5;i++){
     const ripple = document.createElement("span");
-    ripple.className = 'ripple';
-    ripple.style.left = centerX+'px';
-    ripple.style.top = centerY+'px';
-    ripple.style.animationDelay = `${i*0.3}s`;
+    ripple.className='ripple';
+    ripple.style.left=centerX+'px';
+    ripple.style.top=centerY+'px';
+    ripple.style.animationDelay=`${i*0.3}s`;
     document.body.appendChild(ripple);
-    ripple.addEventListener('animationend', ()=> ripple.remove());
+    ripple.addEventListener('animationend',()=>ripple.remove());
   }
 
-  // Fade out start button + hint
+  // Fade out start button
   startContainer.classList.add('fade-out');
-  setTimeout(() => {
-    startContainer.style.display = 'none';
+  setTimeout(()=>{
+    startContainer.style.display='none';
     container.classList.add('show');
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
-  }, 1800); // match fade-out duration
+  },1800);
 });
 </script>
 </body>
 </html>
-
-
