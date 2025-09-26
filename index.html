@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My project</title>
+<title>Letter Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 body, html {
-  margin: 0; padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #fff0f5;
-  overflow: hidden;
+  margin:0; padding:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#fff0f5;
+  overflow:hidden;
 }
 
 /* Start wrapper */
 .start-wrapper {
-  position: absolute; top:50%; left:50%;
-  transform: translate(-50%,-50%);
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   z-index:100;
 }
@@ -33,43 +33,33 @@ body, html {
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);}}
 
-/* Letter container (matches background image) */
+/* Letter container */
 #container {
-  opacity: 0;
-  pointer-events: none;
-  width: 90%;
-  max-width: 700px;
-  margin: 0 auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
-  
-  background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: contain; /* scale to fit */
-  background-color: transparent;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;  /* ensure content flows down */
-  transition: opacity 1s ease-in;
-  z-index: 10;
-  min-height: 90vh;  /* ensure enough height for the image */
+  opacity:0;
+  pointer-events:none;
+  width:90%;
+  max-width:700px;
+  margin:20px auto;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(250,50,120,0.2);
+  background:url("stellalou-letter-bg.png") no-repeat center top;
+  background-size:contain;
+  display:flex; flex-direction:column; justify-content:flex-start;
+  transition:opacity 1s ease-in;
+  z-index:10;
+  min-height:90vh;
 }
+#container.show { opacity:1; pointer-events:auto; }
 
-#container.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-  
 #letter-wrapper {
-  flex: 1;               /* fill container */
-  overflow-y: auto;
-  padding: 40px;
-  box-sizing: border-box;
-  scrollbar-width: none;
+  flex:1; 
+  overflow-y:auto;
+  padding:40px;
+  box-sizing:border-box;
+  scrollbar-width:none;
 }
-#letter-wrapper::-webkit-scrollbar { display: none; }
-  
-/* Letter text */
+#letter-wrapper::-webkit-scrollbar { display:none; }
+
 #letter { font-family:'Great Vibes', cursive; font-size:1.8rem; color:#ff69b4; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
 #letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
@@ -89,7 +79,6 @@ body, html {
 </head>
 <body>
 
-<!-- Start button -->
 <div class="start-wrapper">
   <div class="start-container" id="start-container">
     <div id="click-hint">Click Here <br> ↓</div>
@@ -97,7 +86,6 @@ body, html {
   </div>
 </div>
 
-<!-- Letter page -->
 <div id="container">
   <div id="letter-wrapper">
     <h1>Sample Letter</h1>
@@ -111,17 +99,17 @@ body, html {
 
 <script>
 // Sample sentences
-const sentences = [
+const sentences=[
   ["Line 1 行一","Line 1 English"],
-  ["Line 2 行二行二行二","Line 2 English"],
+  ["Line 2 行二行二行二","Line 2 English 行二行二行二","Line 2 English 行二行二行二","Line 2 English"],
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四"],
   ["Line 5 行五"],
   ["[Your Name]"]
 ];
 
-const letterDiv = document.getElementById("letter");
-const inkTrails = [];
+const letterDiv=document.getElementById("letter");
+const inkTrails=[];
 for(let i=0;i<3;i++){
   const ink=document.createElement("span");
   ink.classList.add("ink-trail");
@@ -167,7 +155,7 @@ async function showSentence(lines,delay=200){
   const maxLength=Math.max(...lines.map(l=>l.length));
   for(let i=0;i<maxLength;i++){
     for(let {span,text} of spans){
-      if(i<text.length) await writeLetter(span,text);
+      if(i<text.length) await writeLetter(span,text[i]);
     }
     await new Promise(r=>setTimeout(r,delay));
     letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
@@ -208,13 +196,11 @@ document.getElementById("startBtn").addEventListener("click",function(){
   startContainer.classList.add('fade-out');
   setTimeout(()=>{
     startContainer.style.display='none';
-    container.classList.add('show');
+    container.classList.add('show');   // show container first
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
-    showAllText();
+    showAllText();                     // then start text animation
   },1800);
 });
 </script>
 </body>
 </html>
-
-
