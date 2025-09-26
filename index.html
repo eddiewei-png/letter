@@ -51,25 +51,25 @@ body, html {
 
   /* Click Here hint below start button */
 #click-hint {
-  position: absolute;
-  left: 50%;
-  bottom: 160px; /* place above the button */
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 101;
-  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.2rem;
+  color: #ff69b4;
+  text-shadow: 0 0 8px #ff69b4;
+  margin-top: 12px;
+  animation: beat 1.2s infinite;
+}
+
+ @keyframes beat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 
 /* Parent container centers everything */
 #start-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px; /* space between hint and button */
+  text-align: center;
   z-index: 100;
 }
 
@@ -100,7 +100,6 @@ body, html {
   0%, 100% { transform: translateX(-50%) scale(1); text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4; }
   50% { transform: translateX(-50%) scale(1.2); text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4; }
 }
-
 
   /* Fade out animation */
 .fade-out {
@@ -180,14 +179,13 @@ body, html {
 <body>
 
 <!-- Start button -->
-<div id="start-container">
-  <div id="click-hint">
-    <span class="hint-text">Click Here</span>
-    <span class="hint-arrow">↓</span>
-  </div>
+<<div id="start-container">
   <button id="startBtn">
     <img src="stella.png" alt="Start Icon">
   </button>
+  <div id="click-hint">
+    Click Here<br>⬇
+  </div>
 </div>
 
 <!-- Letter page -->
@@ -333,9 +331,9 @@ async function showAllText(){
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click", function(e){
-  const rect = this.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  const centerY = rect.top + rect.height/2;
+  const container = document.getElementById("container");
+  const startContainer = document.getElementById("start-container");
+  const hint = document.getElementById("click-hint");
 
   // Create 5 ripples
   for(let i=0;i<5;i++){
@@ -356,20 +354,27 @@ document.getElementById("startBtn").addEventListener("click", function(e){
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
   }, 1200); // fade in during last ripple */
-  setTimeout(()=>{
-  this.classList.add('fade-out');
-  setTimeout(()=> this.style.display='none', 1000); // wait for fade-out to finish
+setTimeout(() => {
+    // Fade out hint slightly before button
+    hint.classList.add('fade-out');
 
-  const container = document.getElementById("container");
-  container.classList.add('show');
-  document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
-  showAllText();
-}, 1200); // trigger during last ripple
+    setTimeout(() => {
+      // Then fade out the whole start container
+      startContainer.classList.add('fade-out');
+      setTimeout(() => startContainer.style.display = 'none', 1000);
+
+      // Show letter container and play music
+      container.classList.add('show');
+      document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+      showAllText();
+    }, 200); // 0.2s after hint starts fading
+  }, 1200); // after ripples
 });
 </script>
 
 </body>
 </html>
+
 
 
 
