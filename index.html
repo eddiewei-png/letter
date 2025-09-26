@@ -74,6 +74,14 @@ body, html {
   z-index: 100;
 }
 
+  .start-container {
+  display: flex;
+  flex-direction: column;  /* stack vertically */
+  align-items: center;     /* center horizontally */
+  justify-content: center;
+  gap: 12px;               /* spacing between text and icon */
+}
+
 /* Fade out */
 .fade-out { animation: fadeOut 1s forwards; }
 @keyframes fadeOut {
@@ -154,11 +162,13 @@ body, html {
 <body>
 
 <!-- Start button with hint -->
-<div id="start-container">
-  <div id="click-hint">Click Here<br>⬇</div>
+<div class="start-container">
+  <div id="click-hint">
+    Click Here <br> ↓
+  </div>
   <button id="startBtn"><img src="stella.png" alt="Start Icon"></button>
 </div>
-
+  
 <!-- Letter page -->
 <div id="container">
   <h1>Sample letter</h1>
@@ -277,6 +287,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 </script>
 </body>
 </html>
+
 
 
 
