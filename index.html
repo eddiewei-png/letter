@@ -35,19 +35,24 @@ body, html {
 
 /* Letter container */
 #container {
-  opacity:0;
-  pointer-events:none;
-  width:90%;
-  max-width:700px;
-  margin:20px auto;
-  border-radius:12px;
-  box-shadow:0 4px 15px rgba(250,50,120,0.2);
-  background:url("stellalou-letter-bg.png") no-repeat center top;
-  background-size:contain;
-  display:flex; flex-direction:column; justify-content:flex-start;
-  transition:opacity 1s ease-in;
-  z-index:10;
-  min-height:90vh;
+  opacity: 0;
+  pointer-events: none;
+  width: 700px;       /* fixed width */
+  height: 900px;      /* fixed height matching your background image */
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+
+  background: url("stellalou-letter-bg.png") no-repeat top center;
+  background-size: 700px 900px;  /* match container size exactly */
+  background-color: transparent;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: opacity 1s ease-in;
+  z-index: 10;
+  overflow: hidden;
 }
 #container.show { opacity:1; pointer-events:auto; }
 
@@ -101,7 +106,7 @@ body, html {
 // Sample sentences
 const sentences=[
   ["Line 1 行一","Line 1 English"],
-  ["Line 2 行二行二行二","Line 2 English 行二行二行二","Line 2 English 行二行二行二","Line 2 English"],
+  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四"],
   ["Line 5 行五"],
@@ -204,3 +209,4 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
