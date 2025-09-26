@@ -35,34 +35,34 @@ body, html {
 
 /* Letter container (matches background image) */
 #container {
-  opacity:0;
-  pointer-events:none;
-  position:relative;
-  width:90%;
-  max-width:700px;
-  margin:20px auto;
-  border-radius:12px;
-  overflow:hidden;
-  z-index:10;
-  box-shadow:0 4px 15px rgba(250,50,120,0.2);
-
-  background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: contain;
+  opacity: 0;
+  pointer-events: none;
+  width: 90%;
+  max-width: 700px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+  
+  background: url("stellalou-letter-bg.png") no-repeat center center;
+  background-size: cover; /* fill container */
   background-color: transparent;
+  
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 1s ease-in;
+  z-index: 10;
 }
 
-/* Letter content scrollable inside container */
 #letter-wrapper {
-  position:absolute;
-  top:0; left:0; right:0; bottom:0;
-  overflow-y:auto;
-  padding:40px;
-  box-sizing:border-box;
-  scrollbar-width:none; /* Firefox */
-  -ms-overflow-style:none; /* IE 10+ */
+  flex: 1;               /* fill container */
+  overflow-y: auto;
+  padding: 40px;
+  box-sizing: border-box;
+  scrollbar-width: none;
 }
-#letter-wrapper::-webkit-scrollbar { display:none; } /* Chrome/Safari/Opera */
-
+#letter-wrapper::-webkit-scrollbar { display: none; }
+  
 /* Letter text */
 #letter { font-family:'Great Vibes', cursive; font-size:1.8rem; color:#ff69b4; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
@@ -210,3 +210,4 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
