@@ -112,13 +112,14 @@ body, html {
 }
 
 /* Letter container */
+/* Letter container */
 #container {
   opacity: 0;
   pointer-events: none;
   position: relative;
   max-width: 90%;
   width: 700px;
-  height: 80vh;
+  height: 80vh; /* fixed container height */
   margin: 80px auto;
   border-radius: 12px;
   padding: 40px;
@@ -126,23 +127,31 @@ body, html {
   transition: opacity 1s ease-in;
   text-align: left;
   z-index: 10;
-  overflow-y: auto;
+  overflow: hidden; /* prevent text from overflowing the background */
 
-  /* Letter page background */
-  background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: cover;   /* show full image without cropping */
+  /* Background image */
+  background-image: url("stellalou-letter-bg.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover; /* fill container without stretching */
+  background-color: transparent; /* remove any white */
 }
 #container::-webkit-scrollbar { display: none; }
 #container { -ms-overflow-style: none; scrollbar-width: none; }
 #container.show { opacity: 1; pointer-events: auto; }
 
-/* Letter text */
-#letter { 
-  font-family: 'Georgia', serif; 
-  font-size: 1.8rem; 
-  color: #ff69b4; 
-  white-space: pre-wrap; 
-  position: relative; 
+/* Scrollable letter text */
+#letter {
+  position: relative;
+  z-index: 1; /* make sure text is above overlay/background */
+  max-height: 100%;
+  overflow-y: auto; /* allow scrolling if text is long */
+  font-family: 'Georgia', serif;
+  font-size: 1.8rem;
+  color: #ff69b4;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  padding-right: 8px; /* space for scrollbar */
 }
 #letter p { margin: 1.2em 0; position: relative; }
 #letter p span.letter { 
@@ -299,6 +308,7 @@ document.getElementById("startBtn").addEventListener("click", function(){
 </script>
 </body>
 </html>
+
 
 
 
