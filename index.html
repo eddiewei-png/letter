@@ -253,6 +253,8 @@ async function showAllText(){
 document.getElementById("startBtn").addEventListener("click", function(e){
   const container = document.getElementById("container");
   const startContainer = document.getElementById("start-container");
+  this.disabled = true;                  // disable button
+  this.style.pointerEvents = "none";     // block all further clicks
 
   // ripples
   const rect = this.getBoundingClientRect();
@@ -280,3 +282,4 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 </script>
 </body>
 </html>
+
