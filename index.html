@@ -39,21 +39,27 @@ body, html {
   pointer-events: none;
   width: 90%;
   max-width: 700px;
-  margin: 20px auto;
+  margin: 0 auto;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
   
-  background: url("stellalou-letter-bg.png") no-repeat center center;
-  background-size: cover; /* fill container */
+  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background-size: contain; /* scale to fit */
   background-color: transparent;
-  
+
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  justify-content: flex-start;  /* ensure content flows down */
   transition: opacity 1s ease-in;
   z-index: 10;
+  min-height: 90vh;  /* ensure enough height for the image */
 }
 
+#container.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+  
 #letter-wrapper {
   flex: 1;               /* fill container */
   overflow-y: auto;
@@ -210,4 +216,5 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
