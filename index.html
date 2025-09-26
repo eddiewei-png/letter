@@ -118,19 +118,19 @@ body, html {
   position: relative;
   max-width: 90%;
   width: 700px;
-  height: 80vh;
+  height: 80vh; /* fixed paper height */
   margin: 80px auto;
-  background: #ffffffee;
   border-radius: 12px;
-  padding: 24px;
+  padding: 40px; /* more padding so text doesn’t touch edges */
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
   transition: opacity 1s ease-in;
   text-align: left;
   z-index: 10;
   overflow-y: auto;
-    /* Letter page background */
-  background: url("stellalou-letter-bg.jpg") no-repeat center center;
-  background-size: cover;
+
+  /* Letter page background */
+  background: url("stellalou-letter-bg.jpg") no-repeat center top;
+  background-size: 100% 100%; /* fill the whole container */
 }
 #container::-webkit-scrollbar { display: none; }
 #container { -ms-overflow-style: none; scrollbar-width: none; }
@@ -299,6 +299,7 @@ document.getElementById("startBtn").addEventListener("click", function(){
 </script>
 </body>
 </html>
+
 
 
 
