@@ -57,16 +57,17 @@ body, html {
   /* Click Here hint below start button */
 #click-hint {
   position: absolute;
-  top: calc(50% + 100px); /* below start button */
+  top: 40%; /* below start button */
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Segoe UI', sans-serif;
-  font-size: 1.2rem;
+  font-size: 2.1rem;
   color: #ff69b4;
   text-align: center;
   pointer-events: none;
   animation: beat-glow 1.2s infinite;
   text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4;
+  z-index: 101;
 }
 
 @keyframes beat-glow {
@@ -340,6 +341,7 @@ document.getElementById("startBtn").addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
