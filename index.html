@@ -237,6 +237,46 @@ for(let i=0;i<3;i++){
 }
 let trailIndex=0;
 
+function createTinyFlower() {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("width", "20");
+  svg.setAttribute("height", "20");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.style.position = "absolute";
+
+  const circle = document.createElementNS(svgNS, "circle");
+  circle.setAttribute("cx", "12");
+  circle.setAttribute("cy", "12");
+  circle.setAttribute("r", "3");
+  circle.setAttribute("fill", "#ff1493");
+  svg.appendChild(circle);
+
+  const petalPaths = [
+    "M12 2 L12 6",
+    "M12 18 L12 22",
+    "M2 12 L6 12",
+    "M18 12 L22 12",
+    "M5 5 L8 8",
+    "M16 16 L19 19",
+    "M5 19 L8 16",
+    "M16 8 L19 5",
+  ];
+
+  petalPaths.forEach(d => {
+    const path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", d);
+    path.setAttribute("stroke", "#ff69b4");
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("fill", "none");
+    svg.appendChild(path);
+  });
+
+  return svg;
+}
+  
 function writeLetter(span,letter){
   return new Promise(resolve=>{
     span.textContent+=letter;
@@ -299,23 +339,20 @@ async function showAllText(){
 function animateFlowerHeart() {
   const path = document.getElementById('heartPath');
   const container = document.getElementById('flowerHeart');
-  const flowerTypes = ['🌸','🌼','🌺','🌷','🌻','🌹'];
   const pathLength = path.getTotalLength();
   const step = 4; // distance between flowers
   let i = 0;
 
   function drawNext() {
-if (i > pathLength) {
-  // 🌟 Add glow after heart is fully drawn by adding class to path element
-  path.classList.add('glow');
-  return;
-}
+    if (i > pathLength) {
+      // Add glow after heart is fully drawn
+      path.classList.add('glow');
+      return;
+    }
     const point = path.getPointAtLength(i);
-    const flower = document.createElement('div');
-    flower.className = 'flower-dot';
+    const flower = createTinyFlower();
     flower.style.left = `${point.x * 3}px`;
     flower.style.top = `${point.y * 3}px`;
-    flower.textContent = flowerTypes[i % flowerTypes.length];
     container.appendChild(flower);
     i += step;
     setTimeout(drawNext, 60);
@@ -323,6 +360,7 @@ if (i > pathLength) {
 
   drawNext();
 }
+
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -358,6 +396,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
