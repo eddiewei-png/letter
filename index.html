@@ -107,6 +107,18 @@ body, html {
   }
 }
 
+.flower-dot {
+  position: absolute;
+  font-size: 18px;
+  opacity: 0;
+  animation: pop 0.4s forwards ease-out;
+}
+
+@keyframes pop {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 .message {
   position: absolute;
   top: 50%;
@@ -170,18 +182,19 @@ body, html {
 
   <!-- Heart frame page (hidden initially) -->
 <div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
-  <div class="heart-container">
-    <!-- Heart shape -->
-    <svg viewBox="0 0 100 100">
-      <path d="
-        M10,30
-        A20,20 0 0,1 50,30
-        A20,20 0 0,1 90,30
-        Q90,60 50,90
-        Q10,60 10,30 Z
-      " />
-    </svg>
-
+  <!-- Flower heart frame -->
+<div class="heart-container" id="flowerHeart">
+  <svg viewBox="0 0 100 100">
+    <path id="heartPath" d="
+      M10,30
+      A20,20 0 0,1 50,30
+      A20,20 0 0,1 90,30
+      Q90,60 50,90
+      Q10,60 10,30 Z
+    " fill="none" stroke="none"/>
+  </svg>
+</div>
+  
     <!-- Flower emojis -->
     <div class="flower f1">🌸</div>
     <div class="flower f2">🌼</div>
@@ -274,13 +287,35 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 
   // Wait a bit, then transition to heart frame
-  setTimeout(() => {
-    // Hide the letter container
+ setTimeout(() => {
     document.getElementById('container').style.display = 'none';
-
-    // Show the heart frame
     document.getElementById('heartFramePage').style.display = 'flex';
-  }, 1000); // Wait 1 second after text finishes
+    animateFlowerHeart(); // 🌸 start drawing with flowers
+  }, 1000);
+}
+
+function animateFlowerHeart() {
+  const path = document.getElementById('heartPath');
+  const container = document.getElementById('flowerHeart');
+  const flowerTypes = ['🌸','🌼','🌺','🌷','🌻','🌹'];
+  const pathLength = path.getTotalLength();
+  const step = 12; // distance between flowers
+  let i = 0;
+
+  function drawNext() {
+    if (i > pathLength) return;
+    const point = path.getPointAtLength(i);
+    const flower = document.createElement('div');
+    flower.className = 'flower-dot';
+    flower.style.left = `${point.x * 3}px`;  // scale from SVG to container size
+    flower.style.top = `${point.y * 3}px`;
+    flower.textContent = flowerTypes[i % flowerTypes.length];
+    container.appendChild(flower);
+    i += step;
+    setTimeout(drawNext, 70); // delay between each flower
+  }
+
+  drawNext();
 }
 
 // Start button click
@@ -317,6 +352,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
