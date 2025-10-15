@@ -95,8 +95,10 @@ body, html {
 
 .heart-container svg {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
 }
+
 
 #flowerHeart svg path.glow {
   filter: drop-shadow(0 0 8px #ff69b4)
@@ -197,7 +199,18 @@ body, html {
 <div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
   <!-- Flower heart frame -->
 <div class="heart-container" id="flowerHeart">
-<svg viewBox="0 0 200 200">
+<svg id="heartSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <path id="heartPath"
+    d="M50 30
+       C35 5, 5 25, 50 75
+       C95 25, 65 5, 50 30Z"
+    fill="none"
+    stroke="#ff1493"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round" />
+</svg>
+
   <path id="heartPath"
     d="M100 30
        C40 -20, -20 60, 100 180
@@ -345,31 +358,26 @@ function animateFlowerHeart() {
   const path = document.getElementById('heartPath');
   const container = document.getElementById('flowerHeart');
   const pathLength = path.getTotalLength();
-  const step = 5; // space between flowers
+  const step = 4; // pixels between flowers
   let i = 0;
-
-  const bbox = path.getBBox(); // heart bounding box
-  const width = bbox.width;
-  const height = bbox.height;
-  const offsetX = bbox.x;
-  const offsetY = bbox.y;
 
   function drawNext() {
     if (i > pathLength) {
       path.classList.add('glow');
-      return;
+      return; // stop when done ✅
     }
 
     const point = path.getPointAtLength(i);
     const flower = createTinyFlower();
-
-    // convert to container %
-    const xPercent = ((point.x - offsetX) / width) * 100;
-    const yPercent = ((point.y - offsetY) / height) * 100;
-
-    flower.style.left = `${xPercent}%`;
-    flower.style.top = `${yPercent}%`;
     flower.style.position = 'absolute';
+    // Get the SVG's actual on-screen size
+const svg = document.getElementById('heartSvg');
+const rect = svg.getBoundingClientRect();
+
+// Convert SVG coordinates (0–100) into pixel positions inside the container
+flower.style.left = `${(point.x / 100) * rect.width}px`;
+flower.style.top = `${(point.y / 100) * rect.height}px`;
+
     flower.style.transform = 'translate(-50%, -50%)';
     container.appendChild(flower);
 
@@ -414,6 +422,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
