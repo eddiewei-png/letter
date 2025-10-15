@@ -299,7 +299,7 @@ function animateFlowerHeart() {
   const container = document.getElementById('flowerHeart');
   const flowerTypes = ['🌸','🌼','🌺','🌷','🌻','🌹'];
   const pathLength = path.getTotalLength();
-  const step = 12; // distance between flowers
+  const step = 4; // distance between flowers
   let i = 0;
 
   function drawNext() {
@@ -312,7 +312,7 @@ function animateFlowerHeart() {
     flower.textContent = flowerTypes[i % flowerTypes.length];
     container.appendChild(flower);
     i += step;
-    setTimeout(drawNext, 70); // delay between each flower
+    setTimeout(drawNext, 60); // delay between each flower
   }
 
   drawNext();
@@ -352,6 +352,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
