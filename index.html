@@ -101,22 +101,25 @@ body, html {
   animation: draw 4s ease forwards;
 }
 
-.heart-container.glow {
+#flowerHeart svg path.glow {
+  filter: drop-shadow(0 0 8px #ff69b4)
+          drop-shadow(0 0 15px #ff1493);
+  transition: filter 0.3s ease-in-out;
   animation: heartGlow 3s ease-in-out infinite;
 }
 
 @keyframes heartGlow {
   0% {
-    box-shadow: 0 0 10px rgba(255, 105, 180, 0.3),
-                0 0 20px rgba(255, 105, 180, 0.2);
+    filter: drop-shadow(0 0 8px #ff69b4)
+            drop-shadow(0 0 15px #ff1493);
   }
   50% {
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.5),
-                0 0 40px rgba(255, 20, 147, 0.3);
+    filter: drop-shadow(0 0 15px #ff69b4)
+            drop-shadow(0 0 25px #ff1493);
   }
   100% {
-    box-shadow: 0 0 10px rgba(255, 105, 180, 0.3),
-                0 0 20px rgba(255, 105, 180, 0.2);
+    filter: drop-shadow(0 0 8px #ff69b4)
+            drop-shadow(0 0 15px #ff1493);
   }
 }
 
@@ -302,11 +305,11 @@ function animateFlowerHeart() {
   let i = 0;
 
   function drawNext() {
-    if (i > pathLength) {
-      // 🌟 Add glow after heart is fully drawn
-      container.classList.add('glow');
-      return;
-    }
+if (i > pathLength) {
+  // 🌟 Add glow after heart is fully drawn by adding class to path element
+  path.classList.add('glow');
+  return;
+}
     const point = path.getPointAtLength(i);
     const flower = document.createElement('div');
     flower.className = 'flower-dot';
@@ -355,6 +358,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
