@@ -84,21 +84,18 @@ body, html {
 
 /* Heart frame */
   
-  .heart-container {
+.heart-container {
   position: relative;
   width: 300px;
   height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .heart-container svg {
   width: 100%;
   height: 100%;
-  stroke: #e63946;
-  stroke-width: 3;
-  fill: none;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: draw 4s ease forwards;
 }
 
 #flowerHeart svg path.glow {
@@ -200,7 +197,17 @@ body, html {
 <div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
   <!-- Flower heart frame -->
 <div class="heart-container" id="flowerHeart">
-<svg viewBox="0 0 100 100"> <path id="heartPath" d="M50 15 C35 0, 0 25, 50 80 C100 25, 65 0, 50 15Z" fill="none" stroke="red" stroke-width="3" /> </svg>
+<svg viewBox="0 0 200 200">
+  <path id="heartPath"
+    d="M100 30
+       C40 -20, -20 60, 100 180
+       C220 60, 160 -20, 100 30Z"
+    fill="none"
+    stroke="#ff1493"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round" />
+</svg>
 </div>
 
     <!-- Message inside -->
@@ -338,27 +345,40 @@ function animateFlowerHeart() {
   const path = document.getElementById('heartPath');
   const container = document.getElementById('flowerHeart');
   const pathLength = path.getTotalLength();
-  const step = 4; // distance between flowers
+  const step = 5; // space between flowers
   let i = 0;
+
+  const bbox = path.getBBox(); // heart bounding box
+  const width = bbox.width;
+  const height = bbox.height;
+  const offsetX = bbox.x;
+  const offsetY = bbox.y;
 
   function drawNext() {
     if (i > pathLength) {
-      // Add glow after heart is fully drawn
       path.classList.add('glow');
       return;
     }
-const point = path.getPointAtLength(i);
-const flower = createTinyFlower();
-flower.style.left = `${point.x}px`;
-flower.style.top = `${point.y}px`;
-flower.style.transform = 'translate(-50%, -50%)';
-container.appendChild(flower);
 
+    const point = path.getPointAtLength(i);
+    const flower = createTinyFlower();
+
+    // convert to container %
+    const xPercent = ((point.x - offsetX) / width) * 100;
+    const yPercent = ((point.y - offsetY) / height) * 100;
+
+    flower.style.left = `${xPercent}%`;
+    flower.style.top = `${yPercent}%`;
+    flower.style.position = 'absolute';
+    flower.style.transform = 'translate(-50%, -50%)';
+    container.appendChild(flower);
+
+    i += step;
+    requestAnimationFrame(drawNext);
   }
 
   drawNext();
 }
-
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -394,6 +414,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
