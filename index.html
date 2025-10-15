@@ -240,8 +240,8 @@ let trailIndex=0;
 function createTinyFlower() {
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "20");
-  svg.setAttribute("height", "20");
+  svg.setAttribute("width", "10");
+  svg.setAttribute("height", "10");
   svg.setAttribute("viewBox", "0 0 24 24");
   svg.style.position = "absolute";
 
@@ -349,13 +349,13 @@ function animateFlowerHeart() {
       path.classList.add('glow');
       return;
     }
-    const point = path.getPointAtLength(i);
-    const flower = createTinyFlower();
-    flower.style.left = `${point.x * 3}px`;
-    flower.style.top = `${point.y * 3}px`;
-    container.appendChild(flower);
-    i += step;
-    setTimeout(drawNext, 60);
+const point = path.getPointAtLength(i);
+const flower = createTinyFlower();
+flower.style.left = `${point.x}px`;
+flower.style.top = `${point.y}px`;
+flower.style.transform = 'translate(-50%, -50%)';
+container.appendChild(flower);
+
   }
 
   drawNext();
@@ -396,6 +396,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
