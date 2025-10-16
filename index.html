@@ -81,131 +81,6 @@ body, html {
 /* Ripple */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
-
-/* Heart frame */
-  
-.heart-container {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.heart-container svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-
-#flowerHeart svg path.glow {
-  filter: drop-shadow(0 0 8px #ff69b4)
-          drop-shadow(0 0 15px #ff1493);
-  transition: filter 0.3s ease-in-out;
-  animation: heartGlow 3s ease-in-out infinite;
-}
-
-#flowerHeart svg {
-  overflow: visible;
-}
-
-.flower-dot, svg {
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-}
-
-@keyframes heartGlow {
-  0% {
-    filter: drop-shadow(0 0 8px #ff69b4)
-            drop-shadow(0 0 15px #ff1493);
-  }
-  50% {
-    filter: drop-shadow(0 0 15px #ff69b4)
-            drop-shadow(0 0 25px #ff1493);
-  }
-  100% {
-    filter: drop-shadow(0 0 8px #ff69b4)
-            drop-shadow(0 0 15px #ff1493);
-  }
-}
-
-@keyframes bloom {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.3);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.flower-dot {
-  position: absolute;
-  font-size: 18px;
-  opacity: 0;
-  transform: scale(0);
-  animation: bloom 0.6s ease-out forwards;
-}
-
-@keyframes pop {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  font-size: 18px;
-  color: #d6336c;
-  opacity: 0;
-  animation: fadeIn 2s ease 4s forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* === FINAL, CONFIRMED FIX === */
-
-/* Ensure heart frame and its children never block start button */
-#heartFramePage {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;               /* keep it below the start screen */
-  pointer-events: none;     /* disable click blocking */
-}
-
-/* start screen and button always above everything else */
-.start-wrapper {
-  position: relative;
-  z-index: 9999;
-}
-
-#startBtn {
-  pointer-events: auto;
-  position: relative;
-  z-index: 10000;
-}
-
 </style>
 </head>
 <body>
@@ -227,39 +102,7 @@ body, html {
   </audio>
 </div>
 
-  <!-- Heart frame page (hidden initially) -->
-<div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
-  <!-- Flower heart frame -->
-<div class="heart-container" id="flowerHeart">
-<svg id="heartSvg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <path id="heartPath"
-        d="M256 464
-           L72 272
-           C24 224, 24 144, 80 96
-           C136 48, 224 64, 256 128
-           C288 64, 376 48, 432 96
-           C488 144, 488 224, 440 272
-           L256 464Z"
-        fill="none"
-        stroke="#ff1493"
-        stroke-width="4"
-        stroke-linecap="round"
-        stroke-linejoin="round" />
-</svg>
-</div>
-
-    <!-- Message inside -->
-    <div class="message">
-      My heart blooms<br>just for you 💖
-    </div>
-  </div>
-</div>
-
-
 <script>
-let heartDrawn = false;
-let heartDrawingInProgress = false;
-
 // Sample sentences
 const sentences=[
   ["Line 1 行一","Line 1 English"],
@@ -267,6 +110,9 @@ const sentences=[
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四","Line 4 English"],
   ["Line 5 行五","Line 5 English"],
+  ["Line 6 行五","Line 6 English"],
+  ["Line 7 行五","Line 7 English"],
+  ["Line 8 行五","Line 8 English"],
   ["[Your Name]"]
 ];
 
@@ -280,46 +126,6 @@ for(let i=0;i<3;i++){
 }
 let trailIndex=0;
 
-function createTinyFlower() {
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "6");
-  svg.setAttribute("height", "6");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.style.position = "absolute";
-
-  const circle = document.createElementNS(svgNS, "circle");
-  circle.setAttribute("cx", "12");
-  circle.setAttribute("cy", "12");
-  circle.setAttribute("r", "3");
-  circle.setAttribute("fill", "#ff1493");
-  svg.appendChild(circle);
-
-  const petalPaths = [
-    "M12 2 L12 6",
-    "M12 18 L12 22",
-    "M2 12 L6 12",
-    "M18 12 L22 12",
-    "M5 5 L8 8",
-    "M16 16 L19 19",
-    "M5 19 L8 16",
-    "M16 8 L19 5",
-  ];
-
-  petalPaths.forEach(d => {
-    const path = document.createElementNS(svgNS, "path");
-    path.setAttribute("d", d);
-    path.setAttribute("stroke", "#ff69b4");
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-linejoin", "round");
-    path.setAttribute("fill", "none");
-    svg.appendChild(path);
-  });
-
-  return svg;
-}
-  
 function writeLetter(span,letter){
   return new Promise(resolve=>{
     span.textContent+=letter;
@@ -370,54 +176,7 @@ async function showAllText(){
     await new Promise(r=>setTimeout(r,300));
   }
   inkTrails.forEach(ink=>ink.style.display='none');
-
-  // Wait a bit, then transition to heart frame
-setTimeout(() => {
-  const heartFrame = document.getElementById('heartFramePage');
-  if (heartFrame.style.display === 'flex' || heartDrawn || heartDrawingInProgress) return;
-  document.getElementById('container').style.display = 'none';
-  heartFrame.style.display = 'flex';
-  animateFlowerHeart();
-}, 1000);
 }
-
-let heartDrawn = false; // ✅ prevent multiple draws
-
-function animateFlowerHeart() {
-  if (heartDrawn || heartDrawingInProgress) return; // ✅ hard stop double draw
-  heartDrawingInProgress = true;
-
-  const path = document.getElementById('heartPath');
-  const svg = document.getElementById('heartSvg');
-  const container = document.getElementById('flowerHeart');
-  const rect = svg.getBoundingClientRect();
-  const pathLength = path.getTotalLength();
-  const step = 6;
-  let i = 0;
-
-  function drawNext() {
-    if (i >= pathLength) {
-      path.classList.add('glow');
-      heartDrawn = true;
-      heartDrawingInProgress = false; // ✅ finished cleanly
-      return;
-    }
-
-    const point = path.getPointAtLength(i);
-    const flower = createTinyFlower();
-    flower.style.position = 'absolute';
-    flower.style.left = `${(point.x / 512) * rect.width}px`;
-    flower.style.top = `${(point.y / 512) * rect.height}px`;
-    flower.style.transform = 'translate(-50%, -50%)';
-    container.appendChild(flower);
-
-    i += step;
-    setTimeout(drawNext, 15);
-  }
-
-  drawNext();
-}
-
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -453,33 +212,3 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
