@@ -233,6 +233,9 @@ body, html {
 
 
 <script>
+let heartDrawn = false;
+let heartDrawingInProgress = false;
+
 // Sample sentences
 const sentences=[
   ["Line 1 行一","Line 1 English"],
@@ -347,7 +350,7 @@ async function showAllText(){
   // Wait a bit, then transition to heart frame
 setTimeout(() => {
   const heartFrame = document.getElementById('heartFramePage');
-  if (heartFrame.style.display === 'flex') return; // prevent re-run
+  if (heartFrame.style.display === 'flex' || heartDrawn || heartDrawingInProgress) return;
   document.getElementById('container').style.display = 'none';
   heartFrame.style.display = 'flex';
   animateFlowerHeart();
@@ -357,14 +360,13 @@ setTimeout(() => {
 let heartDrawn = false; // ✅ prevent multiple draws
 
 function animateFlowerHeart() {
-  if (heartDrawn) return;
-  heartDrawn = true;
+  if (heartDrawn || heartDrawingInProgress) return; // ✅ hard stop double draw
+  heartDrawingInProgress = true;
 
   const path = document.getElementById('heartPath');
   const svg = document.getElementById('heartSvg');
   const container = document.getElementById('flowerHeart');
   const rect = svg.getBoundingClientRect();
-
   const pathLength = path.getTotalLength();
   const step = 6;
   let i = 0;
@@ -372,7 +374,9 @@ function animateFlowerHeart() {
   function drawNext() {
     if (i >= pathLength) {
       path.classList.add('glow');
-      return; // ✅ stop the animation
+      heartDrawn = true;
+      heartDrawingInProgress = false; // ✅ finished cleanly
+      return;
     }
 
     const point = path.getPointAtLength(i);
@@ -389,6 +393,7 @@ function animateFlowerHeart() {
 
   drawNext();
 }
+
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -424,6 +429,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
