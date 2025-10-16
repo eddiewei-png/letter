@@ -367,11 +367,14 @@ function drawHeartWithFlowers() {
   const path = document.getElementById("heart-path");
   const length = path.getTotalLength();
 
-  // Optional: hide the heart outline if you want only flowers
+  // Optional: hide heart stroke
   path.style.stroke = "none";
 
   const flowerCount = 80;
-  const duration = 3000; // total animation duration in ms
+  const duration = 3000;
+
+  const containerWidth = heartContainer.clientWidth;
+  const containerHeight = heartContainer.clientHeight;
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
@@ -381,17 +384,21 @@ function drawHeartWithFlowers() {
     heartContainer.appendChild(flower);
 
     setTimeout(() => {
-      // SVG coordinates (0-200, 0-180) -> CSS pixels
       const point = path.getPointAtLength((i / (flowerCount - 1)) * length);
-      flower.style.left = `${point.x / 200 * heartContainer.clientWidth}px`;
-      flower.style.top = `${point.y / 180 * heartContainer.clientHeight}px`;
+
+      // Map SVG coordinates (0-200 x, 0-180 y) to container
+      const x = (point.x / 200) * containerWidth;
+      const y = (point.y / 180) * containerHeight;
+
+      flower.style.left = `${x}px`;
+      flower.style.top = `${y}px`;
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     }, (duration / flowerCount) * i);
   }
 
-  // Gentle glow/pulsing after all flowers appear
+  // Apply gentle glow/pulse after flowers appear
   setTimeout(() => {
     const heartFrame = document.getElementById("heart-frame");
     heartFrame.classList.add("finished"); // uses your existing gentleGlow CSS
@@ -402,6 +409,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
