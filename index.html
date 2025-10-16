@@ -13,9 +13,9 @@ body, html {
   overflow:hidden;
 }
 
-/* Start wrapper */
+/* 🌷 Start wrapper always above everything until hidden */
 .start-wrapper {
-  position: fixed;
+  position: fixed; /* fixed ensures always centered and above */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -23,7 +23,7 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* must be ABOVE everything */
+  z-index: 3000; /* must be above heart and container */
 }
 
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
@@ -167,7 +167,7 @@ body, html {
   animation: fadeOutToPink 3s ease forwards;
 }
 
-/* 🌸 Heart frame container (fixed layering fix) */
+/* 🌸 Heart frame container — start hidden, never block clicks */
 #heart-frame {
   position: fixed;
   inset: 0;
@@ -175,16 +175,16 @@ body, html {
   justify-content: center;
   align-items: center;
   opacity: 0;
-  pointer-events: none; /* cannot block clicks */
-  z-index: -1;          /* always behind everything until shown */
+  pointer-events: none;
+  z-index: 0; /* below start wrapper */
   background: rgba(255,240,245,0.6);
   transition: opacity 1s ease;
 }
 
 #heart-frame.show {
   opacity: 1;
-  pointer-events: none; /* still not clickable */
-  z-index: 10;          /* comes in front ONLY after letter fades */
+  pointer-events: none;
+  z-index: 2000; /* bring forward only after letter fades */
 }
 
 /* 🌷 Small flower style */
@@ -399,6 +399,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
