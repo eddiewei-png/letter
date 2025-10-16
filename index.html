@@ -15,7 +15,7 @@ body, html {
 
 /* Start wrapper */
 .start-wrapper {
-  position:absolute; top:50%; left:50%;
+  position:relative; top:50%; left:50%;
   transform:translate(-50%,-50%);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   z-index:1000;
@@ -162,6 +162,7 @@ body, html {
 }
 
 /* 🌸 Heart frame container */
+/* 🌸 Heart frame container (fixed layering fix) */
 #heart-frame {
   position: fixed;
   inset: 0;
@@ -169,17 +170,18 @@ body, html {
   justify-content: center;
   align-items: center;
   opacity: 0;
-  pointer-events: none;  /* cannot block clicks at all */
-  z-index: -1;           /* make sure it’s behind everything */
+  pointer-events: none;   /* never intercept clicks */
+  z-index: 0;             /* below the start wrapper, above the page background */
   background: rgba(255,240,245,0.6);
   transition: opacity 1s ease;
 }
 
 #heart-frame.show {
   opacity: 1;
-  pointer-events: none;  /* still not clickable even when showing */
-  z-index: 999;          /* bring in front after letter fades */
+  pointer-events: none;   /* still ignore clicks */
+  z-index: 999;           /* bring forward only after fade-out */
 }
+
 
 
 /* 🌷 Small flower style */
@@ -200,7 +202,7 @@ body, html {
 
 <div class="start-wrapper">
   <div class="start-container" id="start-container">
-    <div id="click-hint">Click Here~ <br> ↓</div>
+    <div id="click-hint">Click Here <br> ↓</div>
     <button id="startBtn"><img src="stella.png" alt="Start"></button>
   </div>
 </div>
@@ -394,6 +396,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
