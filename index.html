@@ -136,6 +136,31 @@ body, html {
   animation: gentleGlow 3s ease-in-out infinite;
 }
 
+/* 🌙 Letter fade-out effect */
+/* 🌸 Fade the letter page into a soft pink glow */
+@keyframes fadeOutToPink {
+  0% {
+    opacity: 1;
+    background-color: transparent;
+    filter: brightness(1);
+  }
+  80% {
+    opacity: 0.3;
+    background-color: rgba(255, 182, 193, 0.4);
+    filter: brightness(1.2);
+  }
+  100% {
+    opacity: 0;
+    background-color: rgba(255, 182, 193, 0.6);
+    filter: brightness(1.4);
+  }
+}
+
+/* Apply fade effect to the whole letter area */
+#container.fade-out {
+  animation: fadeOutToPink 3s ease forwards;
+}
+
 </style>
 </head>
 <body>
@@ -225,17 +250,23 @@ async function showSentence(lines,delay=200){
   }
 }
 
-// Show all text, then draw the heart frame
+// 🌸 Show all text, fade the letter, then draw the heart
 async function showAllText() {
   for (let s = 0; s < sentences.length; s++) {
     await showSentence(sentences[s], 300);
     await new Promise(r => setTimeout(r, 300));
   }
 
-  // Hide ink trails after typing ends
+  // Hide ink trails
   inkTrails.forEach(ink => ink.style.display = 'none');
 
-  // 🌷 Reveal the heart frame
+  // 🌙 Fade out the entire container
+  const container = document.getElementById("container");
+  container.classList.add("fade-out");
+
+  // Wait for fade to complete (3s), then show the heart
+  await new Promise(r => setTimeout(r, 3000));
+
   const heart = document.getElementById("heart-frame");
   heart.classList.add("show");
 }
@@ -306,4 +337,5 @@ document.getElementById("startBtn").addEventListener("click",function(){
   
 </body>
 </html>
+
 
