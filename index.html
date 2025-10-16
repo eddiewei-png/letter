@@ -325,8 +325,11 @@ document.getElementById("startBtn").addEventListener("click",function(){
   const container=document.getElementById("container");
   const startContainer=document.getElementById("start-container");
 
-  this.disabled=true;
-  this.style.pointerEvents="none";
+ // disable only after fade starts
+setTimeout(() => {
+  this.disabled = true;
+  this.style.pointerEvents = "none";
+}, 200);
 
   // Ripple effect
   const rect=this.getBoundingClientRect();
@@ -399,6 +402,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
