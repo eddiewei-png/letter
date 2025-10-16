@@ -362,44 +362,49 @@ function drawHeartWithFlowers() {
   const path = document.getElementById("heart-path");
   const svg = heartFrame.querySelector("svg");
 
-  // clear previous flowers
+  // clear old flowers
   heartFrame.querySelectorAll('.flower').forEach(f => f.remove());
 
-  // animate heart stroke
+  // make path visible and ready to animate
   const length = path.getTotalLength();
   path.style.strokeDasharray = length;
   path.style.strokeDashoffset = length;
   path.style.stroke = "#e91e63";
+  path.style.fill = "none";
   path.style.animation = "drawheart 6s ease forwards";
 
-  const bbox = svg.viewBox.baseVal;
+  const bbox = svg.getBBox();
   const flowerCount = 80;
   const duration = 6000;
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
     flower.className = "flower";
+    flower.style.opacity = 0;
+    flower.style.transform = "translate(-50%, -50%) scale(0)";
     heartFrame.appendChild(flower);
 
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-      flower.style.left = `calc(50% - ${bbox.width/2 - point.x}px)`;
-      flower.style.top = `calc(50% - ${bbox.height/2 - point.y}px)`;
+      // position relative to svg center
+      flower.style.left = `${point.x}px`;
+      flower.style.top = `${point.y}px`;
       flower.style.opacity = 1;
-      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
+      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     }, (duration / flowerCount) * i);
   }
 
-  // gently pulse/glow when done
-  setTimeout(() => heartFrame.classList.add("finished"), duration + 500);
+  setTimeout(() => {
+    heartFrame.classList.add("finished");
+  }, duration + 500);
 }
-
   
 </script>
 </body>
 </html>
+
 
 
 
