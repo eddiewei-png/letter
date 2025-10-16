@@ -363,52 +363,45 @@ document.getElementById("startBtn").addEventListener("click", function(){
 // 🌸 Draw heart with flowers
 function drawHeartWithFlowers() {
   const heartContainer = document.getElementById("heart-container");
-  const svg = document.getElementById("heart-svg");
-  const path = document.getElementById("heart-path");
-  const length = path.getTotalLength();
+  heartContainer.innerHTML = ""; // clear previous content
 
-  // Optional: hide heart stroke
-  path.style.stroke = "none";
-
-  const flowerCount = 80;
-  const duration = 3000;
-
-  const containerWidth = heartContainer.clientWidth;
-  const containerHeight = heartContainer.clientHeight;
+  const flowerCount = 100; // number of emojis
+  const width = heartContainer.clientWidth;
+  const height = heartContainer.clientHeight;
 
   for (let i = 0; i < flowerCount; i++) {
+    const t = (i / (flowerCount - 1)) * Math.PI * 2;
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+    const px = ((x + 17) / 34) * width;
+    const py = ((-y + 17) / 34) * height;
+
     const flower = document.createElement("div");
     flower.className = "flower";
+    flower.textContent = "🌸";
+    flower.style.left = `${px}px`;
+    flower.style.top = `${py}px`;
     flower.style.opacity = 0;
     flower.style.transform = "translate(-50%, -50%) scale(0)";
     heartContainer.appendChild(flower);
 
     setTimeout(() => {
-      const point = path.getPointAtLength((i / (flowerCount - 1)) * length);
-
-      // Map SVG coordinates (0-200 x, 0-180 y) to container
-      const x = (point.x / 200) * containerWidth;
-      const y = (point.y / 180) * containerHeight;
-
-      flower.style.left = `${x}px`;
-      flower.style.top = `${y}px`;
       flower.style.opacity = 1;
-      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
+      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-    }, (duration / flowerCount) * i);
+    }, i * 30);
   }
 
-  // Apply gentle glow/pulse after flowers appear
   setTimeout(() => {
-    const heartFrame = document.getElementById("heart-frame");
-    heartFrame.classList.add("finished"); // uses your existing gentleGlow CSS
-  }, duration + 200);
+    document.getElementById("heart-frame").classList.add("finished");
+  }, flowerCount * 30 + 500);
 }
-
   
 </script>
 </body>
 </html>
+
 
 
 
