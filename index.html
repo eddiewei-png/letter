@@ -221,13 +221,16 @@ body, html {
 </div>
   
 <div id="heart-frame">
-  <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
-   <path id="heart-path"
-      d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
-      fill="none" stroke="#e91e63" stroke-width="2" stroke-linecap="round"
-      stroke-dasharray="1000" />
-  </svg>
+  <div id="heart-container" style="position: relative; width: 200px; height: 180px; margin: auto;">
+    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" id="heart-svg" style="position: absolute; top: 0; left: 0; width:100%; height:100%;">
+      <path id="heart-path"
+        d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
+        fill="none" stroke="#e91e63" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="1000" />
+    </svg>
+  </div>
 </div>
+
 <script>
 // Sample sentences
 const sentences=[
@@ -358,22 +361,14 @@ document.getElementById("startBtn").addEventListener("click", function(){
 
 // 🌸 Draw heart with flowers
 function drawHeartWithFlowers() {
-  const heartFrame = document.getElementById("heart-frame");
+  const heartContainer = document.getElementById("heart-container");
   const path = document.getElementById("heart-path");
-  const svg = heartFrame.querySelector("svg");
-
-  // clear old flowers
-  heartFrame.querySelectorAll('.flower').forEach(f => f.remove());
-
-  // animate the heart path
+  const svg = document.getElementById("heart-svg");
   const length = path.getTotalLength();
-  path.style.strokeDasharray = length;
-  path.style.strokeDashoffset = length;
-  path.style.stroke = "#e91e63";
-  path.style.fill = "none";
-  path.style.animation = "drawheart 6s ease forwards";
 
-  const svgRect = svg.getBoundingClientRect();
+  // hide stroke if you want only flowers
+  path.style.stroke = "none"; 
+
   const flowerCount = 80;
   const duration = 6000;
 
@@ -382,26 +377,24 @@ function drawHeartWithFlowers() {
     flower.className = "flower";
     flower.style.opacity = 0;
     flower.style.transform = "translate(-50%, -50%) scale(0)";
-    heartFrame.appendChild(flower);
+    heartContainer.appendChild(flower);
 
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
 
-      // position relative to SVG top-left
-      const svgLeft = svgRect.left;
-      const svgTop = svgRect.top;
-
-      flower.style.left = `${svgLeft + point.x}px`;
-      flower.style.top = `${svgTop + point.y}px`;
+      // Convert SVG coords to percent
+      flower.style.left = `${(point.x / 200) * 100}%`;
+      flower.style.top = `${(point.y / 180) * 100}%`;
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     }, (duration / flowerCount) * i);
   }
 
+  // gently pulse heart path only
   setTimeout(() => {
-    heartFrame.classList.add("finished");
+    path.style.animation = "gentleGlow 3s ease-in-out infinite";
   }, duration + 500);
 }
 
@@ -409,6 +402,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
