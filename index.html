@@ -361,19 +361,17 @@ document.getElementById("startBtn").addEventListener("click", function(){
 
 
 // 🌸 Draw heart with flowers
->
 function drawHeartWithFlowers() {
   const heartContainer = document.getElementById("heart-container");
   const svg = document.getElementById("heart-svg");
   const path = document.getElementById("heart-path");
   const length = path.getTotalLength();
 
-  // Animate the heart outline first
-  path.style.transition = "stroke-dashoffset 3s ease";
-  path.style.strokeDashoffset = 0;
+  // Optional: hide the heart outline if you want only flowers
+  path.style.stroke = "none";
 
   const flowerCount = 80;
-  const duration = 3000; // match path animation duration
+  const duration = 3000; // total animation duration in ms
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
@@ -383,28 +381,28 @@ function drawHeartWithFlowers() {
     heartContainer.appendChild(flower);
 
     setTimeout(() => {
-      const progress = i / (flowerCount - 1);
-      const point = path.getPointAtLength(progress * length);
-      flower.style.left = `${point.x}px`;
-      flower.style.top = `${point.y}px`;
+      // SVG coordinates (0-200, 0-180) -> CSS pixels
+      const point = path.getPointAtLength((i / (flowerCount - 1)) * length);
+      flower.style.left = `${point.x / 200 * heartContainer.clientWidth}px`;
+      flower.style.top = `${point.y / 180 * heartContainer.clientHeight}px`;
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     }, (duration / flowerCount) * i);
   }
 
-  // Gentle pulsing after drawing finishes
+  // Gentle glow/pulsing after all flowers appear
   setTimeout(() => {
-    svg.style.transition = "";
-    svg.style.transformOrigin = "50% 50%";
-    svg.style.animation = "gentlePulse 3s ease-in-out infinite";
-  }, duration + 500);
+    const heartFrame = document.getElementById("heart-frame");
+    heartFrame.classList.add("finished"); // uses your existing gentleGlow CSS
+  }, duration + 200);
 }
 
   
 </script>
 </body>
 </html>
+
 
 
 
