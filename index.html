@@ -192,7 +192,7 @@ body, html {
   position: absolute;
   width: 22px;
   height: 22px;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/16/Emoji_u1f33c.svg'); /* 🌸 daisy emoji SVG */
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/16/Emoji_u1f33c.svg');
   background-size: cover;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
@@ -226,7 +226,8 @@ body, html {
       <path id="heart-path"
         d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
         fill="none" stroke="#e91e63" stroke-width="2" stroke-linecap="round"
-        stroke-dasharray="1000" />
+        stroke-dasharray="1000"
+        stroke-dashoffset="1000"/>
     </svg>
   </div>
 </div>
@@ -360,17 +361,19 @@ document.getElementById("startBtn").addEventListener("click", function(){
 
 
 // 🌸 Draw heart with flowers
+>
 function drawHeartWithFlowers() {
   const heartContainer = document.getElementById("heart-container");
-  const path = document.getElementById("heart-path");
   const svg = document.getElementById("heart-svg");
+  const path = document.getElementById("heart-path");
   const length = path.getTotalLength();
 
-  // hide stroke if you want only flowers
-  path.style.stroke = "none"; 
+  // Animate the heart outline first
+  path.style.transition = "stroke-dashoffset 3s ease";
+  path.style.strokeDashoffset = 0;
 
   const flowerCount = 80;
-  const duration = 6000;
+  const duration = 3000; // match path animation duration
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
@@ -382,19 +385,19 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-
-      // Convert SVG coords to percent
-      flower.style.left = `${(point.x / 200) * 100}%`;
-      flower.style.top = `${(point.y / 180) * 100}%`;
+      flower.style.left = `${point.x}px`;
+      flower.style.top = `${point.y}px`;
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     }, (duration / flowerCount) * i);
   }
 
-  // gently pulse heart path only
+  // Gentle pulsing after drawing finishes
   setTimeout(() => {
-    path.style.animation = "gentleGlow 3s ease-in-out infinite";
+    svg.style.transition = "";
+    svg.style.transformOrigin = "50% 50%";
+    svg.style.animation = "gentlePulse 3s ease-in-out infinite";
   }, duration + 500);
 }
 
@@ -402,6 +405,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
