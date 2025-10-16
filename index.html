@@ -348,32 +348,51 @@ document.getElementById("startBtn").addEventListener("click",function(){
 function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
   const path = document.getElementById("heart-path");
+  const svg = heartFrame.querySelector("svg");
+  const bbox = svg.viewBox.baseVal;
   const length = path.getTotalLength();
-  const flowerCount = 50; // number of flowers
-  const duration = 5000;  // 5 seconds total
 
-  const svgRect = heartFrame.querySelector("svg").getBoundingClientRect();
+  // Make the path itself draw first (invisible pink line guide)
+  path.style.stroke = "pink";
+  path.style.strokeWidth = "2";
+  path.style.strokeDasharray = length;
+  path.style.strokeDashoffset = length;
+  path.style.transition = "stroke-dashoffset 5s ease";
+  requestAnimationFrame(() => {
+    path.style.strokeDashoffset = "0";
+  });
+
+  // 🌸 Then make flowers appear along the path progressively
+  const flowerCount = 60;
+  const duration = 5000; // 5 seconds for all flowers
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
     flower.className = "flower";
     heartFrame.appendChild(flower);
 
+    // Delay each flower a bit
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-// Position using SVG coordinates (not window)
-flower.style.left = `calc(50% + ${point.x - 100}px)`; 
-flower.style.top = `calc(50% + ${point.y - 90}px)`;
+      flower.style.left = `calc(50% - ${bbox.width/2 - point.x}px)`;
+      flower.style.top = `calc(50% - ${bbox.height/2 - point.y}px)`;
       flower.style.opacity = 1;
       flower.style.transform = "translate(-50%, -50%) scale(1)";
     }, (duration / flowerCount) * i);
   }
+
+  // Fade out the guide stroke after drawing completes
+  setTimeout(() => {
+    path.style.transition = "opacity 1s ease";
+    path.style.opacity = "0";
+  }, duration + 1000);
 }
   
 </script>
 </body>
 </html>
+
 
 
 
