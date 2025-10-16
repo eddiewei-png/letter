@@ -215,8 +215,8 @@ body, html {
 <div id="heart-frame">
   <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
     <path id="heart-path"
-          d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
-          fill="none" stroke="none" />
+      d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
+      fill="none" stroke="#e91e63" stroke-width="2" stroke-linecap="round" />
   </svg>
 </div>
 <script>
@@ -362,9 +362,9 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-      // Now position relative to SVG center
-      flower.style.left = `${svgRect.left + point.x}px`;
-      flower.style.top = `${svgRect.top + point.y}px`;
+// Position using SVG coordinates (not window)
+flower.style.left = `calc(50% + ${point.x - 100}px)`; 
+flower.style.top = `calc(50% + ${point.y - 90}px)`;
       flower.style.opacity = 1;
       flower.style.transform = "translate(-50%, -50%) scale(1)";
     }, (duration / flowerCount) * i);
@@ -374,6 +374,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
