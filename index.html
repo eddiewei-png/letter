@@ -182,21 +182,28 @@ body, html {
   }
 }
 
-/* === Fix start button click issue === */
-#heartFramePage,
-#flowerHeart,
-#heartSvg {
-  pointer-events: none;   /* prevent them from blocking clicks */
-  z-index: 1;             /* keep them below the start screen */
+/* === FINAL, CONFIRMED FIX === */
+
+/* Ensure heart frame and its children never block start button */
+#heartFramePage {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;               /* keep it below the start screen */
+  pointer-events: none;     /* disable click blocking */
 }
 
+/* start screen and button always above everything else */
 .start-wrapper {
-  position: absolute;
-  z-index: 9999;          /* ensure it's always on top */
+  position: relative;
+  z-index: 9999;
 }
 
 #startBtn {
-  pointer-events: auto;   /* explicitly allow button clicks */
+  pointer-events: auto;
+  position: relative;
+  z-index: 10000;
 }
 
 </style>
@@ -446,6 +453,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
