@@ -257,12 +257,13 @@ async function showAllText() {
     await new Promise(r => setTimeout(r, 300));
   }
 
-  // Hide ink trails
-  inkTrails.forEach(ink => ink.style.display = 'none');
+ // 🌸 Remove ink trails completely before fade
+inkTrails.forEach(ink => ink.remove());
 
-  // 🌙 Fade out the entire container
-  const container = document.getElementById("container");
-  container.classList.add("fade-out");
+// 🌙 Fade out the entire container
+const container = document.getElementById("container");
+container.classList.add("fade-out");
+
 
   // Wait for fade to complete (3s), then show the heart
   await new Promise(r => setTimeout(r, 3000));
@@ -337,5 +338,6 @@ document.getElementById("startBtn").addEventListener("click",function(){
   
 </body>
 </html>
+
 
 
