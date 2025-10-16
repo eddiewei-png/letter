@@ -95,7 +95,7 @@ body, html {
 
 .heart-container svg {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 }
 
@@ -201,14 +201,14 @@ body, html {
 <div class="heart-container" id="flowerHeart">
 <svg id="heartSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <path id="heartPath"
-    d="M100 30
-       C40 0, 0 70, 100 180
-       C200 70, 160 0, 100 30Z"
-    fill="none"
-    stroke="#ff1493"
-    stroke-width="2.5"
-    stroke-linecap="round"
-    stroke-linejoin="round" />
+        d="M100 35
+           C30 0, 0 80, 100 185
+           C200 80, 170 0, 100 35Z"
+        fill="none"
+        stroke="#ff1493"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
 </svg>
 </div>
 
@@ -336,11 +336,13 @@ async function showAllText(){
   inkTrails.forEach(ink=>ink.style.display='none');
 
   // Wait a bit, then transition to heart frame
- setTimeout(() => {
-    document.getElementById('container').style.display = 'none';
-    document.getElementById('heartFramePage').style.display = 'flex';
-    animateFlowerHeart(); // 🌸 start drawing with flowers
-  }, 1000);
+setTimeout(() => {
+  const heartFrame = document.getElementById('heartFramePage');
+  if (heartFrame.style.display === 'flex') return; // prevent re-run
+  document.getElementById('container').style.display = 'none';
+  heartFrame.style.display = 'flex';
+  animateFlowerHeart();
+}, 1000);
 }
 
 let heartDrawn = false; // ✅ prevent multiple draws
@@ -415,6 +417,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
