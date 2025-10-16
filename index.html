@@ -107,6 +107,14 @@ body, html {
   animation: heartGlow 3s ease-in-out infinite;
 }
 
+#flowerHeart svg {
+  overflow: visible;
+}
+
+.flower-dot, svg {
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
 @keyframes heartGlow {
   0% {
     filter: drop-shadow(0 0 8px #ff69b4)
@@ -199,14 +207,18 @@ body, html {
 <div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
   <!-- Flower heart frame -->
 <div class="heart-container" id="flowerHeart">
-<svg id="heartSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<svg id="heartSvg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <path id="heartPath"
-        d="M100 170
-           C20 110, 20 40, 100 60
-           C180 40, 180 110, 100 170Z"
+        d="M256 464
+           L72 272
+           C24 224, 24 144, 80 96
+           C136 48, 224 64, 256 128
+           C288 64, 376 48, 432 96
+           C488 144, 488 224, 440 272
+           L256 464Z"
         fill="none"
         stroke="#ff1493"
-        stroke-width="2.5"
+        stroke-width="4"
         stroke-linecap="round"
         stroke-linejoin="round" />
 </svg>
@@ -244,8 +256,8 @@ let trailIndex=0;
 function createTinyFlower() {
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "10");
-  svg.setAttribute("height", "10");
+  svg.setAttribute("width", "6");
+  svg.setAttribute("height", "6");
   svg.setAttribute("viewBox", "0 0 24 24");
   svg.style.position = "absolute";
 
@@ -366,8 +378,8 @@ function animateFlowerHeart() {
     const point = path.getPointAtLength(i);
     const flower = createTinyFlower();
     flower.style.position = 'absolute';
-    flower.style.left = `${(point.x / 200) * rect.width}px`;
-    flower.style.top = `${(point.y / 200) * rect.height}px`;
+    flower.style.left = `${(point.x / 512) * rect.width}px`;
+    flower.style.top = `${(point.y / 512) * rect.height}px`;
     flower.style.transform = 'translate(-50%, -50%)';
     container.appendChild(flower);
 
@@ -412,6 +424,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
