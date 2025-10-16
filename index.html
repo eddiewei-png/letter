@@ -365,7 +365,7 @@ function drawHeartWithFlowers() {
   // clear old flowers
   heartFrame.querySelectorAll('.flower').forEach(f => f.remove());
 
-  // make path visible and ready to animate
+  // animate the heart path
   const length = path.getTotalLength();
   path.style.strokeDasharray = length;
   path.style.strokeDashoffset = length;
@@ -373,7 +373,7 @@ function drawHeartWithFlowers() {
   path.style.fill = "none";
   path.style.animation = "drawheart 6s ease forwards";
 
-  const bbox = svg.getBBox();
+  const svgRect = svg.getBoundingClientRect();
   const flowerCount = 80;
   const duration = 6000;
 
@@ -387,9 +387,13 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-      // position relative to svg center
-      flower.style.left = `${point.x}px`;
-      flower.style.top = `${point.y}px`;
+
+      // position relative to SVG top-left
+      const svgLeft = svgRect.left;
+      const svgTop = svgRect.top;
+
+      flower.style.left = `${svgLeft + point.x}px`;
+      flower.style.top = `${svgTop + point.y}px`;
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
@@ -400,10 +404,12 @@ function drawHeartWithFlowers() {
     heartFrame.classList.add("finished");
   }, duration + 500);
 }
+
   
 </script>
 </body>
 </html>
+
 
 
 
