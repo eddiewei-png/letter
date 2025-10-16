@@ -321,49 +321,53 @@ setTimeout(() => {
 
 
 // Start button click
-document.getElementById("startBtn").addEventListener("click",function(){
-  const container=document.getElementById("container");
-  const startContainer=document.getElementById("start-container");
+let animationStarted = false; // flag to prevent multiple starts
 
- // disable only after fade starts
-//setTimeout(() => {
-//  this.disabled = true;
- // this.style.pointerEvents = "none";
-//}, 200);
+document.getElementById("startBtn").addEventListener("click", function(){
+  if(animationStarted) return; // ignore extra clicks
+  animationStarted = true;
+
+  const container = document.getElementById("container");
+  const startContainer = document.getElementById("start-container");
 
   // Ripple effect
-  const rect=this.getBoundingClientRect();
-  const centerX=rect.left+rect.width/2;
-  const centerY=rect.top+rect.height/2;
-  for(let i=0;i<5;i++){
-    const ripple=document.createElement("span");
-    ripple.className='ripple';
-    ripple.style.left=centerX+'px';
-    ripple.style.top=centerY+'px';
-    ripple.style.animationDelay=`${i*0.3}s`;
+  const rect = this.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+  for(let i=0; i<5; i++){
+    const ripple = document.createElement("span");
+    ripple.className = 'ripple';
+    ripple.style.left = centerX + 'px';
+    ripple.style.top = centerY + 'px';
+    ripple.style.animationDelay = `${i*0.3}s`;
     document.body.appendChild(ripple);
-    ripple.addEventListener('animationend',()=>ripple.remove());
+    ripple.addEventListener('animationend', ()=>ripple.remove());
   }
 
   // Fade out start button
   startContainer.classList.add('fade-out');
-  setTimeout(()=>{
+  setTimeout(() => {
     startContainer.style.display='none';
-    container.classList.add('show');   // show container first
+    container.classList.add('show');
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
-    showAllText();                     // then start text animation
-  },1800);
+    showAllText(); // will trigger heart + flowers
+  }, 1800);
 });
+
 
 // 🌸 Draw heart with flowers
 function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
   const path = document.getElementById("heart-path");
   const svg = heartFrame.querySelector("svg");
+
+  // clear any previous flowers if rerun
+  heartFrame.querySelectorAll('.flower').forEach(f => f.remove());
+
   const bbox = svg.viewBox.baseVal;
   const length = path.getTotalLength();
 
-  path.style.stroke = "none";
+  path.style.stroke = "none"; // hide the stroke
 
   const flowerCount = 80;
   const duration = 6000;
@@ -382,19 +386,20 @@ function drawHeartWithFlowers() {
       flower.style.top = `calc(50% - ${bbox.height/2 - point.y}px)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
       flower.style.opacity = 1;
-      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
+      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
     }, (duration / flowerCount) * i);
   }
 
+  // gently pulse/glow when done
   setTimeout(() => {
     heartFrame.classList.add("finished");
   }, duration + 500);
 }
-
   
 </script>
 </body>
 </html>
+
 
 
 
