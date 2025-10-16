@@ -161,6 +161,36 @@ body, html {
   animation: fadeOutToPink 3s ease forwards;
 }
 
+/* 🌸 Heart frame container */
+#heart-frame {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  background: rgba(255,240,245,0.6);
+  transition: opacity 1s ease;
+}
+
+#heart-frame.show {
+  opacity: 1;
+}
+
+/* 🌷 Small flower style */
+.flower {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/16/Emoji_u1f33c.svg'); /* 🌸 daisy emoji SVG */
+  background-size: cover;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 </style>
 </head>
 <body>
@@ -181,7 +211,14 @@ body, html {
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
   </audio>
 </div>
-
+  
+<div id="heart-frame">
+  <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <path id="heart-path"
+          d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
+          fill="none" stroke="none" />
+  </svg>
+</div>
 <script>
 // Sample sentences
 const sentences=[
@@ -250,27 +287,26 @@ async function showSentence(lines,delay=200){
   }
 }
 
-// 🌸 Show all text, fade the letter, then draw the heart
 async function showAllText() {
   for (let s = 0; s < sentences.length; s++) {
     await showSentence(sentences[s], 300);
     await new Promise(r => setTimeout(r, 300));
   }
 
- // 🌸 Remove ink trails completely before fade
-inkTrails.forEach(ink => ink.remove());
+  inkTrails.forEach(ink => ink.remove());
 
-// 🌙 Fade out the entire container
-const container = document.getElementById("container");
-container.classList.add("fade-out");
+  const container = document.getElementById("container");
+  container.classList.add("fade-out");
 
-
-  // Wait for fade to complete (3s), then show the heart
   await new Promise(r => setTimeout(r, 3000));
 
   const heart = document.getElementById("heart-frame");
   heart.classList.add("show");
+
+  // 🌷 draw with flowers
+  drawHeartWithFlowers();
 }
+
 
 // 🌟 After heart finishes drawing, add glowing animation
 setTimeout(() => {
@@ -312,6 +348,31 @@ document.getElementById("startBtn").addEventListener("click",function(){
     showAllText();                     // then start text animation
   },1800);
 });
+
+// 🌸 Draw heart with flowers
+function drawHeartWithFlowers() {
+  const heartFrame = document.getElementById("heart-frame");
+  const path = document.getElementById("heart-path");
+  const length = path.getTotalLength();
+  const flowerCount = 40; // how many flowers will appear
+  const duration = 5000;  // 5 seconds drawing time
+
+  for (let i = 0; i < flowerCount; i++) {
+    const flower = document.createElement("div");
+    flower.className = "flower";
+    heartFrame.appendChild(flower);
+
+    setTimeout(() => {
+      const progress = i / (flowerCount - 1);
+      const point = path.getPointAtLength(progress * length);
+      flower.style.left = `${point.x + window.innerWidth / 2 - 100}px`;
+      flower.style.top = `${point.y + window.innerHeight / 2 - 90}px`;
+      flower.style.opacity = 1;
+      flower.style.transform = "translate(-50%, -50%) scale(1)";
+    }, (duration / flowerCount) * i);
+  }
+}
+
 </script>
 
 <!-- 🌸 Heart Frame SVG added below (right before </body>) -->
@@ -338,6 +399,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
   
 </body>
 </html>
+
 
 
 
