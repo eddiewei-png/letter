@@ -81,6 +81,61 @@ body, html {
 /* Ripple */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
+
+/* ❤️ Heart Frame Animation */
+@keyframes drawHeart {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes bloom {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* When heart shows */
+#heart-frame.show {
+  animation: fadeIn 1s ease forwards;
+}
+
+#heart-frame.show path {
+  animation: drawHeart 6s ease forwards;
+  filter: drop-shadow(0 0 6px #f48fb1);
+}
+
+#heart-frame.show circle {
+  animation: bloom 1s ease forwards;
+}
+
+/* Flowers bloom one by one */
+#heart-frame.show circle:nth-child(1) { animation-delay: 4s; }
+#heart-frame.show circle:nth-child(2) { animation-delay: 4.5s; }
+#heart-frame.show circle:nth-child(3) { animation-delay: 5s; }
+#heart-frame.show circle:nth-child(4) { animation-delay: 5.5s; }
+#heart-frame.show circle:nth-child(5) { animation-delay: 6s; }
+
+/* ✨ Gentle floating and glowing effect after heart is drawn */
+@keyframes gentleGlow {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    filter: drop-shadow(0 0 6px #f48fb1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.03);
+    filter: drop-shadow(0 0 12px #ffb6c1);
+  }
+}
+
+/* Apply the glow once drawing is done */
+#heart-frame.finished {
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
 </style>
 </head>
 <body>
@@ -170,13 +225,29 @@ async function showSentence(lines,delay=200){
   }
 }
 
-async function showAllText(){
-  for(let s=0;s<sentences.length;s++){
-    await showSentence(sentences[s],300);
-    await new Promise(r=>setTimeout(r,300));
+// Show all text, then draw the heart frame
+async function showAllText() {
+  for (let s = 0; s < sentences.length; s++) {
+    await showSentence(sentences[s], 300);
+    await new Promise(r => setTimeout(r, 300));
   }
-  inkTrails.forEach(ink=>ink.style.display='none');
+
+  // Hide ink trails after typing ends
+  inkTrails.forEach(ink => ink.style.display = 'none');
+
+  // 🌷 Reveal the heart frame
+  const heart = document.getElementById("heart-frame");
+  heart.classList.add("show");
 }
+
+// 🌟 After heart finishes drawing, add glowing animation
+setTimeout(() => {
+  const heart = document.getElementById("heart-frame");
+  if (heart.classList.contains("show")) {
+    heart.classList.add("finished");
+  }
+}, 8500); // wait ~8.5s after draw starts
+
 
 // Start button click
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -210,5 +281,29 @@ document.getElementById("startBtn").addEventListener("click",function(){
   },1800);
 });
 </script>
+
+<!-- 🌸 Heart Frame SVG added below (right before </body>) -->
+<svg id="heart-frame" width="300" height="280" viewBox="0 0 300 280"
+     xmlns="http://www.w3.org/2000/svg"
+     style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%);
+            opacity:0; pointer-events:none; z-index:5;">
+  <!-- Heart Path -->
+  <path id="heartPath"
+        d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z"
+        fill="none" stroke="#e91e63" stroke-width="3" stroke-linecap="round"
+        stroke-dasharray="1000" stroke-dashoffset="1000" />
+  
+  <!-- Flower dots -->
+  <g fill="#ffb6c1" stroke="#f48fb1" stroke-width="1">
+    <circle cx="80" cy="100" r="6" opacity="0" />
+    <circle cx="220" cy="100" r="6" opacity="0" />
+    <circle cx="150" cy="50" r="6" opacity="0" />
+    <circle cx="110" cy="180" r="6" opacity="0" />
+    <circle cx="190" cy="180" r="6" opacity="0" />
+  </g>
+</svg>
+<!-- 🌸 End of Heart Frame SVG -->
+  
 </body>
 </html>
+
