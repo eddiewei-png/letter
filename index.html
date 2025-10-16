@@ -15,11 +15,17 @@ body, html {
 
 /* Start wrapper */
 .start-wrapper {
-  position:relative; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:1000;
+  position: fixed; /* restore centering using fixed positioning */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* above everything at start */
 }
+
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
@@ -161,7 +167,6 @@ body, html {
   animation: fadeOutToPink 3s ease forwards;
 }
 
-/* 🌸 Heart frame container */
 /* 🌸 Heart frame container (fixed layering fix) */
 #heart-frame {
   position: fixed;
@@ -170,19 +175,17 @@ body, html {
   justify-content: center;
   align-items: center;
   opacity: 0;
-  pointer-events: none;   /* never intercept clicks */
-  z-index: 0;             /* below the start wrapper, above the page background */
+  pointer-events: none;   /* so it never blocks clicks */
+  z-index: 0;             /* behind the start button */
   background: rgba(255,240,245,0.6);
   transition: opacity 1s ease;
 }
 
 #heart-frame.show {
   opacity: 1;
-  pointer-events: none;   /* still ignore clicks */
-  z-index: 999;           /* bring forward only after fade-out */
+  pointer-events: none;
+  z-index: 999;           /* only comes to front after letter fades */
 }
-
-
 
 /* 🌷 Small flower style */
 .flower {
@@ -396,6 +399,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
