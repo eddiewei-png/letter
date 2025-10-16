@@ -199,25 +199,14 @@ body, html {
 <div id="heartFramePage" style="display: none; justify-content: center; align-items: center; flex-direction: column; height: 100vh;">
   <!-- Flower heart frame -->
 <div class="heart-container" id="flowerHeart">
-<svg id="heartSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<svg id="heartSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <path id="heartPath"
-    d="M50 30
-       C35 5, 5 25, 50 75
-       C95 25, 65 5, 50 30Z"
+    d="M100 30
+       C40 0, 0 70, 100 180
+       C200 70, 160 0, 100 30Z"
     fill="none"
     stroke="#ff1493"
     stroke-width="2.5"
-    stroke-linecap="round"
-    stroke-linejoin="round" />
-</svg>
-
-  <path id="heartPath"
-    d="M100 30
-       C40 -20, -20 60, 100 180
-       C220 60, 160 -20, 100 30Z"
-    fill="none"
-    stroke="#ff1493"
-    stroke-width="3"
     stroke-linecap="round"
     stroke-linejoin="round" />
 </svg>
@@ -354,35 +343,39 @@ async function showAllText(){
   }, 1000);
 }
 
+let heartDrawn = false; // ✅ prevent multiple draws
+
 function animateFlowerHeart() {
+  if (heartDrawn) return; // don’t run twice
+  heartDrawn = true;
+
   const path = document.getElementById('heartPath');
+  const svg = document.getElementById('heartSvg');
   const container = document.getElementById('flowerHeart');
+  const rect = svg.getBoundingClientRect();
+
   const pathLength = path.getTotalLength();
-  const step = 4; // pixels between flowers
+  const step = 5; // smaller = denser flowers
   let i = 0;
 
   function drawNext() {
     if (i > pathLength) {
       path.classList.add('glow');
-      return; // stop when done ✅
+      return;
     }
 
     const point = path.getPointAtLength(i);
     const flower = createTinyFlower();
+
+    // ✅ Convert SVG coordinates (0–200) to container pixels
     flower.style.position = 'absolute';
-    // Get the SVG's actual on-screen size
-const svg = document.getElementById('heartSvg');
-const rect = svg.getBoundingClientRect();
-
-// Convert SVG coordinates (0–100) into pixel positions inside the container
-flower.style.left = `${(point.x / 100) * rect.width}px`;
-flower.style.top = `${(point.y / 100) * rect.height}px`;
-
+    flower.style.left = `${(point.x / 200) * rect.width}px`;
+    flower.style.top = `${(point.y / 200) * rect.height}px`;
     flower.style.transform = 'translate(-50%, -50%)';
     container.appendChild(flower);
 
     i += step;
-    requestAnimationFrame(drawNext);
+    setTimeout(drawNext, 10); // gentle pace
   }
 
   drawNext();
@@ -422,6 +415,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
