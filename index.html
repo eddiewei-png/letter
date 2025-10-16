@@ -182,6 +182,23 @@ body, html {
   }
 }
 
+/* === Fix start button click issue === */
+#heartFramePage,
+#flowerHeart,
+#heartSvg {
+  pointer-events: none;   /* prevent them from blocking clicks */
+  z-index: 1;             /* keep them below the start screen */
+}
+
+.start-wrapper {
+  position: absolute;
+  z-index: 9999;          /* ensure it's always on top */
+}
+
+#startBtn {
+  pointer-events: auto;   /* explicitly allow button clicks */
+}
+
 </style>
 </head>
 <body>
@@ -429,6 +446,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
