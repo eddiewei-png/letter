@@ -89,7 +89,7 @@ body, html {
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
 
 /* ❤️ Heart Frame Animation */
-@keyframes drawHeart {
+@keyframes  {
   from { stroke-dashoffset: 1000; }
   to { stroke-dashoffset: 0; }
 }
@@ -326,10 +326,10 @@ document.getElementById("startBtn").addEventListener("click",function(){
   const startContainer=document.getElementById("start-container");
 
  // disable only after fade starts
-setTimeout(() => {
-  this.disabled = true;
-  this.style.pointerEvents = "none";
-}, 200);
+//setTimeout(() => {
+//  this.disabled = true;
+ // this.style.pointerEvents = "none";
+//}, 200);
 
   // Ripple effect
   const rect=this.getBoundingClientRect();
@@ -361,18 +361,12 @@ function drawHeartWithFlowers() {
   const path = document.getElementById("heart-path");
   const svg = heartFrame.querySelector("svg");
   const bbox = svg.viewBox.baseVal;
-  const length = path.gefunction drawHeartWithFlowers() {
-  const heartFrame = document.getElementById("heart-frame");
-  const path = document.getElementById("heart-path");
-  const svg = heartFrame.querySelector("svg");
-  const bbox = svg.viewBox.baseVal;
   const length = path.getTotalLength();
 
-  // Hide the stroke — we only want flowers to be visible
   path.style.stroke = "none";
 
-  const flowerCount = 80;   // more flowers = smoother heart
-  const duration = 6000;    // 6 seconds total draw time
+  const flowerCount = 80;
+  const duration = 6000;
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
@@ -381,7 +375,6 @@ function drawHeartWithFlowers() {
     flower.style.transform = "translate(-50%, -50%) scale(0)";
     heartFrame.appendChild(flower);
 
-    // progressively show flowers along the path
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
@@ -389,19 +382,20 @@ function drawHeartWithFlowers() {
       flower.style.top = `calc(50% - ${bbox.height/2 - point.y}px)`;
       flower.style.transition = "opacity 0.5s ease, transform 0.5s ease";
       flower.style.opacity = 1;
-      flower.style.transform = "translate(-50%, -50%) scale(1) rotate(" + (Math.random() * 30 - 15) + "deg)";
+      flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 30 - 15}deg)`;
     }, (duration / flowerCount) * i);
   }
 
-  // When done, make them gently pulse / glow
   setTimeout(() => {
     heartFrame.classList.add("finished");
   }, duration + 500);
 }
+
   
 </script>
 </body>
 </html>
+
 
 
 
