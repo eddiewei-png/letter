@@ -169,14 +169,16 @@ body, html {
   justify-content: center;
   align-items: center;
   opacity: 0;
-  pointer-events: none;
-  z-index: 20;
+  pointer-events: none; /* disable clicks by default */
+  z-index: 0;           /* move it behind start screen */
   background: rgba(255,240,245,0.6);
   transition: opacity 1s ease;
 }
 
 #heart-frame.show {
   opacity: 1;
+  pointer-events: none; /* still non-clickable, just visible */
+  z-index: 999;         /* bring to front only when showing */
 }
 
 /* 🌷 Small flower style */
@@ -391,6 +393,7 @@ function drawHeartWithFlowers() {
 </script>
 </body>
 </html>
+
 
 
 
