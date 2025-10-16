@@ -349,8 +349,10 @@ function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
   const path = document.getElementById("heart-path");
   const length = path.getTotalLength();
-  const flowerCount = 40; // how many flowers will appear
-  const duration = 5000;  // 5 seconds drawing time
+  const flowerCount = 50; // number of flowers
+  const duration = 5000;  // 5 seconds total
+
+  const svgRect = heartFrame.querySelector("svg").getBoundingClientRect();
 
   for (let i = 0; i < flowerCount; i++) {
     const flower = document.createElement("div");
@@ -360,17 +362,19 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       const progress = i / (flowerCount - 1);
       const point = path.getPointAtLength(progress * length);
-      flower.style.left = `${point.x + window.innerWidth / 2 - 100}px`;
-      flower.style.top = `${point.y + window.innerHeight / 2 - 90}px`;
+      // Now position relative to SVG center
+      flower.style.left = `${svgRect.left + point.x}px`;
+      flower.style.top = `${svgRect.top + point.y}px`;
       flower.style.opacity = 1;
       flower.style.transform = "translate(-50%, -50%) scale(1)";
     }, (duration / flowerCount) * i);
   }
 }
-
+  
 </script>
 </body>
 </html>
+
 
 
 
