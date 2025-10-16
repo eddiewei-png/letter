@@ -201,9 +201,9 @@ body, html {
 <div class="heart-container" id="flowerHeart">
 <svg id="heartSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <path id="heartPath"
-        d="M100 35
-           C30 0, 0 80, 100 185
-           C200 80, 170 0, 100 35Z"
+        d="M100 170
+           C20 110, 20 40, 100 60
+           C180 40, 180 110, 100 170Z"
         fill="none"
         stroke="#ff1493"
         stroke-width="2.5"
@@ -228,9 +228,6 @@ const sentences=[
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四","Line 4 English"],
   ["Line 5 行五","Line 5 English"],
-  ["Line 6 行五","Line 6 English"],
-  ["Line 7 行五","Line 7 English"],
-  ["Line 8 行五","Line 8 English"],
   ["[Your Name]"]
 ];
 
@@ -348,7 +345,7 @@ setTimeout(() => {
 let heartDrawn = false; // ✅ prevent multiple draws
 
 function animateFlowerHeart() {
-  if (heartDrawn) return; // don’t run twice
+  if (heartDrawn) return;
   heartDrawn = true;
 
   const path = document.getElementById('heartPath');
@@ -357,19 +354,17 @@ function animateFlowerHeart() {
   const rect = svg.getBoundingClientRect();
 
   const pathLength = path.getTotalLength();
-  const step = 5; // smaller = denser flowers
+  const step = 6;
   let i = 0;
 
   function drawNext() {
-    if (i > pathLength) {
+    if (i >= pathLength) {
       path.classList.add('glow');
-      return;
+      return; // ✅ stop the animation
     }
 
     const point = path.getPointAtLength(i);
     const flower = createTinyFlower();
-
-    // ✅ Convert SVG coordinates (0–200) to container pixels
     flower.style.position = 'absolute';
     flower.style.left = `${(point.x / 200) * rect.width}px`;
     flower.style.top = `${(point.y / 200) * rect.height}px`;
@@ -377,7 +372,7 @@ function animateFlowerHeart() {
     container.appendChild(flower);
 
     i += step;
-    setTimeout(drawNext, 10); // gentle pace
+    setTimeout(drawNext, 15);
   }
 
   drawNext();
@@ -417,6 +412,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
