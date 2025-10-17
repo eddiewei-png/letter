@@ -245,12 +245,14 @@ function drawFlowerHeart() {
     progress = Math.min((Date.now() - startTime) / duration, 1);
     const pointsToShow = Math.floor(heartPoints.length * progress);
     
-    for (let i = 0; i < pointsToShow; i++) {
-      const point = heartPoints[i];
-      const rot = Math.random() * Math.PI * 2;
-      const size = 6 + Math.random() * 2;
-      drawFlowerPetal(ctx, point.x, point.y, size, rot);
-    }
+    for (let i = 0; i < heartPoints.length; i += 3) { // draw every 3rd point for spacing
+  const p = heartPoints[i];
+  // add slight random jitter so it looks natural, not grid-like
+  const offsetX = (Math.random() - 0.5) * 5;
+  const offsetY = (Math.random() - 0.5) * 5;
+  drawFlowerPetal(ctx, p.x + offsetX, p.y + offsetY, petalSize);
+}
+
     
     if (progress < 1) {
       requestAnimationFrame(animate);
@@ -305,6 +307,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 
 </body>
 </html>
+
 
 
 
