@@ -238,42 +238,51 @@ document.getElementById("startBtn").addEventListener("click",function(){
 });
 
 /* ---------------- Heart Drawing ---------------- */
-function drawHeartWithFlowers(){
-  const heartFrame=document.getElementById("heart-frame");
-  heartFrame.innerHTML="";
-  const width=heartFrame.clientWidth;
-  const height=heartFrame.clientHeight;
-  const targetFlowers=480;
-  const maxAttempts=targetFlowers*6;
-  let placed=0,attempts=0;
-  const delayPerFlower=10;
+async function drawHeartWithFlowers() {
+  const heartFrame = document.getElementById('heart-frame');
+  heartFrame.innerHTML = ''; // clear
 
-  while(placed<targetFlowers && attempts<maxAttempts){
-    attempts++;
-    const nx=Math.random()*2-1;
-    const ny=Math.random()*2-1;
-    const x=nx,y=ny;
-    const inside=Math.pow(x*x+y*y-1,3)-x*x*y*y*y<=0;
-    if(!inside)continue;
-    const px=((nx+1)/2)*width+(Math.random()-0.5)*8;
-    const py=((1-(ny+1)/2))*height+(Math.random()-0.5)*8;
-    const flower=document.createElement("div");
-    flower.className="flower";
-    flower.textContent="🌸";
-    flower.style.left=px+"px";
-    flower.style.top=py+"px";
+  const width = heartFrame.clientWidth;
+  const height = heartFrame.clientHeight;
+
+  const targetFlowers = 450;
+  const delayPerFlower = 15; // smaller = faster drawing
+
+  let placed = 0;
+
+  while (placed < targetFlowers) {
+    // random normalized point
+    const nx = Math.random() * 2 - 1;
+    const ny = Math.random() * 2 - 1;
+
+    // heart shape test
+    const x = nx, y = ny;
+    const inside = Math.pow(x * x + y * y - 1, 3) - x * x * y * y * y <= 0;
+    if (!inside) continue;
+
+    const px = ((nx + 1) / 2) * width + (Math.random() - 0.5) * 6;
+    const py = ((1 - (ny + 1) / 2)) * height + (Math.random() - 0.5) * 6;
+
+    const flower = document.createElement('div');
+    flower.className = 'flower';
+    flower.textContent = '🌸';
+    flower.style.left = px + 'px';
+    flower.style.top = py + 'px';
     heartFrame.appendChild(flower);
-    const bloomDelay=placed*delayPerFlower;
-    setTimeout(()=>{
-      flower.style.opacity="1";
-      flower.style.transform=`translate(-50%,-50%) scale(1) rotate(${Math.random()*40-20}deg)`;
-    },bloomDelay);
+
+    // fade in the flower after adding it
+    await new Promise(r => setTimeout(r, delayPerFlower));
+    flower.style.opacity = '1';
+    flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random() * 40 - 20}deg)`;
+
     placed++;
   }
-  setTimeout(()=>{
-    heartFrame.classList.add("finished");
-  },Math.max(placed*delayPerFlower+300,800));
+
+  // when done, gentle glow
+  heartFrame.classList.add('finished');
 }
+
 </script>
 </body>
 </html>
+
