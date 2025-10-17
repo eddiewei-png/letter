@@ -173,24 +173,25 @@ async function showSentence(lines,delay=200){
   }
 }
 
-function drawFlowerPetal(ctx, x, y, size) {
-  const colors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
-  
+// 🌸 dreamy cherry-blossom petal
+function drawFlowerPetal(ctx, x, y, size, rotation) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+
+  const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 2);
+  gradient.addColorStop(0, 'rgba(255,192,203,0.9)');
+  gradient.addColorStop(0.6, 'rgba(255,182,193,0.7)');
+  gradient.addColorStop(1, 'rgba(255,182,193,0)');
+
+  ctx.fillStyle = gradient;
   ctx.beginPath();
-  ctx.arc(x, y, size * 0.6, 0, Math.PI * 2);
-  ctx.fillStyle = "#ffd700";
+  ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(-size, -size*2, size, -size*2, 0, 0);
+  ctx.closePath();
   ctx.fill();
-  
-  // Draw 5 petals around center with more space between them
-  for (let i = 0; i < 5; i++) {
-    const angle = (i / 5) * Math.PI * 2;
-    const petalX = x + Math.cos(angle) * size * 2.2;
-    const petalY = y + Math.sin(angle) * size * 2.2;
-    ctx.beginPath();
-    ctx.arc(petalX, petalY, size * 0.7, 0, Math.PI * 2);
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.fill();
-  }
+
+  ctx.restore();
 }
 
 function drawFlowerHeart() {
@@ -199,14 +200,12 @@ function drawFlowerHeart() {
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Heart path points
   const heartPoints = [];
   const scale = 12;
-  const offsetX = 600;
-  const offsetY = 600;
+  const offsetX = canvas.width / 2;
+  const offsetY = canvas.height / 2;
   
-  // Generate heart curve with more spacing
-  for (let t = 0; t < Math.PI * 2; t += 0.08) {
+  for (let t = 0; t < Math.PI * 2; t += 0.05) {
     const x = 16 * Math.sin(t) ** 3;
     const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
     heartPoints.push({
@@ -215,21 +214,19 @@ function drawFlowerHeart() {
     });
   }
   
-  // Animation
   let progress = 0;
-  const duration = 5000;
+  const duration = 6000;
   const startTime = Date.now();
   
   function animate() {
     progress = Math.min((Date.now() - startTime) / duration, 1);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     const pointsToShow = Math.floor(heartPoints.length * progress);
     
-    // Draw flower petals along heart
     for (let i = 0; i < pointsToShow; i++) {
       const point = heartPoints[i];
-      drawFlowerPetal(ctx, point.x, point.y, 6);
+      const rot = Math.random() * Math.PI * 2;
+      const size = 6 + Math.random() * 2;
+      drawFlowerPetal(ctx, point.x, point.y, size, rot);
     }
     
     if (progress < 1) {
@@ -282,5 +279,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 });
 </script>
 
+
 </body>
 </html>
+
