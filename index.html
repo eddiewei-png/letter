@@ -174,34 +174,33 @@ async function showSentence(lines,delay=200){
 }
 
 // 🌸 dreamy cherry-blossom petal
-function drawFlowerPetal(ctx, x, y, size) {
-  // Your friend's petal colors and shape variety
-  const colors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
-  const shapes = ["circle", "ellipse", "triangle"]; // mix of shapes
+function drawFlowerPetal(ctx, x, y, baseSize) {
+  const petalColors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
+  
+  // Draw 5 petals around the center
+  for (let i = 0; i < 5; i++) {
+    const angle = Math.random() * Math.PI * 2; // random rotation for natural look
+    const petalSize = baseSize * (0.6 + Math.random() * 0.8); // random size
+    const offsetX = Math.cos(angle) * (baseSize + Math.random() * baseSize);
+    const offsetY = Math.sin(angle) * (baseSize + Math.random() * baseSize);
 
-  // Pick a random shape for variety
-  const shape = shapes[Math.floor(Math.random() * shapes.length)];
-  const color = colors[Math.floor(Math.random() * colors.length)];
-
-  ctx.fillStyle = color;
-
-  if (shape === "circle") {
     ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (shape === "ellipse") {
-    ctx.beginPath();
-    ctx.ellipse(x, y, size * 1.2, size * 0.7, 0, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (shape === "triangle") {
-    ctx.beginPath();
-    ctx.moveTo(x, y - size);
-    ctx.lineTo(x - size, y + size);
-    ctx.lineTo(x + size, y + size);
-    ctx.closePath();
+    ctx.ellipse(
+      x + offsetX, y + offsetY, 
+      petalSize, petalSize * (0.6 + Math.random() * 0.4), 
+      angle, 0, Math.PI * 2
+    );
+    ctx.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)];
     ctx.fill();
   }
+  
+  // Optional: a subtle center circle
+  ctx.beginPath();
+  ctx.arc(x, y, baseSize * 0.4, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffd700";
+  ctx.fill();
 }
+
 
 function drawFlowerHeart() {
   const canvas = document.getElementById("heart-canvas");
@@ -288,6 +287,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 
 </body>
 </html>
+
 
 
 
