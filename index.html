@@ -103,13 +103,13 @@ body, html {
   animation: fadeIn 1s ease forwards;
 }
 
-#heart-frame.show path {
-  animation: drawHeart 6s ease forwards;
-  filter: drop-shadow(0 0 6px #f48fb1);
+#heart-frame text {
+  opacity: 0;
+  transition: opacity 1.5s ease-in;
 }
-
-#heart-frame.show circle {
-  animation: bloom 1s ease forwards;
+#heart-frame.show text {
+  opacity: 1;
+  animation: gentleGlow 3s ease-in-out infinite;
 }
 
 /* Flowers bloom one by one */
@@ -189,10 +189,6 @@ const sentences=[
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四","Line 4 English"],
-  ["Line 5 行五","Line 5 English"],
-  ["Line 6 行五","Line 6 English"],
-  ["Line 7 行五","Line 7 English"],
-  ["Line 8 行五","Line 8 English"],
   ["[Your Name]"]
 ];
 
@@ -319,23 +315,29 @@ document.getElementById("startBtn").addEventListener("click",function(){
      style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%);
             opacity:0; pointer-events:none; z-index:5;">
   <!-- Heart Path -->
-  <path id="heartPath"
-        d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z"
-        fill="none" stroke="#e91e63" stroke-width="3" stroke-linecap="round"
-        stroke-dasharray="1000" stroke-dashoffset="1000" />
-  
-  <!-- Flower dots -->
-  <g fill="#ffb6c1" stroke="#f48fb1" stroke-width="1">
-    <circle cx="80" cy="100" r="6" opacity="0" />
-    <circle cx="220" cy="100" r="6" opacity="0" />
-    <circle cx="150" cy="50" r="6" opacity="0" />
-    <circle cx="110" cy="180" r="6" opacity="0" />
-    <circle cx="190" cy="180" r="6" opacity="0" />
-  </g>
+<svg id="heart-frame" width="300" height="280" viewBox="0 0 300 280"
+     xmlns="http://www.w3.org/2000/svg"
+     style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%);
+            opacity:0; pointer-events:none; z-index:5;">
+
+  <defs>
+    <path id="heartPath"
+          d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z" />
+  </defs>
+
+  <!-- 🌸 Emoji text following the heart path -->
+  <text font-size="20" text-anchor="middle" dominant-baseline="middle">
+    <textPath href="#heartPath" startOffset="50%">
+      🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸
+    </textPath>
+  </text>
+</svg>
+
 </svg>
 <!-- 🌸 End of Heart Frame SVG -->
   
 </body>
 </html>
+
 
 
