@@ -78,4 +78,213 @@ body, html {
 
 /* Ripple */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
-@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;
+@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
+
+/* ❤️ Heart Frame Animation */
+@keyframes fadeIn { to { opacity: 1; } }
+
+@keyframes gentleGlow {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    filter: drop-shadow(0 0 6px #f48fb1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.03);
+    filter: drop-shadow(0 0 12px #ffb6c1);
+  }
+}
+
+/* 🌸 Flower drawing animation */
+@keyframes revealFlowers {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* Heart frame visibility + animation */
+#heart-frame {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+#heart-frame.show {
+  opacity: 1;
+  transition: opacity 1.5s ease-in;
+}
+#heart-frame textPath {
+  display: inline-block;
+  opacity: 0;
+}
+#heart-frame.show textPath {
+  opacity: 1;
+  animation: revealFlowers 6s ease forwards;
+}
+#heart-frame.finished {
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+/* 🌙 Letter fade-out effect */
+@keyframes fadeOutToPink {
+  0% { opacity: 1; background-color: transparent; filter: brightness(1); }
+  80% { opacity: 0.3; background-color: rgba(255, 182, 193, 0.4); filter: brightness(1.2); }
+  100% { opacity: 0; background-color: rgba(255, 182, 193, 0.6); filter: brightness(1.4); }
+}
+#container.fade-out {
+  animation: fadeOutToPink 3s ease forwards;
+}
+</style>
+</head>
+<body>
+
+<div class="start-wrapper">
+  <div class="start-container" id="start-container">
+    <div id="click-hint">Click Here <br> ↓</div>
+    <button id="startBtn"><img src="stella.png" alt="Start"></button>
+  </div>
+</div>
+
+<div id="container">
+  <div id="letter-wrapper">
+    <h1>Sample Letter</h1>
+    <div id="letter"></div>
+  </div>
+  <audio id="background-music" loop>
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+const sentences=[
+  ["Line 1 行一","Line 1 English"],
+  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
+  ["Line 3 行三","Line 3 English"],
+  ["Line 4 行四","Line 4 English"],
+  ["[Your Name]"]
+];
+
+const letterDiv=document.getElementById("letter");
+const inkTrails=[];
+for(let i=0;i<3;i++){
+  const ink=document.createElement("span");
+  ink.classList.add("ink-trail");
+  letterDiv.appendChild(ink);
+  inkTrails.push(ink);
+}
+let trailIndex=0;
+
+function writeLetter(span,letter){
+  return new Promise(resolve=>{
+    span.textContent+=letter;
+    requestAnimationFrame(()=>{
+      span.style.opacity='1';
+      const containerRect=letterDiv.getBoundingClientRect();
+      const range=document.createRange();
+      range.setStart(span.firstChild||span,span.textContent.length-1);
+      range.setEnd(span.firstChild||span,span.textContent.length);
+      const rect=range.getBoundingClientRect();
+      const ink=inkTrails[trailIndex%inkTrails.length];
+      ink.style.height=rect.height+'px';
+      ink.style.width=rect.width/2+'px';
+      ink.style.left=(rect.right-containerRect.left)+'px';
+      ink.style.top=(rect.top-containerRect.top)+'px';
+      ink.style.opacity=1;
+      trailIndex++;
+      setTimeout(()=>ink.style.opacity=0,400);
+    });
+    resolve();
+  });
+}
+
+async function showSentence(lines,delay=200){
+  const pContainer=document.createElement("p");
+  letterDiv.appendChild(pContainer);
+  if(!Array.isArray(lines)) lines=[lines];
+  const spans=lines.map(line=>{
+    const span=document.createElement("span");
+    span.style.display='block';
+    span.style.marginBottom='0.2em';
+    pContainer.appendChild(span);
+    return {span,text:line};
+  });
+  const maxLength=Math.max(...lines.map(l=>l.length));
+  for(let i=0;i<maxLength;i++){
+    for(let {span,text} of spans){
+      if(i<text.length) await writeLetter(span,text[i]);
+    }
+    await new Promise(r=>setTimeout(r,delay));
+    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
+  }
+}
+
+async function showAllText() {
+  for (let s = 0; s < sentences.length; s++) {
+    await showSentence(sentences[s], 300);
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  inkTrails.forEach(ink => ink.style.display = 'none');
+  const container = document.getElementById("container");
+  container.classList.add("fade-out");
+
+  await new Promise(r => setTimeout(r, 3000));
+  const heart = document.getElementById("heart-frame");
+  heart.classList.add("show");
+}
+
+setTimeout(() => {
+  const heart = document.getElementById("heart-frame");
+  if (heart.classList.contains("show")) {
+    heart.classList.add("finished");
+  }
+}, 8500);
+
+document.getElementById("startBtn").addEventListener("click",function(){
+  const container=document.getElementById("container");
+  const startContainer=document.getElementById("start-container");
+
+  this.disabled=true;
+  this.style.pointerEvents="none";
+
+  const rect=this.getBoundingClientRect();
+  const centerX=rect.left+rect.width/2;
+  const centerY=rect.top+rect.height/2;
+  for(let i=0;i<5;i++){
+    const ripple=document.createElement("span");
+    ripple.className='ripple';
+    ripple.style.left=centerX+'px';
+    ripple.style.top=centerY+'px';
+    ripple.style.animationDelay=`${i*0.3}s`;
+    document.body.appendChild(ripple);
+    ripple.addEventListener('animationend',()=>ripple.remove());
+  }
+
+  startContainer.classList.add('fade-out');
+  setTimeout(()=>{
+    startContainer.style.display='none';
+    container.classList.add('show');
+    document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+    showAllText();
+  },1800);
+});
+</script>
+
+<!-- 🌸 Heart Frame SVG (fixed version) -->
+<svg id="heart-frame" width="300" height="280" viewBox="0 0 300 280"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="heartPath"
+          d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z" />
+  </defs>
+  <text font-size="22" text-anchor="middle" dominant-baseline="middle">
+    <textPath href="#heartPath" startOffset="50%">
+      🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸
+    </textPath>
+  </text>
+</svg>
+<!-- 🌸 End Heart Frame SVG -->
+
+</body>
+</html>
