@@ -175,93 +175,73 @@ async function showSentence(lines,delay=200){
 
 // 🌸 dreamy cherry-blossom petal
 function drawFlowerPetal(ctx, x, y, size) {
-  // pastel palette, solid fill only
-  const colors = ["#ffb6c1", "#ffc0cb", "#f8e8ff", "#e6ccff", "#ffffff"];
-  
-  // random style: 0 = sakura, 1 = round, 2 = oval
-  const type = Math.floor(Math.random() * 3);
-  const color = colors[Math.floor(Math.random() * colors.length)];
-  
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(Math.random() * Math.PI * 2);
-  ctx.globalAlpha = 1; // full opacity
-  ctx.shadowColor = "transparent"; // no shadow
+  // Your friend's petal colors and shape variety
+  const colors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
+  const shapes = ["circle", "ellipse", "triangle"]; // mix of shapes
 
-  if (type === 0) {
-    // Sakura petal (teardrop)
-    ctx.fillStyle = color;
+  // Pick a random shape for variety
+  const shape = shapes[Math.floor(Math.random() * shapes.length)];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+
+  ctx.fillStyle = color;
+
+  if (shape === "circle") {
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-size, -size, -size, -2 * size, 0, -2.4 * size);
-    ctx.bezierCurveTo(size, -2 * size, size, -size, 0, 0);
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (shape === "ellipse") {
+    ctx.beginPath();
+    ctx.ellipse(x, y, size * 1.2, size * 0.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (shape === "triangle") {
+    ctx.beginPath();
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x - size, y + size);
+    ctx.lineTo(x + size, y + size);
     ctx.closePath();
     ctx.fill();
-
-  } else if (type === 1) {
-    // Round blossom
-    ctx.beginPath();
-    ctx.arc(0, 0, size * 1.1, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-
-  } else {
-    // Long oval petal
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, size * 0.6, size * 1.4, Math.random() * Math.PI, 0, Math.PI * 2);
-    ctx.fill();
   }
-
-  ctx.restore();
 }
-
 
 function drawFlowerHeart() {
   const canvas = document.getElementById("heart-canvas");
   const ctx = canvas.getContext("2d");
-  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   const heartPoints = [];
   const scale = 12;
-  const offsetX = canvas.width / 2;
-  const offsetY = canvas.height / 2;
-  
-  for (let t = 0; t < Math.PI * 2; t += 0.05) {
+  const offsetX = 600;
+  const offsetY = 600;
+
+  // Generate heart points
+  for (let t = 0; t < Math.PI * 2; t += 0.08) {
     const x = 16 * Math.sin(t) ** 3;
     const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-    heartPoints.push({
-      x: offsetX + x * scale,
-      y: offsetY - y * scale
-    });
-  }
-  
-  let progress = 0;
-  const duration = 6000;
-  const startTime = Date.now();
-  
-  function animate() {
-    progress = Math.min((Date.now() - startTime) / duration, 1);
-    const pointsToShow = Math.floor(heartPoints.length * progress);
-    
-    for (let t = 0; t < Math.PI * 2; t += 0.05) {
-    const x = 16 * Math.sin(t) ** 3;
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-    heartPoints.push({
-      x: offsetX + x * scale,
-      y: offsetY - y * scale
-    });
+    heartPoints.push({ x: offsetX + x * scale, y: offsetY - y * scale });
   }
 
-    
-    if (progress < 1) {
-      requestAnimationFrame(animate);
+  let progress = 0;
+  const duration = 5000;
+  const startTime = Date.now();
+
+  function animate() {
+    progress = Math.min((Date.now() - startTime) / duration, 1);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const pointsToShow = Math.floor(heartPoints.length * progress);
+
+    // Draw petals along the heart
+    for (let i = 0; i < pointsToShow; i += 1) { // keep every point to maintain heart shape
+      const p = heartPoints[i];
+      drawFlowerPetal(ctx, p.x, p.y, 6);
     }
+
+    if (progress < 1) requestAnimationFrame(animate);
   }
-  
+
   animate();
 }
+
 
 async function showAllText() {
   for (let s = 0; s < sentences.length; s++) {
@@ -308,6 +288,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 
 </body>
 </html>
+
 
 
 
