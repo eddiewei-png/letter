@@ -249,37 +249,50 @@ document.getElementById("startBtn").addEventListener("click", function(){
 // Draw flowers directly in heart-frame
 function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
-  heartFrame.innerHTML = ''; // clear previous flowers
+  heartFrame.innerHTML = ""; // clear previous flowers
 
-  const flowerCount = 150; // more points for smooth heart
+  const flowerCount = 120; // more points for smoother heart
   const width = heartFrame.clientWidth;
   const height = heartFrame.clientHeight;
 
-  for (let i = 0; i < flowerCount; i++) {
-    const t = Math.PI - (Math.PI * i / (flowerCount - 1)); // 0 → π
-    // Heart parametric equations
-    const x = 16 * Math.pow(Math.sin(t), 3);
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+  // Heart parametric ranges
+  const xMin = -16, xMax = 16;
+  const yMin = -17, yMax = 13;
 
-    const px = ((x + 17) / 34) * width;
-    const py = ((-y + 17) / 34) * height;
+  for (let i = 0; i < flowerCount; i++) {
+    // Use a parameter t from 0 → 2π
+    const t = (i / (flowerCount - 1)) * Math.PI * 2;
+
+    // Parametric heart
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+
+    // Scale to container
+    const px = ((x - xMin) / (xMax - xMin)) * width;
+    const py = ((-y + yMax) / (yMax - yMin)) * height; // flip vertically
 
     const flower = document.createElement("div");
     flower.className = "flower";
     flower.textContent = "🌸";
     flower.style.left = `${px}px`;
     flower.style.top = `${py}px`;
+    flower.style.opacity = 0;
+    flower.style.transform = "translate(-50%, -50%) scale(0.8)";
     heartFrame.appendChild(flower);
 
     setTimeout(() => {
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
-    }, i * 25); // faster appearance
+    }, i * 30);
   }
 
-  setTimeout(() => heartFrame.classList.add("finished"), flowerCount * 25 + 500);
+  // Add finished class after all flowers appear
+  setTimeout(() => {
+    heartFrame.classList.add("finished");
+  }, flowerCount * 30 + 500);
 }
 
 </script>
 </body>
 </html>
+
