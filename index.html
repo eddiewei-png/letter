@@ -13,7 +13,6 @@ body, html {
   overflow:hidden;
 }
 
-/* Start wrapper */
 .start-wrapper {
   position:absolute; top:50%; left:50%;
   transform:translate(-50%,-50%);
@@ -24,16 +23,13 @@ body, html {
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 
-/* Start button wiggle */
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
 #startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
 
-/* Fade out */
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);}}
 
-/* Letter container */
 #container {
   opacity: 0;
   pointer-events: none;
@@ -64,51 +60,22 @@ body, html {
 
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
 
-#heart { text-align:center; margin-top:24px; }
-#heart img { width:80px; height:80px; animation:beat-img 1.2s infinite; }
-@keyframes beat-img {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
-
-/* Ripple */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
 
-/* ❤️ Heart Frame Animation */
-@keyframes drawHeart {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes fadeIn { to { opacity: 1; } }
-@keyframes pulseGlow {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.6)); }
-  50% { filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.9)); }
-}
-@keyframes floatUp {
-  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-  to { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-
-#heart-frame {
-  position:fixed; left:50%; top:50%; bottom:auto;
+#heart-container {
+  position:fixed;
+  left:50%;
+  top:50%;
   transform:translate(-50%, -50%);
-  opacity:0; pointer-events:none; z-index:50;
+  z-index:50;
   display:none;
 }
-#heart-frame.show { 
+
+#heart-container.show {
   display:block;
 }
 
-/* Heart stroke outline */
-.heart-outline {
-  display:none;
-}
-
-/* Flowers with reveal animation */
-#flowers {
-  opacity:1;
-  mask:url(#revealMask);
-}
-
-/* Fade-out transition */
 @keyframes fadeOutToPink {
   0% {opacity:1;background-color:transparent;filter:brightness(1);}
   80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
@@ -134,6 +101,13 @@ body, html {
   <audio id="background-music" loop>
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
   </audio>
+</div>
+
+<div id="heart-container">
+  <canvas id="heart-canvas" width="1200" height="1200"></canvas>
+  <div id="heart-text" style="position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); text-align:center; font-size:2rem; color:#ff69b4; z-index:5; pointer-events:none;">
+    <!-- Text will go here -->
+  </div>
 </div>
 
 <script>
@@ -199,6 +173,73 @@ async function showSentence(lines,delay=200){
   }
 }
 
+function drawFlowerPetal(ctx, x, y, size) {
+  const colors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
+  
+  ctx.beginPath();
+  ctx.arc(x, y, size * 0.6, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffd700";
+  ctx.fill();
+  
+  // Draw 5 petals around center with more space between them
+  for (let i = 0; i < 5; i++) {
+    const angle = (i / 5) * Math.PI * 2;
+    const petalX = x + Math.cos(angle) * size * 2.2;
+    const petalY = y + Math.sin(angle) * size * 2.2;
+    ctx.beginPath();
+    ctx.arc(petalX, petalY, size * 0.7, 0, Math.PI * 2);
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+  }
+}
+
+function drawFlowerHeart() {
+  const canvas = document.getElementById("heart-canvas");
+  const ctx = canvas.getContext("2d");
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Heart path points
+  const heartPoints = [];
+  const scale = 12;
+  const offsetX = 600;
+  const offsetY = 600;
+  
+  // Generate heart curve with more spacing
+  for (let t = 0; t < Math.PI * 2; t += 0.08) {
+    const x = 16 * Math.sin(t) ** 3;
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+    heartPoints.push({
+      x: offsetX + x * scale,
+      y: offsetY - y * scale
+    });
+  }
+  
+  // Animation
+  let progress = 0;
+  const duration = 5000;
+  const startTime = Date.now();
+  
+  function animate() {
+    progress = Math.min((Date.now() - startTime) / duration, 1);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const pointsToShow = Math.floor(heartPoints.length * progress);
+    
+    // Draw flower petals along heart
+    for (let i = 0; i < pointsToShow; i++) {
+      const point = heartPoints[i];
+      drawFlowerPetal(ctx, point.x, point.y, 6);
+    }
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+  
+  animate();
+}
+
 async function showAllText() {
   for (let s = 0; s < sentences.length; s++) {
     await showSentence(sentences[s], 300);
@@ -208,16 +249,10 @@ async function showAllText() {
   const container = document.getElementById("container");
   container.classList.add("fade-out");
   await new Promise(r => setTimeout(r, 3000));
-  const heart = document.getElementById("heart-frame");
-  heart.classList.add("show");
   
-  // Delay before starting mask animation
-  setTimeout(() => {
-    const animate = document.querySelector('#revealMask animate');
-    if (animate) {
-      animate.beginElement();
-    }
-  }, 500);
+  const heartContainer = document.getElementById("heart-container");
+  heartContainer.classList.add("show");
+  drawFlowerHeart();
 }
 
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -246,31 +281,6 @@ document.getElementById("startBtn").addEventListener("click",function(){
   },1800);
 });
 </script>
-
-<!-- 🌸 Heart Frame SVG with Flower Animation -->
-<svg id="heart-frame" width="300" height="280" viewBox="0 0 300 280"
-     xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <path id="heartPath" d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z" />
-    <mask id="revealMask">
-      <rect width="300" height="280" fill="white"/>
-      <use href="#heartPath" stroke="black" stroke-width="30"
-           stroke-dasharray="1000" stroke-dashoffset="1000">
-        <animate attributeName="stroke-dashoffset" from="1000" to="0"
-                 dur="5s" begin="indefinite" fill="freeze" dur="5s" />
-      </use>
-    </mask>
-  </defs>
-  <use href="#heartPath" class="heart-outline" />
-  <g id="flowers">
-    <text font-size="16" text-anchor="middle" dominant-baseline="middle" fill="none">
-      <textPath href="#heartPath" startOffset="0%" spacing="exact">
-        🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸
-      </textPath>
-    </text>
-  </g>
-</svg>
-<!-- 🌸 End of Heart Frame -->
 
 </body>
 </html>
