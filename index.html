@@ -1,297 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Letter Project</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Letter Project — Flower Heart</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
-body, html {
-  margin:0; padding:0;
-  font-family:'Segoe UI',sans-serif;
-  background:#fff0f5;
-  overflow:hidden;
-}
+  html,body{margin:0;padding:0;height:100%;background:#fff0f5;overflow:hidden;font-family:'Segoe UI',sans-serif}
+  /* START UI - highest z */
+  .start-wrapper{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;gap:12px;z-index:4000;
+  }
+  #click-hint{font-size:2.4rem;color:#ff69b4;text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493;pointer-events:none;animation:beat 1.2s infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+  #startBtn{cursor:pointer;border:0;background:none;width:160px;height:160px}
+  #startBtn img{width:100%;height:100%;border-radius:50%;filter:drop-shadow(0 0 12px rgba(255,105,180,0.7));animation:wiggle 1.5s infinite}
+  @keyframes wiggle{0%,100%{transform:rotate(0)}15%{transform:rotate(-8deg)}30%{transform:rotate(6deg)}45%{transform:rotate(-6deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-3deg)}}
 
-/* Start wrapper */
-.start-wrapper {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 3000;
-}
+  /* Letter container */
+  #container{
+    position:relative;
+    width:90vw;max-width:360px;aspect-ratio:360/650;margin:20px auto;border-radius:12px;
+    box-shadow:0 4px 15px rgba(250,50,120,0.2);
+    background:url("stellalou-letter-bg.png") no-repeat center top;background-size:100% 100%;
+    display:flex;flex-direction:column;overflow:hidden;
+    opacity:0;pointer-events:none;transition:opacity 1s ease-in;z-index:1000;
+  }
+  #container.show{opacity:1;pointer-events:auto}
+  #letter-wrapper{flex:1;overflow-y:auto;padding:40px;box-sizing:border-box}
+  #letter{font-family:'Georgia',serif;font-size:1.4rem;color:#E8C1E5;white-space:pre-wrap;position:relative}
+  .ink-trail{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%);opacity:0;transition:all .3s ease-out;width:4px;height:1.8rem}
 
-.start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
-#click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
-@keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  /* Ripple */
+  .ripple{position:fixed;border-radius:50%;background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%);width:40px;height:40px;transform:translate(-50%,-50%) scale(1);animation:ripple-anim 4s ease-out forwards;pointer-events:none;z-index:3500}
+  @keyframes ripple-anim{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(80);opacity:0}}
 
-/* Start button wiggle */
-@keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
-#startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
-#startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
+  /* Heart frame (fullscreen, centered) */
+  #heart-frame{
+    position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+    background:rgba(255,240,245,0.6);
+    opacity:0;pointer-events:none;z-index:2000;transition:opacity 0.6s ease;
+  }
+  #heart-frame.show{opacity:1}
+  /* finished class triggers gentle glow */
+  @keyframes gentleGlow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #f48fb1)}50%{transform:scale(1.02);filter:drop-shadow(0 0 12px #ffb6c1)}}
+  #heart-frame.finished{animation:gentleGlow 3s ease-in-out infinite}
 
-/* Fade out */
-.fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
-@keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);}}
-
-/* Letter container */
-#container {
-  opacity: 0;
-  pointer-events: none;
-  width: 90vw;
-  max-width: 360px;
-  aspect-ratio: 360 / 650;
-  margin: 20px auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
-  background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: 100% 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  transition: opacity 1s ease-in;
-  z-index: 10;
-  overflow: hidden;
-}
-#container.show { opacity:1; pointer-events:auto; }
-
-#letter-wrapper {
-  flex:1; 
-  overflow-y:auto;
-  padding:40px;
-  box-sizing:border-box;
-  scrollbar-width:none;
-}
-#letter-wrapper::-webkit-scrollbar { display:none; }
-
-#letter { font-family:'Georgia', serif; font-size:1.4rem; color:#E8C1E5; white-space:pre-wrap; position:relative; }
-#letter p { margin:1.2em 0; position:relative; }
-#letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
-
-/* Ink trail */
-.ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
-
-/* Ripple */
-.ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
-@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
-
-/* Heart frame */
-#heart-frame {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 2000;
-  background: rgba(255,240,245,0.6);
-}
-
-/* Show and glow */
-#heart-frame.show { opacity: 1; pointer-events: none; }
-#heart-frame.finished { animation: gentleGlow 3s ease-in-out infinite; }
-@keyframes gentleGlow {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px #f48fb1);}
-  50% { transform: scale(1.03); filter: drop-shadow(0 0 12px #ffb6c1);}
-}
-
-/* Flowers */
-.flower {
-  position: absolute;
-  font-size: 22px;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
+  /* Flower emoji style */
+  .flower{
+    position:absolute;font-size:22px;line-height:1;width:auto;height:auto;
+    opacity:0;transform:translate(-50%,-50%) scale(.8);transition:opacity .28s ease,transform .28s ease;pointer-events:none;
+  }
 </style>
 </head>
 <body>
 
-<div class="start-wrapper">
-  <div class="start-container" id="start-container">
-    <div id="click-hint">Click Here <br> ↓</div>
-    <button id="startBtn"><img src="stella.png" alt="Start"></button>
+  <!-- START UI -->
+  <div class="start-wrapper">
+    <div id="click-hint">Click Here ↓</div>
+    <div class="start-container" id="start-container">
+      <button id="startBtn"><img src="stella.png" alt="Start"></button>
+    </div>
   </div>
-</div>
 
-<div id="container">
-  <div id="letter-wrapper">
-    <h1>Sample Letter</h1>
-    <div id="letter"></div>
+  <!-- Letter container -->
+  <div id="container">
+    <div id="letter-wrapper">
+      <h1>Sample Letter</h1>
+      <div id="letter"></div>
+    </div>
+    <audio id="background-music" loop>
+      <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
+    </audio>
   </div>
-  <audio id="background-music" loop>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
-  </audio>
-</div>
 
-<div id="heart-frame"></div>
+  <!-- HEART FRAME (flowers appended directly here) -->
+  <div id="heart-frame"></div>
 
 <script>
-// Letter writing
-const sentences=[
+/* --- typing / ink code unchanged --- */
+const sentences = [
   ["Line 1 行一","Line 1 English"],
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
   ["Line 3 行三","Line 3 English"],
   ["[Your Name]"]
 ];
 
-const letterDiv=document.getElementById("letter");
-const inkTrails=[];
+const letterDiv = document.getElementById('letter');
+const inkTrails = [];
 for(let i=0;i<3;i++){
-  const ink=document.createElement("span");
-  ink.classList.add("ink-trail");
+  const ink = document.createElement('span');
+  ink.className = 'ink-trail';
   letterDiv.appendChild(ink);
   inkTrails.push(ink);
 }
-let trailIndex=0;
+let trailIndex = 0;
 
-function writeLetter(span,letter){
+function writeLetter(span, letter){
   return new Promise(resolve=>{
-    span.textContent+=letter;
+    span.textContent += letter;
     requestAnimationFrame(()=>{
-      span.style.opacity='1';
-      const containerRect=letterDiv.getBoundingClientRect();
-      const range=document.createRange();
-      range.setStart(span.firstChild||span,span.textContent.length-1);
-      range.setEnd(span.firstChild||span,span.textContent.length);
-      const rect=range.getBoundingClientRect();
-      const ink=inkTrails[trailIndex%inkTrails.length];
-      ink.style.height=rect.height+'px';
-      ink.style.width=rect.width/2+'px';
-      ink.style.left=(rect.right-containerRect.left)+'px';
-      ink.style.top=(rect.top-containerRect.top)+'px';
-      ink.style.opacity=1;
+      span.style.opacity = '1';
+      const containerRect = letterDiv.getBoundingClientRect();
+      const range = document.createRange();
+      range.setStart(span.firstChild||span, span.textContent.length-1);
+      range.setEnd(span.firstChild||span, span.textContent.length);
+      const rect = range.getBoundingClientRect();
+      const ink = inkTrails[trailIndex % inkTrails.length];
+      ink.style.height = rect.height + 'px';
+      ink.style.width = rect.width/2 + 'px';
+      ink.style.left = (rect.right - containerRect.left) + 'px';
+      ink.style.top = (rect.top - containerRect.top) + 'px';
+      ink.style.opacity = 1;
       trailIndex++;
-      setTimeout(()=>ink.style.opacity=0,400);
+      setTimeout(()=> ink.style.opacity = 0, 400);
     });
     resolve();
   });
 }
 
-async function showSentence(lines,delay=200){
-  const pContainer=document.createElement("p");
-  letterDiv.appendChild(pContainer);
+async function showSentence(lines, delay=200){
+  const p = document.createElement('p');
+  letterDiv.appendChild(p);
   if(!Array.isArray(lines)) lines=[lines];
-  const spans=lines.map(line=>{
-    const span=document.createElement("span");
-    span.style.display='block';
-    span.style.marginBottom='0.2em';
-    pContainer.appendChild(span);
-    return {span,text:line};
+  const spans = lines.map(line=>{
+    const s = document.createElement('span');
+    s.style.display = 'block';
+    s.style.marginBottom = '.2em';
+    p.appendChild(s);
+    return {span: s, text: line};
   });
-  const maxLength=Math.max(...lines.map(l=>l.length));
-  for(let i=0;i<maxLength;i++){
-    for(let {span,text} of spans){
-      if(i<text.length) await writeLetter(span,text[i]);
+  const maxLen = Math.max(...lines.map(l=>l.length));
+  for(let i=0;i<maxLen;i++){
+    for(const {span,text} of spans){
+      if(i<text.length) await writeLetter(span, text[i]);
     }
-    await new Promise(r=>setTimeout(r,delay));
-    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
+    await new Promise(r => setTimeout(r, delay));
+    letterDiv.parentElement.scrollTop = letterDiv.parentElement.scrollHeight;
   }
 }
 
-async function showAllText() {
-  for (let s = 0; s < sentences.length; s++){
+async function showAllText(){
+  for(let s=0;s<sentences.length;s++){
     await showSentence(sentences[s], 300);
     await new Promise(r => setTimeout(r, 300));
   }
-
-  inkTrails.forEach(ink => ink.remove());
-
-  const container = document.getElementById("container");
-  container.classList.add("fade-out");
-
+  inkTrails.forEach(t => t.remove());
+  const container = document.getElementById('container');
+  container.classList.add('fade-out');
   await new Promise(r => setTimeout(r, 3000));
-
-  const heartFrame = document.getElementById("heart-frame");
-  heartFrame.classList.add("show");
-
+  const heartFrame = document.getElementById('heart-frame');
+  heartFrame.classList.add('show');
   drawHeartWithFlowers();
 }
 
-// Start button
-let animationStarted=false;
-document.getElementById("startBtn").addEventListener("click", function(){
+/* --- Start button logic --- */
+let animationStarted = false;
+document.getElementById('startBtn').addEventListener('click', function(){
   if(animationStarted) return;
-  animationStarted=true;
+  animationStarted = true;
 
-  const container = document.getElementById("container");
-  const startContainer = document.getElementById("start-container");
-
+  // ripple
   const rect = this.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  const centerY = rect.top + rect.height/2;
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
   for(let i=0;i<5;i++){
-    const ripple = document.createElement("span");
-    ripple.className='ripple';
-    ripple.style.left=centerX+'px';
-    ripple.style.top=centerY+'px';
-    ripple.style.animationDelay=`${i*0.3}s`;
-    document.body.appendChild(ripple);
-    ripple.addEventListener('animationend',()=>ripple.remove());
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    r.style.left = cx + 'px';
+    r.style.top = cy + 'px';
+    r.style.animationDelay = `${i*0.25}s`;
+    document.body.appendChild(r);
+    r.addEventListener('animationend', ()=> r.remove());
   }
 
-  startContainer.classList.add('fade-out');
+  // fade out start UI, show container then text
+  document.getElementById('start-container').classList.add('fade-out');
   setTimeout(()=>{
-    startContainer.style.display='none';
-    container.classList.add('show');
-    document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+    document.getElementById('start-container').style.display = 'none';
+    document.getElementById('container').classList.add('show');
+    document.getElementById('background-music').play().catch(()=>{});
     showAllText();
-  },1800);
+  }, 1600);
 });
 
-// Draw flowers directly in heart-frame
-function drawHeartWithFlowers() {
-  const heartFrame = document.getElementById("heart-frame");
-  heartFrame.innerHTML = "";
+/* ----- NEW: robust fixed-mask fill heart (no SVG) ----- */
+/* This fills the normalized heart mask (x,y in -1..1) densely. */
+function drawHeartWithFlowers(){
+  const heartFrame = document.getElementById('heart-frame');
+  heartFrame.innerHTML = ''; // clear
 
   const width = heartFrame.clientWidth;
   const height = heartFrame.clientHeight;
-  const flowerSize = 22;
 
-  const flowerCount = 400; // more flowers = fuller heart
+  const targetFlowers = 450;     // how many flowers to place
+  const maxAttempts = targetFlowers * 6; // attempts (some points rejected)
 
-  for (let i = 0; i < flowerCount; i++) {
-    // Random normalized coordinates
-    const nx = Math.random() * 2 - 1; // -1 to 1
-    const ny = Math.random() * 2 - 1; // -1 to 1
+  let placed = 0;
+  let attempts = 0;
+  const delayPerFlower = 10; // ms between blooms (smaller -> faster)
 
-    // Heart shape formula: (x² + y² - 1)³ - x²y³ <= 0
+  while(placed < targetFlowers && attempts < maxAttempts){
+    attempts++;
+    // sample normalized coords nx,ny in [-1, 1]
+    const nx = Math.random()*2 - 1;
+    const ny = Math.random()*2 - 1;
+
+    // heart mask test (implicit heart curve)
+    // (x^2 + y^2 - 1)^3 - x^2 * y^3 <= 0 means (x,y) inside heart
     const x = nx, y = ny;
-    if ((x*x + y*y - 1)**3 - x*x*y*y*y <= 0) {
-      const px = (x + 1) / 2 * width + (Math.random() - 0.5) * 4;
-      const py = (1 - (y + 1) / 2) * height + (Math.random() - 0.5) * 4;
+    const inside = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y <= 0;
+    if(!inside) continue;
 
-      const flower = document.createElement("div");
-      flower.className = "flower";
-      flower.textContent = "🌸";
-      flower.style.left = `${px}px`;
-      flower.style.top = `${py}px`;
-      flower.style.opacity = 0;
-      flower.style.transform = "translate(-50%, -50%) scale(0.8)";
-      heartFrame.appendChild(flower);
+    // map to pixel coordinates inside the frame
+    const px = ( (nx + 1) / 2 ) * width + (Math.random()-0.5)*6;
+    const py = ( (1 - (ny + 1)/2) ) * height + (Math.random()-0.5)*6;
 
-      setTimeout(() => {
-        flower.style.opacity = 1;
-        flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
-      }, i * 10);
-    }
+    const flower = document.createElement('div');
+    flower.className = 'flower';
+    flower.textContent = '🌸';
+    flower.style.left = px + 'px';
+    flower.style.top  = py + 'px';
+    heartFrame.appendChild(flower);
+
+    // schedule bloom with slight stagger
+    const bloomDelay = placed * delayPerFlower;
+    setTimeout(()=> {
+      flower.style.opacity = '1';
+      flower.style.transform = `translate(-50%,-50%) scale(1) rotate(${Math.random()*40-20}deg)`;
+    }, bloomDelay);
+
+    placed++;
   }
 
-  setTimeout(() => {
-    heartFrame.classList.add("finished");
-  }, flowerCount * 10 + 500);
+  // When done, add finished class for gentle glow
+  setTimeout(()=> {
+    heartFrame.classList.add('finished');
+  }, Math.max(placed*delayPerFlower + 300, 800));
 }
 
 </script>
 </body>
 </html>
-
-
-
