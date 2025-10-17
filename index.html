@@ -13,7 +13,7 @@ body, html {
   overflow:hidden;
 }
 
-/* 🌷 Start wrapper always above everything until hidden */
+/* Start wrapper */
 .start-wrapper {
   position: fixed;
   top: 50%;
@@ -23,7 +23,7 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 3000; /* must be above everything else */
+  z-index: 3000;
 }
 
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
@@ -43,17 +43,14 @@ body, html {
 #container {
   opacity: 0;
   pointer-events: none;
-  width: 90vw;                /* scale with screen width */
-  max-width: 360px;           /* don’t exceed original size */
-  aspect-ratio: 360 / 650;    /* keeps the image proportion correct */
+  width: 90vw;
+  max-width: 360px;
+  aspect-ratio: 360 / 650;
   margin: 20px auto;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(250,50,120,0.2);
-
   background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: 100% 100%;  /* always fill the container */
-  background-color: transparent;
-
+  background-size: 100% 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -79,95 +76,11 @@ body, html {
 /* Ink trail */
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
 
-/* Heart icon */
-#heart { text-align:center; margin-top:24px; }
-#heart img { width:80px; height:80px; animation:beat-img 1.2s infinite; }
-@keyframes beat-img {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
-
 /* Ripple */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
 
-/* ❤️ Heart Frame Animation */
-@keyframes drawheart{
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-@keyframes bloom {
-  0% { transform: scale(0); opacity: 0; }
-  60% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* When heart shows */
-#heart-frame.show {
-  animation: fadeIn 1s ease forwards;
-}
-
-#heart-frame.show path {
-  animation: drawHeart 6s ease forwards;
-  filter: drop-shadow(0 0 6px #f48fb1);
-}
-
-#heart-frame.show circle {
-  animation: bloom 1s ease forwards;
-}
-
-/* Flowers bloom one by one */
-#heart-frame.show circle:nth-child(1) { animation-delay: 4s; }
-#heart-frame.show circle:nth-child(2) { animation-delay: 4.5s; }
-#heart-frame.show circle:nth-child(3) { animation-delay: 5s; }
-#heart-frame.show circle:nth-child(4) { animation-delay: 5.5s; }
-#heart-frame.show circle:nth-child(5) { animation-delay: 6s; }
-
-/* ✨ Gentle floating and glowing effect after heart is drawn */
-@keyframes gentleGlow {
-  0%, 100% {
-    transform: translateX(-50%) scale(1);
-    filter: drop-shadow(0 0 6px #f48fb1);
-  }
-  50% {
-    transform: translateX(-50%) scale(1.03);
-    filter: drop-shadow(0 0 12px #ffb6c1);
-  }
-}
-
-/* Apply the glow once drawing is done */
-#heart-frame.finished {
-  animation: gentleGlow 3s ease-in-out infinite;
-}
-
-/* 🌙 Letter fade-out effect */
-/* 🌸 Fade the letter page into a soft pink glow */
-@keyframes fadeOutToPink {
-  0% {
-    opacity: 1;
-    background-color: transparent;
-    filter: brightness(1);
-  }
-  80% {
-    opacity: 0.3;
-    background-color: rgba(255, 182, 193, 0.4);
-    filter: brightness(1.2);
-  }
-  100% {
-    opacity: 0;
-    background-color: rgba(255, 182, 193, 0.6);
-    filter: brightness(1.4);
-  }
-}
-
-/* Apply fade effect to the whole letter area */
-#container.fade-out {
-  animation: fadeOutToPink 3s ease forwards;
-}
-
-/* 🌸 Heart frame container — start hidden, never block clicks */
+/* Heart frame */
 #heart-frame {
   position: fixed;
   inset: 0;
@@ -180,18 +93,18 @@ body, html {
   background: rgba(255,240,245,0.6);
 }
 
-#heart-frame.show {
-  opacity: 1;
-  pointer-events: none;
-  z-index: 2000; /* bring forward only after letter fades */
+/* Show and glow */
+#heart-frame.show { opacity: 1; pointer-events: none; }
+#heart-frame.finished { animation: gentleGlow 3s ease-in-out infinite; }
+@keyframes gentleGlow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px #f48fb1);}
+  50% { transform: scale(1.03); filter: drop-shadow(0 0 12px #ffb6c1);}
 }
 
-/* 🌷 Small flower style */
+/* Flowers */
 .flower {
   position: absolute;
-  width: 22px;
-  height: 22px;
-  font-size: 22px; /* make emoji visible */
+  font-size: 22px;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -217,20 +130,11 @@ body, html {
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
   </audio>
 </div>
-  
-<div id="heart-frame">
-    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" id="heart-svg" style="position: absolute; top: 0; left: 0; width:100%; height:100%;">
-      <path id="heart-path"
-        d="M100,170 C-40,60 60,-20 100,50 C140,-20 240,60 100,170"
-        fill="none" stroke="#e91e63" stroke-width="2" stroke-linecap="round"
-        stroke-dasharray="1000"
-        stroke-dashoffset="1000"/>
-    </svg>
-  </div>
-</div>
+
+<div id="heart-frame"></div>
 
 <script>
-// Sample sentences
+// Letter writing
 const sentences=[
   ["Line 1 行一","Line 1 English"],
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
@@ -293,7 +197,7 @@ async function showSentence(lines,delay=200){
 }
 
 async function showAllText() {
-  for (let s = 0; s < sentences.length; s++) {
+  for (let s = 0; s < sentences.length; s++){
     await showSentence(sentences[s], 300);
     await new Promise(r => setTimeout(r, 300));
   }
@@ -305,69 +209,55 @@ async function showAllText() {
 
   await new Promise(r => setTimeout(r, 3000));
 
-  const heart = document.getElementById("heart-frame");
-  heart.classList.add("show");
+  const heartFrame = document.getElementById("heart-frame");
+  heartFrame.classList.add("show");
 
-  // 🌷 draw with flowers
   drawHeartWithFlowers();
 }
 
-
-// 🌟 After heart finishes drawing, add glowing animation
-setTimeout(() => {
-  const heart = document.getElementById("heart-frame");
-  if (heart.classList.contains("show")) {
-    heart.classList.add("finished");
-  }
-}, 8500); // wait ~8.5s after draw starts
-
-
-// Start button click
-let animationStarted = false; // flag to prevent multiple starts
-
+// Start button
+let animationStarted=false;
 document.getElementById("startBtn").addEventListener("click", function(){
-  if(animationStarted) return; // ignore extra clicks
-  animationStarted = true;
+  if(animationStarted) return;
+  animationStarted=true;
 
   const container = document.getElementById("container");
   const startContainer = document.getElementById("start-container");
 
-  // Ripple effect
   const rect = this.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
   const centerY = rect.top + rect.height/2;
-  for(let i=0; i<5; i++){
+  for(let i=0;i<5;i++){
     const ripple = document.createElement("span");
-    ripple.className = 'ripple';
-    ripple.style.left = centerX + 'px';
-    ripple.style.top = centerY + 'px';
-    ripple.style.animationDelay = `${i*0.3}s`;
+    ripple.className='ripple';
+    ripple.style.left=centerX+'px';
+    ripple.style.top=centerY+'px';
+    ripple.style.animationDelay=`${i*0.3}s`;
     document.body.appendChild(ripple);
-    ripple.addEventListener('animationend', ()=>ripple.remove());
+    ripple.addEventListener('animationend',()=>ripple.remove());
   }
 
-  // Fade out start button
   startContainer.classList.add('fade-out');
-  setTimeout(() => {
+  setTimeout(()=>{
     startContainer.style.display='none';
     container.classList.add('show');
     document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
-    showAllText(); // will trigger heart + flowers
-  }, 1800);
+    showAllText();
+  },1800);
 });
 
-
-// 🌸 Draw heart with flowers
+// Draw flowers directly in heart-frame
 function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
-  heartFrame.innerHTML = ""; // clear previous flowers
+  heartFrame.innerHTML = ''; // clear previous flowers
 
-  const flowerCount = 100;
+  const flowerCount = 150; // more points for smooth heart
   const width = heartFrame.clientWidth;
   const height = heartFrame.clientHeight;
 
   for (let i = 0; i < flowerCount; i++) {
-    const t = (i / (flowerCount - 1)) * Math.PI * 2;
+    const t = Math.PI - (Math.PI * i / (flowerCount - 1)); // 0 → π
+    // Heart parametric equations
     const x = 16 * Math.pow(Math.sin(t), 3);
     const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
 
@@ -384,46 +274,12 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
-    }, i * 30);
+    }, i * 25); // faster appearance
   }
 
-  setTimeout(() => {
-    heartFrame.classList.add("finished");
-  }, flowerCount * 30 + 500);
+  setTimeout(() => heartFrame.classList.add("finished"), flowerCount * 25 + 500);
 }
-  
+
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
