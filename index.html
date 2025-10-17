@@ -78,27 +78,28 @@ body, html {
   to { stroke-dashoffset: 0; }
 }
 @keyframes fadeIn { to { opacity: 1; } }
+@keyframes pulseGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.6)); }
+  50% { filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.9)); }
+}
+@keyframes floatUp {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
 
 #heart-frame {
-  position:fixed; left:50%; top:50%;
+  position:fixed; left:50%; top:50%; bottom:auto;
   transform:translate(-50%, -50%);
   opacity:0; pointer-events:none; z-index:50;
   display:none;
-  transition: opacity 1s ease-in;
 }
 #heart-frame.show { 
   display:block;
-  opacity:1;
 }
 
 /* Heart stroke outline */
 .heart-outline {
-  fill:none;
-  stroke:pink;
-  stroke-width:2;
-  stroke-dasharray:1000;
-  stroke-dashoffset:1000;
-  animation:drawHeart 5s ease forwards;
+  display:none;
 }
 
 /* Flowers with reveal animation */
@@ -252,21 +253,19 @@ document.getElementById("startBtn").addEventListener("click",function(){
   <defs>
     <path id="heartPath" d="M150 260 C -30 100 80 -20 150 80 C 220 -20 330 100 150 260 Z" />
     <mask id="revealMask">
-      <use href="#heartPath" stroke="white" stroke-width="30"
+      <rect width="300" height="280" fill="white"/>
+      <use href="#heartPath" stroke="black" stroke-width="30"
            stroke-dasharray="1000" stroke-dashoffset="1000">
-        <animate attributeName="stroke-dashoffset"
-                 from="1000" to="0"
-                 dur="5s"
-                 begin="indefinite"
-                 fill="freeze" />
+        <animate attributeName="stroke-dashoffset" from="1000" to="0"
+                 dur="5s" begin="indefinite" fill="freeze" dur="5s" />
       </use>
     </mask>
   </defs>
   <use href="#heartPath" class="heart-outline" />
   <g id="flowers">
-    <text font-size="22" text-anchor="middle" dominant-baseline="middle">
-      <textPath href="#heartPath" startOffset="50%">
-        🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸
+    <text font-size="16" text-anchor="middle" dominant-baseline="middle" fill="none">
+      <textPath href="#heartPath" startOffset="0%" spacing="exact">
+        🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸
       </textPath>
     </text>
   </g>
