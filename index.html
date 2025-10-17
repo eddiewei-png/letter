@@ -251,25 +251,24 @@ function drawHeartWithFlowers() {
   const heartFrame = document.getElementById("heart-frame");
   heartFrame.innerHTML = ""; // clear previous flowers
 
-  const flowerCount = 120; // more points for smoother heart
+  const flowerCount = 300; // more flowers for fullness
   const width = heartFrame.clientWidth;
   const height = heartFrame.clientHeight;
 
-  // Heart parametric ranges
   const xMin = -16, xMax = 16;
   const yMin = -17, yMax = 13;
 
   for (let i = 0; i < flowerCount; i++) {
-    // Use a parameter t from 0 → 2π
-    const t = (i / (flowerCount - 1)) * Math.PI * 2;
+    // Random t to spread flowers more evenly
+    const t = Math.random() * Math.PI * 2;
 
-    // Parametric heart
+    // Heart parametric
     const x = 16 * Math.pow(Math.sin(t), 3);
     const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
 
     // Scale to container
-    const px = ((x - xMin) / (xMax - xMin)) * width;
-    const py = ((-y + yMax) / (yMax - yMin)) * height; // flip vertically
+    const px = ((x - xMin) / (xMax - xMin)) * width + (Math.random() - 0.5) * 8; // small random offset
+    const py = ((-y + yMax) / (yMax - yMin)) * height + (Math.random() - 0.5) * 8;
 
     const flower = document.createElement("div");
     flower.className = "flower";
@@ -283,16 +282,16 @@ function drawHeartWithFlowers() {
     setTimeout(() => {
       flower.style.opacity = 1;
       flower.style.transform = `translate(-50%, -50%) scale(1) rotate(${Math.random()*30-15}deg)`;
-    }, i * 30);
+    }, i * 15); // faster appearance
   }
 
-  // Add finished class after all flowers appear
   setTimeout(() => {
     heartFrame.classList.add("finished");
-  }, flowerCount * 30 + 500);
+  }, flowerCount * 15 + 500);
 }
 
 </script>
 </body>
 </html>
+
 
