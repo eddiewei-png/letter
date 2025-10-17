@@ -80,12 +80,16 @@ body, html {
 @keyframes fadeIn { to { opacity: 1; } }
 
 #heart-frame {
-  position:absolute; left:50%; bottom:20px;
-  transform:translateX(-50%);
-  opacity:0; pointer-events:none; z-index:5;
-  transition:opacity 0.5s ease-in;
+  position:fixed; left:50%; top:50%;
+  transform:translate(-50%, -50%);
+  opacity:0; pointer-events:none; z-index:50;
+  display:none;
+  transition: opacity 1s ease-in;
 }
-#heart-frame.show { opacity:1; }
+#heart-frame.show { 
+  display:block;
+  opacity:1;
+}
 
 /* Heart stroke outline */
 .heart-outline {
@@ -97,15 +101,11 @@ body, html {
   animation:drawHeart 5s ease forwards;
 }
 
-/* Mask + flower animation */
+/* Flowers with reveal animation */
 #flowers {
-  opacity:0;
+  opacity:1;
   mask:url(#revealMask);
 }
-#heart-frame.show #flowers {
-  animation:showFlowers 5s ease forwards 0.5s;
-}
-@keyframes showFlowers { to { opacity:1; } }
 
 /* Fade-out transition */
 @keyframes fadeOutToPink {
@@ -209,6 +209,14 @@ async function showAllText() {
   await new Promise(r => setTimeout(r, 3000));
   const heart = document.getElementById("heart-frame");
   heart.classList.add("show");
+  
+  // Delay before starting mask animation
+  setTimeout(() => {
+    const animate = document.querySelector('#revealMask animate');
+    if (animate) {
+      animate.beginElement();
+    }
+  }, 500);
 }
 
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -238,7 +246,7 @@ document.getElementById("startBtn").addEventListener("click",function(){
 });
 </script>
 
-<!-- 🌸 Fixed Heart Frame SVG -->
+<!-- 🌸 Heart Frame SVG with Flower Animation -->
 <svg id="heart-frame" width="300" height="280" viewBox="0 0 300 280"
      xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -246,8 +254,11 @@ document.getElementById("startBtn").addEventListener("click",function(){
     <mask id="revealMask">
       <use href="#heartPath" stroke="white" stroke-width="30"
            stroke-dasharray="1000" stroke-dashoffset="1000">
-        <animate attributeName="stroke-dashoffset" from="1000" to="0"
-                 dur="5s" fill="freeze" />
+        <animate attributeName="stroke-dashoffset"
+                 from="1000" to="0"
+                 dur="5s"
+                 begin="indefinite"
+                 fill="freeze" />
       </use>
     </mask>
   </defs>
