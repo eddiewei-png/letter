@@ -5,84 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Letter Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-
-<!-- ✅ jQuery for heart animation -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <style>
-body, html {
-  margin:0; padding:0;
-  font-family:'Segoe UI',sans-serif;
-  background:#fff0f5;
-  overflow:hidden;
-}
-
-.start-wrapper {
-  position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:100;
-}
+body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:#fff0f5; overflow:hidden; }
+.start-wrapper { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; }
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
-
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
 #startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
-
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
-
-#container {
-  opacity: 0;
-  pointer-events: none;
-  width: 90vw;
-  max-width: 360px;
-  aspect-ratio: 360 / 650;
-  margin: 20px auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
-  background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: 100% 100%;
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  transition: opacity 1s ease-in;
-  z-index: 10;
-  overflow: hidden;
-}
+#container { opacity:0; pointer-events:none; width:90vw; max-width:360px; aspect-ratio:360/650; margin:20px auto; border-radius:12px; box-shadow:0 4px 15px rgba(250,50,120,0.2); background:url("stellalou-letter-bg.png") no-repeat center top; background-size:100% 100%; background-color:transparent; display:flex; flex-direction:column; justify-content:flex-start; transition: opacity 1s ease-in; z-index:10; overflow:hidden;}
 #container.show { opacity:1; pointer-events:auto; }
-
 #letter-wrapper { flex:1; overflow-y:auto; padding:40px; box-sizing:border-box; scrollbar-width:none; }
 #letter-wrapper::-webkit-scrollbar { display:none; }
-
 #letter { font-family:'Georgia', serif; font-size:1.4rem; color:#E8C1E5; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
 #letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
-
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
-
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
-
-#heart-container {
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%, -50%);
-  z-index:50;
-  display:none;
-}
+#heart-container { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:50; display:none; width:100%; max-width:650px; height:auto; }
 #heart-container.show { display:block; }
-
-@keyframes fadeOutToPink {
-  0% {opacity:1;background-color:transparent;filter:brightness(1);}
-  80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
-  100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
-}
-#container.fade-out {animation:fadeOutToPink 3s ease forwards;}
+#loveHeart { position:relative; width:100%; height:100%; }
+#garden { position:absolute; left:0; top:0; width:100%; height:100%; }
+#messages { display:none; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; font-size:2rem; color:#ff69b4; z-index:5; pointer-events:none; }
+#love-u { display:none; margin-top:12px; }
 </style>
 </head>
 <body>
@@ -109,180 +59,77 @@ body, html {
     <canvas id="garden"></canvas>
     <div id="messages">
       <div id="elapseClock"></div>
-      <div id="love-u" style="display:none;">Love U Forever</div>
+      <div id="love-u">Love U Forever</div>
     </div>
   </div>
 </div>
 
-<!-- ✅ garden.js + function.js code inline -->
 <script>
-// ----- garden.js -----
-/* Paste the full garden.js code you provided here */
-</script>
+// ----- Letter typing logic -----
+const sentences=[ ["Line 1 行一","Line 1 English"], ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"], ["Line 3 行三","Line 3 English"], ["Line 4 行四","Line 4 English"], ["[Your Name]"] ];
+const letterDiv=document.getElementById("letter");
+const inkTrails=[];
+for(let i=0;i<3;i++){const ink=document.createElement("span");ink.classList.add("ink-trail");letterDiv.appendChild(ink);inkTrails.push(ink);}
+let trailIndex=0;
+function writeLetter(span,letter){return new Promise(resolve=>{span.textContent+=letter;requestAnimationFrame(()=>{span.style.opacity='1';const containerRect=letterDiv.getBoundingClientRect();const range=document.createRange();range.setStart(span.firstChild||span,span.textContent.length-1);range.setEnd(span.firstChild||span,span.textContent.length);const rect=range.getBoundingClientRect();const ink=inkTrails[trailIndex%inkTrails.length];ink.style.height=rect.height+'px';ink.style.width=rect.width/2+'px';ink.style.left=(rect.right-containerRect.left)+'px';ink.style.top=(rect.top-containerRect.top)+'px';ink.style.opacity=1;trailIndex++;setTimeout(()=>ink.style.opacity=0,400);});resolve();});}
+async function showSentence(lines,delay=200){const pContainer=document.createElement("p");letterDiv.appendChild(pContainer);if(!Array.isArray(lines)) lines=[lines];const spans=lines.map(line=>{const span=document.createElement("span");span.style.display='block';span.style.marginBottom='0.2em';pContainer.appendChild(span);return {span,text:line};});const maxLength=Math.max(...lines.map(l=>l.length));for(let i=0;i<maxLength;i++){for(let {span,text} of spans){if(i<text.length) await writeLetter(span,text[i]);}await new Promise(r=>setTimeout(r,delay));letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;}}
+async function showAllText(){for(let s=0;s<sentences.length;s++){await showSentence(sentences[s],300);await new Promise(r=>setTimeout(r,300));}inkTrails.forEach(ink=>ink.style.display='none');const container=document.getElementById("container");container.classList.add("fade-out");await new Promise(r=>setTimeout(r,3000));const heartContainer=document.getElementById("heart-container");heartContainer.classList.add("show");startHeartAnimation();}
 
-<script>
-// ----- function.js -----
-/* Paste the full function.js code you provided here */
+// ----- Heart Animation Logic -----
+let garden, gardenCtx, gardenCanvas;
+let offsetX, offsetY, heartScale;
+function initGarden(){
+  const $loveHeart=$("#loveHeart");
+  $loveHeart.css("height",$loveHeart.width()*0.96);
+  gardenCanvas=document.getElementById("garden");
+  gardenCanvas.width=$loveHeart.width();
+  gardenCanvas.height=$loveHeart.height();
+  gardenCtx=gardenCanvas.getContext("2d");
+  gardenCtx.globalCompositeOperation="lighter";
+  garden = new Garden(gardenCtx, gardenCanvas);
+  heartScale = $loveHeart.width()/40; // scale factor for heart points
+  offsetX = gardenCanvas.width/2;
+  offsetY = gardenCanvas.height/2 - 20;
+  setInterval(()=>garden.render(), Garden.options.growSpeed);
+}
 
-// ✅ Fix offsetX / offsetY and heartScale for full heart
-var $window = $(window), gardenCtx, gardenCanvas, $garden, garden, offsetX, offsetY, heartScale;
-
-$(function () {
-    var $loveHeart = $("#loveHeart");
-    $loveHeart.css("height",$loveHeart.width()*0.96);
-    offsetX = $loveHeart.width()/2;
-    offsetY = $loveHeart.height()/2 + 20;
-    heartScale = Math.min($loveHeart.width(), $loveHeart.height()) / 30;
-
-    $garden = $("#garden");
-    gardenCanvas = $garden[0];
-    gardenCanvas.width = $loveHeart.width();
-    gardenCanvas.height = $loveHeart.height();
-    gardenCtx = gardenCanvas.getContext("2d");
-    gardenCtx.globalCompositeOperation = "lighter";
-    garden = new Garden(gardenCtx, gardenCanvas);
-
-    setInterval(function(){garden.render()}, Garden.options.growSpeed);
-});
-
-function getHeartPoint(c){
-    var t = c / Math.PI;
-    var x = 16 * Math.pow(Math.sin(t),3);
-    var y = 13 * Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
-    return [offsetX + x*heartScale, offsetY - y*heartScale];
+// Heart parametric points
+function getHeartPoint(t){
+  let x = 16*Math.pow(Math.sin(t),3);
+  let y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+  return [offsetX + x*heartScale, offsetY - y*heartScale];
 }
 
 function startHeartAnimation(){
-    var c = 50;
-    var d = 10;
-    var b = [];
-    var a = setInterval(function(){
-        var h = getHeartPoint(d);
-        var e = true;
-        for(var f=0;f<b.length;f++){
-            var g = b[f];
-            var j = Math.sqrt(Math.pow(g[0]-h[0],2)+Math.pow(g[1]-h[1],2));
-            if(j < Garden.options.bloomRadius.max*1.3){e=false; break;}
-        }
-        if(e){b.push(h); garden.createRandomBloom(h[0],h[1]);}
-        if(d>=30){clearInterval(a); showMessages();} else {d+=0.2;}
-    },c)
-}
-
-// typewriter plugin
-(function(a){
-  a.fn.typewriter = function(){
-    this.each(function(){
-      var d=a(this), c=d.html(), b=0;
-      d.html("");
-      var e=setInterval(function(){
-        var f=c.substr(b,1);
-        if(f=="<"){b=c.indexOf(">",b)+1;}else{b++;}
-        d.html(c.substring(0,b)+(b&1?"_":""));
-        if(b>=c.length){clearInterval(e);}
-      },75)
-    });
-    return this;
-  }
-})(jQuery);
-
-// timeElapse / showMessages / showLoveU functions here
-</script>
-
-<script>
-// ----- Original Letter typing logic -----
-const sentences=[
-  ["Line 1 行一","Line 1 English"],
-  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
-  ["Line 3 行三","Line 3 English"],
-  ["Line 4 行四","Line 4 English"],
-  ["[Your Name]"]
-];
-
-const letterDiv=document.getElementById("letter");
-const inkTrails=[];
-for(let i=0;i<3;i++){
-  const ink=document.createElement("span");
-  ink.classList.add("ink-trail");
-  letterDiv.appendChild(ink);
-  inkTrails.push(ink);
-}
-let trailIndex=0;
-
-function writeLetter(span,letter){
-  return new Promise(resolve=>{
-    span.textContent+=letter;
-    requestAnimationFrame(()=>{
-      span.style.opacity='1';
-      const containerRect=letterDiv.getBoundingClientRect();
-      const range=document.createRange();
-      range.setStart(span.firstChild||span,span.textContent.length-1);
-      range.setEnd(span.firstChild||span,span.textContent.length);
-      const rect=range.getBoundingClientRect();
-      const ink=inkTrails[trailIndex%inkTrails.length];
-      ink.style.height=rect.height+'px';
-      ink.style.width=rect.width/2+'px';
-      ink.style.left=(rect.right-containerRect.left)+'px';
-      ink.style.top=(rect.top-containerRect.top)+'px';
-      ink.style.opacity=1;
-      trailIndex++;
-      setTimeout(()=>ink.style.opacity=0,400);
-    });
-    resolve();
-  });
-}
-
-async function showSentence(lines,delay=200){
-  const pContainer=document.createElement("p");
-  letterDiv.appendChild(pContainer);
-  if(!Array.isArray(lines)) lines=[lines];
-  const spans=lines.map(line=>{
-    const span=document.createElement("span");
-    span.style.display='block';
-    span.style.marginBottom='0.2em';
-    pContainer.appendChild(span);
-    return {span,text:line};
-  });
-  const maxLength=Math.max(...lines.map(l=>l.length));
-  for(let i=0;i<maxLength;i++){
-    for(let {span,text} of spans){
-      if(i<text.length) await writeLetter(span,text[i]);
+  initGarden();
+  let d=0, points=[];
+  const interval=setInterval(()=>{
+    let p=getHeartPoint(d);
+    let ok=true;
+    for(let b of points){
+      if(Math.hypot(b[0]-p[0],b[1]-p[1])<Garden.options.bloomRadius.max*1.3){ok=false;break;}
     }
-    await new Promise(r=>setTimeout(r,delay));
-    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
-  }
+    if(ok){points.push(p); garden.createRandomBloom(p[0],p[1]);}
+    if(d>=Math.PI*2){clearInterval(interval); showMessages();}else{d+=0.05;}
+  },50);
 }
 
-async function showAllText(){
-  for(let s=0;s<sentences.length;s++){
-    await showSentence(sentences[s],300);
-    await new Promise(r=>setTimeout(r,300));
-  }
-  inkTrails.forEach(ink=>ink.style.display='none');
-  const container=document.getElementById("container");
-  container.classList.add("fade-out");
-  await new Promise(r=>setTimeout(r,3000));
+// ----- Messages -----
+function showMessages(){ $("#messages").fadeIn(2000,()=>showLoveU()); }
+function showLoveU(){ $("#love-u").fadeIn(2000); }
 
-  const heartContainer=document.getElementById("heart-container");
-  heartContainer.classList.add("show");
-
-  // Trigger heart animation
-  startHeartAnimation();
-}
-
+// ----- Start Button -----
 document.getElementById("startBtn").addEventListener("click",function(){
   const container=document.getElementById("container");
   const startContainer=document.getElementById("start-container");
-  this.disabled=true;
-  this.style.pointerEvents="none";
+  this.disabled=true; this.style.pointerEvents="none";
   const rect=this.getBoundingClientRect();
   const centerX=rect.left+rect.width/2;
   const centerY=rect.top+rect.height/2;
   for(let i=0;i<5;i++){
     const ripple=document.createElement("span");
     ripple.className='ripple';
-    ripple.style.left=centerX+'px';
-    ripple.style.top=centerY+'px';
+    ripple.style.left=centerX+'px'; ripple.style.top=centerY+'px';
     ripple.style.animationDelay=`${i*0.3}s`;
     document.body.appendChild(ripple);
     ripple.addEventListener('animationend',()=>ripple.remove());
@@ -295,7 +142,9 @@ document.getElementById("startBtn").addEventListener("click",function(){
     showAllText();
   },1800);
 });
-</script>
 
+// ----- Typewriter effect -----
+(function(a){a.fn.typewriter=function(){this.each(function(){var d=a(this),c=d.html(),b=0;d.html("");var e=setInterval(function(){var f=c.substr(b,1);if(f=="<"){b=c.indexOf(">",b)+1}else{b++;}d.html(c.substring(0,b)+(b&1?"_":""));if(b>=c.length){clearInterval(e);}},75);});return this;}})(jQuery);
+</script>
 </body>
 </html>
