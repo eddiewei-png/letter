@@ -21,14 +21,14 @@ body, html {
 }
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
-@keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+@keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
 
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
 #startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
 
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
-@keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);}}
+@keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
 
 #container {
   opacity: 0;
@@ -61,7 +61,7 @@ body, html {
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
 
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
-@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;}}
+@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
 
 #heart-container {
   position:fixed;
@@ -72,8 +72,32 @@ body, html {
   display:none;
 }
 
-#heart-container.show {
-  display:block;
+#loveHeart {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#garden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#words {
+  position: absolute;
+  text-align: center;
+  color: #ff69b4;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  text-shadow: 0 0 10px rgba(255,182,193,0.7);
+  pointer-events: none;
 }
 
 @keyframes fadeOutToPink {
@@ -103,14 +127,19 @@ body, html {
   </audio>
 </div>
 
+<!-- Heart animation section -->
 <div id="heart-container">
-  <canvas id="heart-canvas" width="1200" height="1200"></canvas>
-  <div id="heart-text" style="position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); text-align:center; font-size:2rem; color:#ff69b4; z-index:5; pointer-events:none;">
-    <!-- Text will go here -->
+  <div id="loveHeart">
+    <canvas id="garden" width="1200" height="1200"></canvas>
+    <div id="words">
+      <div id="messages">My heart blooms for you</div>
+      <div id="loveu">Love you always</div>
+    </div>
   </div>
 </div>
 
 <script>
+// ---- LETTER WRITING ----
 const sentences=[
   ["Line 1 行一","Line 1 English"],
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
@@ -118,7 +147,6 @@ const sentences=[
   ["Line 4 行四","Line 4 English"],
   ["[Your Name]"]
 ];
-
 const letterDiv=document.getElementById("letter");
 const inkTrails=[];
 for(let i=0;i<3;i++){
@@ -173,88 +201,62 @@ async function showSentence(lines,delay=200){
   }
 }
 
-// 🌸 dreamy cherry-blossom petal
-function drawFlowerPetal(ctx, x, y, baseSize) {
-  const petalColors = ["#ff69b4", "#ff1493", "#ffc0cb", "#ffb6c1", "#ffa500", "#ff6347", "#ff4500"];
-  
-  // Draw 5 petals around the center
-  for (let i = 0; i < 5; i++) {
-    const angle = Math.random() * Math.PI * 2; // random rotation for natural look
-    const petalSize = baseSize * (0.6 + Math.random() * 0.8); // random size
-    const offsetX = Math.cos(angle) * (baseSize + Math.random() * baseSize);
-    const offsetY = Math.sin(angle) * (baseSize + Math.random() * baseSize);
+// ---- FRIEND'S HEART ANIMATION ----
+function startHeartAnimation(){
+  const canvas=document.getElementById("garden");
+  const ctx=canvas.getContext("2d");
+  ctx.globalCompositeOperation="lighter";
 
-    ctx.beginPath();
-    ctx.ellipse(
-      x + offsetX, y + offsetY, 
-      petalSize, petalSize * (0.6 + Math.random() * 0.4), 
-      angle, 0, Math.PI * 2
-    );
-    ctx.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)];
-    ctx.fill();
-  }
-  
-  // Optional: a subtle center circle
-  ctx.beginPath();
-  ctx.arc(x, y, baseSize * 0.4, 0, Math.PI * 2);
-  ctx.fillStyle = "#ffd700";
-  ctx.fill();
-}
+  const offsetX=canvas.width/2;
+  const offsetY=canvas.height/2;
+  const scale=12;
+  const points=[];
 
-
-function drawFlowerHeart() {
-  const canvas = document.getElementById("heart-canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const heartPoints = [];
-  const scale = 12;
-  const offsetX = 600;
-  const offsetY = 600;
-
-  // Generate heart points
-  for (let t = 0; t < Math.PI * 2; t += 0.08) {
-    const x = 16 * Math.sin(t) ** 3;
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-    heartPoints.push({ x: offsetX + x * scale, y: offsetY - y * scale });
+  for(let t=0;t<Math.PI*2;t+=0.03){
+    const x=16*Math.pow(Math.sin(t),3);
+    const y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+    points.push({x:offsetX+x*scale,y:offsetY-y*scale});
   }
 
-  let progress = 0;
-  const duration = 5000;
-  const startTime = Date.now();
-
-  function animate() {
-    progress = Math.min((Date.now() - startTime) / duration, 1);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const pointsToShow = Math.floor(heartPoints.length * progress);
-
-    // Draw petals along the heart
-    for (let i = 0; i < pointsToShow; i += 1) { // keep every point to maintain heart shape
-      const p = heartPoints[i];
-      drawFlowerPetal(ctx, p.x, p.y, 6);
+  let index=0;
+  const bloomColors=["#ffb6c1","#ffc0cb","#ff69b4","#ff1493","#ffa07a"];
+  function drawBloom(x,y,size,color){
+    for(let i=0;i<5;i++){
+      const angle=(Math.PI*2/5)*i;
+      const px=x+Math.cos(angle)*size;
+      const py=y+Math.sin(angle)*size;
+      ctx.beginPath();
+      ctx.arc(px,py,size/2,0,Math.PI*2);
+      ctx.fillStyle=color;
+      ctx.fill();
     }
-
-    if (progress < 1) requestAnimationFrame(animate);
   }
 
+  function animate(){
+    if(index<points.length){
+      const p=points[index];
+      drawBloom(p.x,p.y,8,bloomColors[index%bloomColors.length]);
+      index++;
+      requestAnimationFrame(animate);
+    }
+  }
   animate();
 }
 
-
-async function showAllText() {
-  for (let s = 0; s < sentences.length; s++) {
-    await showSentence(sentences[s], 300);
-    await new Promise(r => setTimeout(r, 300));
+// ---- LETTER FLOW + TRANSITION ----
+async function showAllText(){
+  for(let s=0;s<sentences.length;s++){
+    await showSentence(sentences[s],300);
+    await new Promise(r=>setTimeout(r,300));
   }
-  inkTrails.forEach(ink => ink.style.display = 'none');
-  const container = document.getElementById("container");
+  inkTrails.forEach(ink=>ink.style.display='none');
+  const container=document.getElementById("container");
   container.classList.add("fade-out");
-  await new Promise(r => setTimeout(r, 3000));
-  
-  const heartContainer = document.getElementById("heart-container");
-  heartContainer.classList.add("show");
-  drawFlowerHeart();
+  await new Promise(r=>setTimeout(r,3000));
+
+  const heartContainer=document.getElementById("heart-container");
+  heartContainer.style.display="block";
+  startHeartAnimation();
 }
 
 document.getElementById("startBtn").addEventListener("click",function(){
@@ -284,14 +286,5 @@ document.getElementById("startBtn").addEventListener("click",function(){
 });
 </script>
 
-
 </body>
 </html>
-
-
-
-
-
-
-
-
