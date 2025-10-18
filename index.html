@@ -7,32 +7,77 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
-body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:#fff0f5; overflow:hidden; }
-.start-wrapper { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; }
+body, html {
+  margin:0; padding:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#fff0f5;
+  overflow:hidden;
+}
+
+.start-wrapper {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:100;
+}
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
+
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
 #startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
+
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
-#container { opacity:0; pointer-events:none; width:90vw; max-width:360px; aspect-ratio:360/650; margin:20px auto; border-radius:12px; box-shadow:0 4px 15px rgba(250,50,120,0.2); background:url("stellalou-letter-bg.png") no-repeat center top; background-size:100% 100%; background-color:transparent; display:flex; flex-direction:column; justify-content:flex-start; transition: opacity 1s ease-in; z-index:10; overflow:hidden;}
+
+#container {
+  opacity: 0;
+  pointer-events: none;
+  width: 90vw;
+  max-width: 360px;
+  aspect-ratio: 360 / 650;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background-size: 100% 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: opacity 1s ease-in;
+  z-index: 10;
+  overflow: hidden;
+}
 #container.show { opacity:1; pointer-events:auto; }
+
 #letter-wrapper { flex:1; overflow-y:auto; padding:40px; box-sizing:border-box; scrollbar-width:none; }
 #letter-wrapper::-webkit-scrollbar { display:none; }
+
 #letter { font-family:'Georgia', serif; font-size:1.4rem; color:#E8C1E5; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
 #letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
+
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
+
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
-#heart-container { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:50; display:none; width:100%; max-width:650px; height:auto; }
+
+#heart-container {
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%, -50%);
+  z-index:50;
+  display:none;
+}
 #heart-container.show { display:block; }
-#loveHeart { position:relative; width:100%; height:100%; }
-#garden { position:absolute; left:0; top:0; width:100%; height:100%; }
-#messages { display:none; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; font-size:2rem; color:#ff69b4; z-index:5; pointer-events:none; }
-#love-u { display:none; margin-top:12px; }
+
+#loveHeart { position:relative; width:360px; height:345px; }
+#garden { position:absolute; left:0; top:0; }
+#messages { position:absolute; width:100%; text-align:center; top:50%; transform:translateY(-50%); display:none; color:#ff69b4; }
+#love-u { display:none; font-size:2rem; }
+#elapseClock { font-size:1rem; margin-bottom:1em; }
 </style>
 </head>
 <body>
@@ -50,10 +95,11 @@ body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:
     <div id="letter"></div>
   </div>
   <audio id="background-music" loop>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
   </audio>
 </div>
 
+<!-- Heart animation -->
 <div id="heart-container">
   <div id="loveHeart">
     <canvas id="garden"></canvas>
@@ -65,19 +111,133 @@ body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:
 </div>
 
 <script>
-// ----- Letter typing logic -----
-const sentences=[ ["Line 1 行一","Line 1 English"], ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"], ["Line 3 行三","Line 3 English"], ["Line 4 行四","Line 4 English"], ["[Your Name]"] ];
+// ------------------ Letter typing effect ------------------
+const sentences=[
+  ["Line 1 行一","Line 1 English"],
+  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
+  ["Line 3 行三","Line 3 English"],
+  ["Line 4 行四","Line 4 English"],
+  ["[Your Name]"]
+];
+
 const letterDiv=document.getElementById("letter");
 const inkTrails=[];
-for(let i=0;i<3;i++){const ink=document.createElement("span");ink.classList.add("ink-trail");letterDiv.appendChild(ink);inkTrails.push(ink);}
+for(let i=0;i<3;i++){
+  const ink=document.createElement("span");
+  ink.classList.add("ink-trail");
+  letterDiv.appendChild(ink);
+  inkTrails.push(ink);
+}
 let trailIndex=0;
-function writeLetter(span,letter){return new Promise(resolve=>{span.textContent+=letter;requestAnimationFrame(()=>{span.style.opacity='1';const containerRect=letterDiv.getBoundingClientRect();const range=document.createRange();range.setStart(span.firstChild||span,span.textContent.length-1);range.setEnd(span.firstChild||span,span.textContent.length);const rect=range.getBoundingClientRect();const ink=inkTrails[trailIndex%inkTrails.length];ink.style.height=rect.height+'px';ink.style.width=rect.width/2+'px';ink.style.left=(rect.right-containerRect.left)+'px';ink.style.top=(rect.top-containerRect.top)+'px';ink.style.opacity=1;trailIndex++;setTimeout(()=>ink.style.opacity=0,400);});resolve();});}
-async function showSentence(lines,delay=200){const pContainer=document.createElement("p");letterDiv.appendChild(pContainer);if(!Array.isArray(lines)) lines=[lines];const spans=lines.map(line=>{const span=document.createElement("span");span.style.display='block';span.style.marginBottom='0.2em';pContainer.appendChild(span);return {span,text:line};});const maxLength=Math.max(...lines.map(l=>l.length));for(let i=0;i<maxLength;i++){for(let {span,text} of spans){if(i<text.length) await writeLetter(span,text[i]);}await new Promise(r=>setTimeout(r,delay));letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;}}
-async function showAllText(){for(let s=0;s<sentences.length;s++){await showSentence(sentences[s],300);await new Promise(r=>setTimeout(r,300));}inkTrails.forEach(ink=>ink.style.display='none');const container=document.getElementById("container");container.classList.add("fade-out");await new Promise(r=>setTimeout(r,3000));const heartContainer=document.getElementById("heart-container");heartContainer.classList.add("show");startHeartAnimation();}
 
-// ----- Heart Animation Logic -----
-let garden, gardenCtx, gardenCanvas;
-let offsetX, offsetY, heartScale;
+function writeLetter(span,letter){
+  return new Promise(resolve=>{
+    span.textContent+=letter;
+    requestAnimationFrame(()=>{
+      span.style.opacity='1';
+      const containerRect=letterDiv.getBoundingClientRect();
+      const range=document.createRange();
+      range.setStart(span.firstChild||span,span.textContent.length-1);
+      range.setEnd(span.firstChild||span,span.textContent.length);
+      const rect=range.getBoundingClientRect();
+      const ink=inkTrails[trailIndex%inkTrails.length];
+      ink.style.height=rect.height+'px';
+      ink.style.width=rect.width/2+'px';
+      ink.style.left=(rect.right-containerRect.left)+'px';
+      ink.style.top=(rect.top-containerRect.top)+'px';
+      ink.style.opacity=1;
+      trailIndex++;
+      setTimeout(()=>ink.style.opacity=0,400);
+    });
+    resolve();
+  });
+}
+
+async function showSentence(lines,delay=200){
+  const pContainer=document.createElement("p");
+  letterDiv.appendChild(pContainer);
+  if(!Array.isArray(lines)) lines=[lines];
+  const spans=lines.map(line=>{
+    const span=document.createElement("span");
+    span.style.display='block';
+    span.style.marginBottom='0.2em';
+    pContainer.appendChild(span);
+    return {span,text:line};
+  });
+  const maxLength=Math.max(...lines.map(l=>l.length));
+  for(let i=0;i<maxLength;i++){
+    for(let {span,text} of spans){
+      if(i<text.length) await writeLetter(span,text[i]);
+    }
+    await new Promise(r=>setTimeout(r,delay));
+    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
+  }
+}
+
+// ------------------ Garden.js classes ------------------
+function Vector(a,b){this.x=a;this.y=b;}
+Vector.prototype={
+  rotate:function(b){let a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this},
+  mult:function(a){this.x*=a;this.y*=a;return this},
+  clone:function(){return new Vector(this.x,this.y)},
+  length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},
+  subtract:function(a){this.x-=a.x;this.y-=a.y;return this},
+  set:function(a,b){this.x=a;this.y=b;return this}
+};
+
+function Petal(a,f,b,e,c,d){
+  this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;
+}
+Petal.prototype={
+  draw:function(){
+    let a=this.bloom.garden.ctx,e,d,c,b;
+    e=new Vector(0,this.r).rotate(this.startAngle*Math.PI/180);
+    d=e.clone().rotate(this.angle*Math.PI/180);
+    c=e.clone().mult(this.stretchA);
+    b=d.clone().mult(this.stretchB);
+    a.strokeStyle=this.bloom.c;
+    a.beginPath();
+    a.moveTo(e.x,e.y);
+    a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y);
+    a.stroke()
+  },
+  render:function(){if(this.r<=this.bloom.r){this.r+=this.growFactor;this.draw()}else{this.isfinished=true}}
+};
+
+function Bloom(e,d,f,a,b){
+  this.p=e;this.r=d;this.c=f;this.pc=a;this.petals=[];this.garden=b;this.init();this.garden.addBloom(this)
+}
+Bloom.prototype={
+  draw:function(){
+    let b=true;
+    this.garden.ctx.save();
+    this.garden.ctx.translate(this.p.x,this.p.y);
+    for(let a=0;a<this.petals.length;a++){
+      let c=this.petals[a]; c.render(); b*=c.isfinished;
+    }
+    this.garden.ctx.restore();
+    if(b) this.garden.removeBloom(this)
+  },
+  init:function(){
+    let c=360/this.pc,b=Math.random()*90;
+    for(let a=0;a<this.pc;a++){
+      this.petals.push(new Petal(Math.random()*2.9+0.1,Math.random()*2.9+0.1,b+a*c,c,Math.random()*0.9+0.1,this))
+    }
+  }
+};
+
+function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
+Garden.prototype={
+  render:function(){for(let a=0;a<this.blooms.length;a++) this.blooms[a].draw()},
+  addBloom:function(a){this.blooms.push(a)},
+  removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this}}},
+  createRandomBloom:function(a,b){this.createBloom(a,b,Math.random()*2+8,`rgba(${128+Math.random()*127},${Math.random()*128},${Math.random()*128},0.1)`,Math.floor(Math.random()*8+8))},
+  createBloom:function(a,b,d,e,f){new Bloom(new Vector(a,b),d,e,f,this)},
+  clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height)}
+};
+
+// ------------------ Heart animation ------------------
+let garden, gardenCtx, gardenCanvas, offsetX, offsetY, heartScale;
 function initGarden(){
   const $loveHeart=$("#loveHeart");
   $loveHeart.css("height",$loveHeart.width()*0.96);
@@ -86,17 +246,18 @@ function initGarden(){
   gardenCanvas.height=$loveHeart.height();
   gardenCtx=gardenCanvas.getContext("2d");
   gardenCtx.globalCompositeOperation="lighter";
-  garden = new Garden(gardenCtx, gardenCanvas);
-  heartScale = $loveHeart.width()/40; // scale factor for heart points
-  offsetX = gardenCanvas.width/2;
-  offsetY = gardenCanvas.height/2 - 20;
-  setInterval(()=>garden.render(), Garden.options.growSpeed);
+  garden = new Garden(gardenCtx,gardenCanvas);
+
+  offsetX=gardenCanvas.width/2;
+  offsetY=gardenCanvas.height/2 + 20;
+  heartScale=Math.min(gardenCanvas.width,gardenCanvas.height)/40;
+
+  setInterval(()=>garden.render(),30);
 }
 
-// Heart parametric points
 function getHeartPoint(t){
-  let x = 16*Math.pow(Math.sin(t),3);
-  let y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+  let x=16*Math.pow(Math.sin(t),3);
+  let y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
   return [offsetX + x*heartScale, offsetY - y*heartScale];
 }
 
@@ -107,29 +268,33 @@ function startHeartAnimation(){
     let p=getHeartPoint(d);
     let ok=true;
     for(let b of points){
-      if(Math.hypot(b[0]-p[0],b[1]-p[1])<Garden.options.bloomRadius.max*1.3){ok=false;break;}
+      if(Math.hypot(b[0]-p[0],b[1]-p[1])<10){ok=false;break;}
     }
     if(ok){points.push(p); garden.createRandomBloom(p[0],p[1]);}
     if(d>=Math.PI*2){clearInterval(interval); showMessages();}else{d+=0.05;}
   },50);
 }
 
-// ----- Messages -----
-function showMessages(){ $("#messages").fadeIn(2000,()=>showLoveU()); }
-function showLoveU(){ $("#love-u").fadeIn(2000); }
+function showMessages(){
+  $("#messages").fadeIn(2000,function(){
+    $("#love-u").fadeIn(2000);
+  });
+}
 
-// ----- Start Button -----
+// ------------------ Letter typing + start button ------------------
 document.getElementById("startBtn").addEventListener("click",function(){
   const container=document.getElementById("container");
   const startContainer=document.getElementById("start-container");
-  this.disabled=true; this.style.pointerEvents="none";
+  this.disabled=true;
+  this.style.pointerEvents="none";
   const rect=this.getBoundingClientRect();
   const centerX=rect.left+rect.width/2;
   const centerY=rect.top+rect.height/2;
   for(let i=0;i<5;i++){
     const ripple=document.createElement("span");
     ripple.className='ripple';
-    ripple.style.left=centerX+'px'; ripple.style.top=centerY+'px';
+    ripple.style.left=centerX+'px';
+    ripple.style.top=centerY+'px';
     ripple.style.animationDelay=`${i*0.3}s`;
     document.body.appendChild(ripple);
     ripple.addEventListener('animationend',()=>ripple.remove());
@@ -143,8 +308,18 @@ document.getElementById("startBtn").addEventListener("click",function(){
   },1800);
 });
 
-// ----- Typewriter effect -----
-(function(a){a.fn.typewriter=function(){this.each(function(){var d=a(this),c=d.html(),b=0;d.html("");var e=setInterval(function(){var f=c.substr(b,1);if(f=="<"){b=c.indexOf(">",b)+1}else{b++;}d.html(c.substring(0,b)+(b&1?"_":""));if(b>=c.length){clearInterval(e);}},75);});return this;}})(jQuery);
+async function showAllText(){
+  for(let s=0;s<sentences.length;s++){
+    await showSentence(sentences[s],300);
+    await new Promise(r=>setTimeout(r,300));
+  }
+  inkTrails.forEach(ink=>ink.style.display='none');
+  document.getElementById("container").classList.add("fade-out");
+  await new Promise(r=>setTimeout(r,2000));
+  document.getElementById("heart-container").classList.add("show");
+  startHeartAnimation();
+}
 </script>
+
 </body>
 </html>
