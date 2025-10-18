@@ -6,9 +6,20 @@
 <title>Letter Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
-body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:#fff0f5; overflow:hidden; }
-.start-wrapper { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; }
+body, html {
+  margin:0; padding:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#fff0f5;
+  overflow:hidden;
+}
+.start-wrapper {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:100;
+}
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
@@ -17,24 +28,54 @@ body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
-#container { opacity:0; pointer-events:none; width:90vw; max-width:360px; aspect-ratio:360/650; margin:20px auto; border-radius:12px; box-shadow:0 4px 15px rgba(250,50,120,0.2); background:url("stellalou-letter-bg.png") no-repeat center top; background-size:100% 100%; background-color:transparent; display:flex; flex-direction:column; justify-content:flex-start; transition:opacity 1s ease-in; z-index:10; overflow:hidden; }
+
+#container {
+  opacity: 0;
+  pointer-events: none;
+  width: 90vw;
+  max-width: 360px;
+  aspect-ratio: 360 / 650;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background-size: 100% 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: opacity 1s ease-in;
+  z-index: 10;
+  overflow: hidden;
+}
 #container.show { opacity:1; pointer-events:auto; }
+
 #letter-wrapper { flex:1; overflow-y:auto; padding:40px; box-sizing:border-box; scrollbar-width:none; }
 #letter-wrapper::-webkit-scrollbar { display:none; }
 #letter { font-family:'Georgia', serif; font-size:1.4rem; color:#E8C1E5; white-space:pre-wrap; position:relative; }
 #letter p { margin:1.2em 0; position:relative; }
-#letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
 .ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
+
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
-#heart-container { position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); z-index:50; display:none; }
+
+#heart-container {
+  position:fixed; left:50%; top:50%;
+  transform:translate(-50%, -50%);
+  width:90vw; max-width:800px; height:auto;
+  z-index:50;
+  display:none;
+}
 #heart-container.show { display:block; }
-#loveHeart { width:90vw; max-width:1200px; height:auto; position:relative; }
+#loveHeart { width:100%; height:100%; position:relative; }
 #garden { width:100%; height:100%; }
-#messages { position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); text-align:center; display:none; color:#ff69b4; }
-#elapseClock { font-size:1.2rem; margin-bottom:0.5em; }
-#love-u { font-size:2rem; display:none; }
-@keyframes fadeOutToPink {0% {opacity:1;background-color:transparent;filter:brightness(1);} 80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);} 100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}}
+#messages { display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:#ff69b4; }
+#love-u { display:none; font-size:2rem; margin-top:10px; }
+
+@keyframes fadeOutToPink {
+  0% {opacity:1;background-color:transparent;filter:brightness(1);}
+  80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
+  100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
+}
 #container.fade-out {animation:fadeOutToPink 3s ease forwards;}
 </style>
 </head>
@@ -57,6 +98,7 @@ body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:
   </audio>
 </div>
 
+<!-- Heart animation -->
 <div id="heart-container">
   <div id="loveHeart">
     <canvas id="garden"></canvas>
@@ -68,24 +110,23 @@ body, html { margin:0; padding:0; font-family:'Segoe UI',sans-serif; background:
 </div>
 
 <script>
-// ---------- Letter typing logic ----------
-const sentences=[
+// ===== Letter typing effect =====
+const sentences = [
   ["Line 1 行一","Line 1 English"],
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
   ["Line 3 行三","Line 3 English"],
   ["Line 4 行四","Line 4 English"],
   ["[Your Name]"]
 ];
-const letterDiv=document.getElementById("letter");
-const inkTrails=[];
+const letterDiv = document.getElementById("letter");
+const inkTrails = [];
 for(let i=0;i<3;i++){
   const ink=document.createElement("span");
   ink.classList.add("ink-trail");
   letterDiv.appendChild(ink);
   inkTrails.push(ink);
 }
-let trailIndex=0;
-
+let trailIndex = 0;
 function writeLetter(span,letter){
   return new Promise(resolve=>{
     span.textContent+=letter;
@@ -108,7 +149,6 @@ function writeLetter(span,letter){
     resolve();
   });
 }
-
 async function showSentence(lines,delay=200){
   const pContainer=document.createElement("p");
   letterDiv.appendChild(pContainer);
@@ -129,7 +169,6 @@ async function showSentence(lines,delay=200){
     letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
   }
 }
-
 async function showAllText(){
   for (let s=0;s<sentences.length;s++){
     await showSentence(sentences[s],300);
@@ -139,102 +178,90 @@ async function showAllText(){
   const container=document.getElementById("container");
   container.classList.add("fade-out");
   await new Promise(r=>setTimeout(r,3000));
-
-  const heartContainer=document.getElementById("heart-container");
-  heartContainer.classList.add("show");
-
+  $("#heart-container").fadeIn();
   startHeartAnimation();
 }
 
-// ---------- Garden & Heart Animation ----------
+// ===== Garden.js & Heart animation =====
 function Vector(a, b) { this.x=a; this.y=b; }
 Vector.prototype = {
-  rotate: function(b){ const a=this.x,c=this.y; this.x=Math.cos(b)*a-Math.sin(b)*c; this.y=Math.sin(b)*a+Math.cos(b)*c; return this; },
-  mult: function(a){ this.x*=a; this.y*=a; return this; },
-  clone: function(){ return new Vector(this.x,this.y); },
-  length: function(){ return Math.sqrt(this.x*this.x+this.y*this.y); },
-  subtract:function(a){ this.x-=a.x; this.y-=a.y; return this; },
-  set:function(a,b){ this.x=a; this.y=b; return this; }
+  rotate: function(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this},
+  mult:function(a){this.x*=a;this.y*=a;return this},
+  clone:function(){return new Vector(this.x,this.y)},
+  length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},
+  subtract:function(a){this.x-=a.x;this.y-=a.y;return this},
+  set:function(a,b){this.x=a;this.y=b;return this}
 };
-function Petal(a,f,b,e,c,d){this.stretchA=a; this.stretchB=f; this.startAngle=b; this.angle=e; this.bloom=d; this.growFactor=c; this.r=1; this.isfinished=false;}
-Petal.prototype = {
-  draw:function(){ const a=this.bloom.garden.ctx; let e,d,c,b; e=new Vector(0,this.r).rotate(Garden.degrad(this.startAngle)); d=e.clone().rotate(Garden.degrad(this.angle)); c=e.clone().mult(this.stretchA); b=d.clone().mult(this.stretchB); a.strokeStyle=this.bloom.c; a.beginPath(); a.moveTo(e.x,e.y); a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y); a.stroke(); },
-  render:function(){ if(this.r<=this.bloom.r){this.r+=this.growFactor; this.draw();} else {this.isfinished=true;} }
-};
-function Bloom(e,d,f,a,b){this.p=e; this.r=d; this.c=f; this.pc=a; this.petals=[]; this.garden=b; this.init(); this.garden.addBloom(this);}
-Bloom.prototype={
-  draw:function(){ let c,b=true; this.garden.ctx.save(); this.garden.ctx.translate(this.p.x,this.p.y); for(let a=0;a<this.petals.length;a++){c=this.petals[a]; c.render(); b*=c.isfinished;} this.garden.ctx.restore(); if(b==true){this.garden.removeBloom(this);}},
-  init:function(){ const c=360/this.pc; const b=Math.random()*90; for(let a=0;a<this.pc;a++){this.petals.push(new Petal(Math.random()*2.5+0.1, Math.random()*2.5+0.1, b+a*c, c, Math.random()*1+0.1,this));}}
-};
-function Garden(a,b){this.blooms=[]; this.element=b; this.ctx=a;}
-Garden.prototype={
-  render:function(){ for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}},
-  addBloom:function(a){this.blooms.push(a);},
-  removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1); return this;}}},
-  createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(6,8),Garden.randomrgba(128,255,0,128,128,128,0.4),Garden.randomInt(8,12));},
-  createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this);},
-  clear:function(){this.blooms=[]; this.ctx.clearRect(0,0,this.element.width,this.element.height);}
-};
+function Petal(a,f,b,e,c,d){this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;}
+Petal.prototype={draw:function(){
+  const a=this.bloom.garden.ctx;
+  let e,d,c,b; e=new Vector(0,this.r).rotate(Garden.degrad(this.startAngle));
+  d=e.clone().rotate(Garden.degrad(this.angle));
+  c=e.clone().mult(this.stretchA);
+  b=d.clone().mult(this.stretchB);
+  a.strokeStyle=this.bloom.c;
+  a.beginPath();a.moveTo(e.x,e.y);
+  a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y);a.stroke();
+}, render:function(){if(this.r<=this.bloom.r){this.r+=this.growFactor;this.draw();}else{this.isfinished=true;}}};
+function Bloom(e,d,f,a,b){this.p=e;this.r=d;this.c=f;this.pc=a;this.petals=[];this.garden=b;this.init();this.garden.addBloom(this);}
+Bloom.prototype={draw:function(){let c,b=true;this.garden.ctx.save();this.garden.ctx.translate(this.p.x,this.p.y);for(let a=0;a<this.petals.length;a++){c=this.petals[a];c.render();b*=c.isfinished;}this.garden.ctx.restore();if(b) this.garden.removeBloom(this);}, init:function(){const c=360/this.pc,b=Garden.randomInt(0,90);for(let a=0;a<this.pc;a++){this.petals.push(new Petal(Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),b+a*c,c,Garden.random(Garden.options.growFactor.min,Garden.options.growFactor.max),this));}}};
+function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
+Garden.prototype={render:function(){for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}}, addBloom:function(a){this.blooms.push(a);}, removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this;}}}, createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max));}, createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this)}, clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height);}};
+Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},density:8,growSpeed:1000/60,color:{rmin:128,rmax:255,gmin:0,gmax:128,bmin:0,bmax:128,opacity:0.3},tanAngle:60};
 Garden.random=function(b,a){return Math.random()*(a-b)+b;};
 Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b;};
 Garden.circle=2*Math.PI;
 Garden.degrad=function(a){return Garden.circle/360*a;};
 Garden.rgba=function(f,e,c,d){return"rgba("+f+","+e+","+c+","+d+")";};
-Garden.randomrgba=function(i,n,h,m,l,d,k){return Garden.rgba(Math.round(Garden.random(i,n)),Math.round(Garden.random(h,m)),Math.round(Garden.random(l,d)),k);};
+Garden.randomrgba=function(i,n,h,m,l,d,k){const c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d)),e=5;if(Math.abs(c-f)<=e&&Math.abs(f-j)<=e&&Math.abs(j-c)<=e){return Garden.rgba(i,n,h,m,l,d,k);}else{return Garden.rgba(c,f,j,k);}}
 
-// Setup garden
-let gardenCtx, gardenCanvas, garden;
-$(function(){
-  const $loveHeart=$("#loveHeart");
-  $loveHeart.css("height",$loveHeart.width()*0.96);
-  const $garden=$("#garden");
-  gardenCanvas=$garden[0];
-  gardenCanvas.width=$loveHeart.width();
-  gardenCanvas.height=$loveHeart.height();
-  gardenCtx=gardenCanvas.getContext("2d");
-  gardenCtx.globalCompositeOperation="lighter";
-  garden=new Garden(gardenCtx,gardenCanvas);
-  setInterval(()=>garden.render(),Garden.options.growSpeed);
-});
-
-// Heart shape calculation
-function getHeartPoint(c){
-  const t=c/Math.PI;
-  const scaleX=gardenCanvas.width/40;
-  const scaleY=gardenCanvas.height/40;
-  const x=16*Math.pow(Math.sin(t),3)*scaleX;
-  const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scaleY;
-  const offsetX=gardenCanvas.width/2;
-  const offsetY=gardenCanvas.height/2;
-  return [offsetX+x, offsetY+y];
+let garden, gardenCanvas;
+function initGarden(){
+  const $loveHeart = $("#loveHeart");
+  const $gardenCanvas = $("#garden");
+  gardenCanvas = $gardenCanvas[0];
+  gardenCanvas.width = $loveHeart.width();
+  gardenCanvas.height = $loveHeart.height();
+  const ctx = gardenCanvas.getContext("2d");
+  ctx.globalCompositeOperation="lighter";
+  garden = new Garden(ctx, gardenCanvas);
+  setInterval(()=>garden.render(), Garden.options.growSpeed);
 }
 
-// Start heart animation
+// Get heart point based on canvas size
+function getHeartPoint(t){
+  const w = gardenCanvas.width;
+  const h = gardenCanvas.height;
+  const scaleX = w/40;
+  const scaleY = h/40;
+  const x = 16*Math.pow(Math.sin(t),3)*scaleX;
+  const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scaleY;
+  return [w/2 + x, h/2 + y];
+}
+
+// Start blooms along heart shape
 function startHeartAnimation(){
-  let d=10;
-  const bloomPoints=[];
-  const interval=setInterval(()=>{
-    const h=getHeartPoint(d);
+  if(!gardenCanvas) initGarden();
+  let t=10;
+  const points=[];
+  const interval = setInterval(()=>{
+    const pt = getHeartPoint(t);
     let canBloom=true;
-    for(let f=0;f<bloomPoints.length;f++){
-      const g=bloomPoints[f];
-      if(Math.hypot(g[0]-h[0],g[1]-h[1])<Garden.options.bloomRadius.max*1.3){canBloom=false; break;}
+    for(let i=0;i<points.length;i++){
+      const dx=pt[0]-points[i][0],dy=pt[1]-points[i][1];
+      if(Math.hypot(dx,dy)<Garden.options.bloomRadius.max*1.3){canBloom=false; break;}
     }
-    if(canBloom){bloomPoints.push(h); garden.createRandomBloom(h[0],h[1]);}
-    if(d>=30){clearInterval(interval); showMessages();} else {d+=0.2;}
+    if(canBloom){points.push(pt);garden.createRandomBloom(pt[0],pt[1]);}
+    if(t>=30){clearInterval(interval);$("#messages").fadeIn(5000,()=>$("#love-u").fadeIn(3000));}else t+=0.2;
   },50);
 }
 
-// Messages and typewriter
-function showMessages(){ $("#messages").fadeIn(5000, showLoveU); }
-function showLoveU(){ $("#love-u").fadeIn(3000); }
-(function(a){a.fn.typewriter=function(){this.each(function(){var d=a(this),c=d.html(),b=0; d.html(""); var e=setInterval(function(){var f=c.substr(b,1); if(f=="<"){b=c.indexOf(">",b)+1;}else{b++;} d.html(c.substring(0,b)+(b&1?"_":"")); if(b>=c.length){clearInterval(e);}},75);}); return this;};})(jQuery);
-
-// ---------- Start button ----------
-document.getElementById("startBtn").addEventListener("click",function(){
-  const container=document.getElementById("container");
-  const startContainer=document.getElementById("start-container");
-  this.disabled=true; this.style.pointerEvents="none";
+// ===== Start button logic =====
+$("#startBtn").on("click",function(){
+  const container=$("#container")[0];
+  const startContainer=$("#start-container");
+  this.disabled=true;
+  this.style.pointerEvents="none";
   const rect=this.getBoundingClientRect();
   const centerX=rect.left+rect.width/2;
   const centerY=rect.top+rect.height/2;
@@ -247,11 +274,11 @@ document.getElementById("startBtn").addEventListener("click",function(){
     document.body.appendChild(ripple);
     ripple.addEventListener('animationend',()=>ripple.remove());
   }
-  startContainer.classList.add('fade-out');
+  startContainer.addClass('fade-out');
   setTimeout(()=>{
-    startContainer.style.display='none';
-    container.classList.add('show');
-    document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+    startContainer.hide();
+    $(container).addClass('show');
+    $("#background-music")[0].play().catch(()=>console.log("Autoplay blocked"));
     showAllText();
   },1800);
 });
