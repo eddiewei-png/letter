@@ -64,7 +64,14 @@ body, html {
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
 @keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
 
-/* --- Heart Animation Section --- */
+@keyframes fadeOutToPink {
+  0% {opacity:1;background-color:transparent;filter:brightness(1);}
+  80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
+  100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
+}
+#container.fade-out {animation:fadeOutToPink 3s ease forwards;}
+
+/* --- Heart Animation --- */
 #heart-container {
   position:fixed;
   left:50%;
@@ -76,7 +83,6 @@ body, html {
   transition: opacity 2s ease-in-out;
 }
 #heart-container.show { opacity:1; }
-
 #loveHeart {
   position: relative;
   width: 100%;
@@ -86,7 +92,6 @@ body, html {
   justify-content: center;
   align-items: center;
 }
-
 #garden {
   position: absolute;
   top: 0;
@@ -94,7 +99,6 @@ body, html {
   width: 1200px;
   height: 1200px;
 }
-
 #words {
   position: absolute;
   text-align: center;
@@ -104,24 +108,19 @@ body, html {
   text-shadow: 0 0 10px rgba(255,182,193,0.7);
   pointer-events: none;
 }
-
-@keyframes fadeOutToPink {
-  0% {opacity:1;background-color:transparent;filter:brightness(1);}
-  80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
-  100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
-}
-#container.fade-out {animation:fadeOutToPink 3s ease forwards;}
 </style>
 </head>
 <body>
 
+<!-- Start Page -->
 <div class="start-wrapper">
   <div class="start-container" id="start-container">
-    <div id="click-hint">Click Here <br> ↓</div>
+    <div id="click-hint">Click Here! <br> ↓</div>
     <button id="startBtn"><img src="stella.png" alt="Start"></button>
   </div>
 </div>
 
+<!-- Letter Page -->
 <div id="container">
   <div id="letter-wrapper">
     <h1>Sample Letter</h1>
@@ -132,7 +131,7 @@ body, html {
   </audio>
 </div>
 
-<!-- Heart animation section -->
+<!-- Heart Animation -->
 <div id="heart-container">
   <div id="loveHeart">
     <canvas id="garden" width="1200" height="1200"></canvas>
@@ -143,7 +142,7 @@ body, html {
   </div>
 </div>
 
-<!-- ===== Friend’s Realistic Flower Heart Code (fixed) ===== -->
+<!-- --- Heart Animation Script --- -->
 <script>
 function Vector(a,b){this.x=a;this.y=b;}
 Vector.prototype={rotate:function(b){var a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this},mult:function(a){this.x*=a;this.y*=a;return this},clone:function(){return new Vector(this.x,this.y)},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},subtract:function(a){this.x-=a.x;this.y-=a.y;return this},set:function(a,b){this.x=a;this.y=b;return this}};
@@ -154,7 +153,6 @@ Bloom.prototype={draw:function(){var c,b=true;this.garden.ctx.save();this.garden
 function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
 Garden.prototype={render:function(){for(var a=0;a<this.blooms.length;a++){this.blooms[a].draw()}},addBloom:function(a){this.blooms.push(a)},removeBloom:function(a){var d;for(var c=0;c<this.blooms.length;c++){d=this.blooms[c];if(d===a){this.blooms.splice(c,1);return this}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max))},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this)},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height)}};
 
-/* --- Cherry blossom colors --- */
 Garden.options={petalCount:{min:8,max:15},petalStretch:{min:0.1,max:3},growFactor:{min:0.1,max:0.8},bloomRadius:{min:8,max:10},density:10,growSpeed:1000/60,color:{rmin:245,rmax:255,gmin:150,gmax:200,bmin:180,bmax:255,opacity:0.25},tanAngle:60};
 Garden.random=function(b,a){return Math.random()*(a-b)+b};
 Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b};
@@ -164,41 +162,28 @@ Garden.rgba=function(f,e,c,d){return"rgba("+f+","+e+","+c+","+d+")"};
 Garden.randomrgba=function(i,n,h,m,l,d,k){var c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return Garden.rgba(c,f,j,k)};
 
 let gardenCtx,gardenCanvas,garden,offsetX,offsetY;
-
-function getHeartPoint(t){
-  const x = 16 * Math.pow(Math.sin(t),3);
-  const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
-  return [offsetX + x*12, offsetY - y*12]; // scaled up heart
-}
-
+function getHeartPoint(t){const x=16*Math.pow(Math.sin(t),3);const y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);return [offsetX+x*12,offsetY-y*12];}
 function startHeartAnimation(){
   gardenCanvas=document.getElementById("garden");
-  if(!gardenCanvas){console.error("Canvas not found");return;}
   gardenCtx=gardenCanvas.getContext("2d");
   gardenCtx.globalCompositeOperation="lighter";
   garden=new Garden(gardenCtx,gardenCanvas);
-
-  // Dynamically set size + center
-  gardenCanvas.width = window.innerWidth;
-  gardenCanvas.height = window.innerHeight;
-  offsetX = gardenCanvas.width / 2;
-  offsetY = gardenCanvas.height / 2;
-
-  // Start rendering
-  setInterval(()=>garden.render(), Garden.options.growSpeed);
-
-  // Draw the heart bloom pattern
-  let t = 10;
-  const draw = setInterval(()=>{
+  gardenCanvas.width=window.innerWidth;
+  gardenCanvas.height=window.innerHeight;
+  offsetX=gardenCanvas.width/2;
+  offsetY=gardenCanvas.height/2;
+  setInterval(()=>garden.render(),Garden.options.growSpeed);
+  let t=10;
+  const draw=setInterval(()=>{
     const [x,y]=getHeartPoint(t);
     garden.createRandomBloom(x,y);
-    t += 0.2;
-    if (t >= 30){ clearInterval(draw); }
-  }, 50);
+    t+=0.2;
+    if(t>=30){clearInterval(draw);}
+  },50);
 }
 </script>
 
-<!-- ===== Letter Animation Code (unchanged except delay) ===== -->
+<!-- --- Letter Animation (restored original) --- -->
 <script>
 const sentences=[
   ["Line 1","Line 1 English"],
@@ -208,30 +193,37 @@ const sentences=[
   ["[Your Name]"]
 ];
 const letterDiv=document.getElementById("letter");
-async function showSentence(lines,delay=200){
+
+async function typeLine(text,delay=120){
   const p=document.createElement("p");
   letterDiv.appendChild(p);
-  if(!Array.isArray(lines))lines=[lines];
-  for(const line of lines){
+  for(let i=0;i<text.length;i++){
     const span=document.createElement("span");
+    span.className="letter";
+    span.textContent=text[i];
     p.appendChild(span);
-    for(let i=0;i<line.length;i++){
-      span.textContent+=line[i];
-      await new Promise(r=>setTimeout(r,delay));
-    }
+    setTimeout(()=>{span.style.opacity=1;span.style.transform="translateY(0)";},20);
+    await new Promise(r=>setTimeout(r,delay));
   }
   letterDiv.scrollTop=letterDiv.scrollHeight;
 }
+
 async function showAllText(){
-  for(const s of sentences) await showSentence(s,120);
+  const music=document.getElementById("background-music");
+  music.play();
+  for(const pair of sentences){
+    for(const line of pair){
+      await typeLine(line);
+      await new Promise(r=>setTimeout(r,600));
+    }
+  }
   const container=document.getElementById("container");
   container.classList.add("fade-out");
-  await new Promise(r=>setTimeout(r,2500));
+  await new Promise(r=>setTimeout(r,3200));
   const heartContainer=document.getElementById("heart-container");
   heartContainer.style.display="block";
   heartContainer.classList.add("show");
-  // ✅ give DOM time before start
-  setTimeout(startHeartAnimation, 1000);
+  setTimeout(startHeartAnimation,1000);
 }
 
 document.getElementById("startBtn").addEventListener("click",()=>{
@@ -245,5 +237,3 @@ document.getElementById("startBtn").addEventListener("click",()=>{
 
 </body>
 </html>
-
-
