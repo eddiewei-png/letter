@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Letter Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
 body, html {
   margin:0; padding:0;
@@ -13,6 +15,7 @@ body, html {
   overflow:hidden;
 }
 
+/* --- Start Page --- */
 .start-wrapper {
   position:absolute; top:50%; left:50%;
   transform:translate(-50%,-50%);
@@ -22,7 +25,6 @@ body, html {
 .start-container { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
 #click-hint { font-size:2.4rem; color:#ff69b4; text-shadow:0 0 8px #ff69b4,0 0 15px #ff1493; animation:beat 1.2s infinite; pointer-events:none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
-
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
 #startBtn { cursor:pointer; border:none; background:none; width:160px; height:160px; }
 #startBtn img { width:100%; height:100%; border-radius:50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation:wiggle 1.5s infinite ease-in-out; }
@@ -30,6 +32,7 @@ body, html {
 .fade-out {animation:fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
 
+/* --- Letter Container --- */
 #container {
   opacity: 0;
   pointer-events: none;
@@ -58,17 +61,53 @@ body, html {
 #letter p { margin:1.2em 0; position:relative; }
 #letter p span.letter { display:inline-block; opacity:0; transform:translateY(5px); transition:opacity 0.15s ease, transform 0.15s ease; }
 
-.ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
-
-.ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
-@keyframes ripple-anim {0%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}100%{transform:translate(-50%,-50%) scale(80);opacity:0;} }
-
+#container.fade-out {animation:fadeOutToPink 3s ease forwards;}
 @keyframes fadeOutToPink {
   0% {opacity:1;background-color:transparent;filter:brightness(1);}
   80% {opacity:0.3;background-color:rgba(255,182,193,0.4);filter:brightness(1.2);}
   100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
 }
-#container.fade-out {animation:fadeOutToPink 3s ease forwards;}
+
+/* --- Heart Animation Section --- */
+#heart-container {
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%, -50%);
+  z-index:50;
+  display:none;
+  opacity:0;
+  transition: opacity 2s ease-in-out;
+}
+#heart-container.show { opacity:1; }
+
+#loveHeart {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#garden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1200px;
+  height: 1200px;
+}
+
+#words {
+  position: absolute;
+  text-align: center;
+  color: #ff69b4;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  text-shadow: 0 0 10px rgba(255,182,193,0.7);
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -86,106 +125,114 @@ body, html {
     <div id="letter"></div>
   </div>
   <audio id="background-music" loop>
-    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano music.mp3" type="audio/mpeg">
   </audio>
 </div>
 
+<!-- Heart animation section -->
+<div id="heart-container">
+  <div id="loveHeart">
+    <canvas id="garden" width="1200" height="1200"></canvas>
+    <div id="words">
+      <div id="messages">My heart blooms for you</div>
+      <div id="loveu" style="display:none;">Love you always</div>
+    </div>
+  </div>
+</div>
+
+<!-- 🌸 Garden + Flower Heart -->
 <script>
-// ---- LETTER WRITING ----
+function Vector(a,b){this.x=a;this.y=b;}
+Vector.prototype={rotate:function(b){var a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this},mult:function(a){this.x*=a;this.y*=a;return this},clone:function(){return new Vector(this.x,this.y)},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},subtract:function(a){this.x-=a.x;this.y-=a.y;return this},set:function(a,b){this.x=a;this.y=b;return this}};
+function Petal(a,f,b,e,c,d){this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;}
+Petal.prototype={draw:function(){var a=this.bloom.garden.ctx,e,d,c,b;e=new Vector(0,this.r).rotate(Garden.degrad(this.startAngle));d=e.clone().rotate(Garden.degrad(this.angle));c=e.clone().mult(this.stretchA);b=d.clone().mult(this.stretchB);a.strokeStyle=this.bloom.c;a.beginPath();a.moveTo(e.x,e.y);a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y);a.stroke()},render:function(){if(this.r<=this.bloom.r){this.r+=this.growFactor;this.draw()}else{this.isfinished=true;}}};
+function Bloom(e,d,f,a,b){this.p=e;this.r=d;this.c=f;this.pc=a;this.petals=[];this.garden=b;this.init();this.garden.addBloom(this);}
+Bloom.prototype={draw:function(){var c,b=true;this.garden.ctx.save();this.garden.ctx.translate(this.p.x,this.p.y);for(var a=0;a<this.petals.length;a++){c=this.petals[a];c.render();b*=c.isfinished;}this.garden.ctx.restore();if(b==true){this.garden.removeBloom(this)}},init:function(){var c=360/this.pc;var b=Garden.randomInt(0,90);for(var a=0;a<this.pc;a++){this.petals.push(new Petal(Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),b+a*c,c,Garden.random(Garden.options.growFactor.min,Garden.options.growFactor.max),this));}}};
+function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
+Garden.prototype={render:function(){for(var a=0;a<this.blooms.length;a++){this.blooms[a].draw()}},addBloom:function(a){this.blooms.push(a)},removeBloom:function(a){for(var c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max))},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this)},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height)}};
+
+Garden.options={petalCount:{min:8,max:15},petalStretch:{min:0.1,max:3},growFactor:{min:0.1,max:0.8},bloomRadius:{min:8,max:10},growSpeed:1000/60,color:{rmin:245,rmax:255,gmin:150,gmax:200,bmin:180,bmax:255,opacity:0.25}};
+
+Garden.random=(b,a)=>Math.random()*(a-b)+b;
+Garden.randomInt=(b,a)=>Math.floor(Math.random()*(a-b+1))+b;
+Garden.degrad=a=>Math.PI/180*a;
+Garden.randomrgba=(i,n,h,m,l,d,k)=>`rgba(${Math.round(Garden.random(i,n))},${Math.round(Garden.random(h,m))},${Math.round(Garden.random(l,d))},${k})`;
+
+let gardenCtx,gardenCanvas,garden,offsetX,offsetY;
+
+function getHeartPoint(t){
+  const x = 16 * Math.pow(Math.sin(t),3);
+  const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+  return [offsetX + x*12, offsetY - y*12];
+}
+
+function startHeartAnimation(){
+  gardenCanvas=document.getElementById("garden");
+  gardenCtx=gardenCanvas.getContext("2d");
+  gardenCtx.globalCompositeOperation="lighter";
+  garden=new Garden(gardenCtx,gardenCanvas);
+
+  gardenCanvas.width = window.innerWidth;
+  gardenCanvas.height = window.innerHeight;
+  offsetX = gardenCanvas.width / 2;
+  offsetY = gardenCanvas.height / 2;
+
+  setInterval(()=>garden.render(), Garden.options.growSpeed);
+
+  let t = 10;
+  const draw = setInterval(()=>{
+    const [x,y]=getHeartPoint(t);
+    garden.createRandomBloom(x,y);
+    t += 0.2;
+    if (t >= 30){
+      clearInterval(draw);
+      $("#loveu").fadeIn(3000);
+    }
+  }, 50);
+}
+</script>
+
+<!-- 🩷 Letter Typing + Transition -->
+<script>
 const sentences=[
-  ["Line 1 行一","Line 1 English"],
-  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
-  ["Line 3 行三","Line 3 English"],
-  ["Line 4 行四","Line 4 English"],
+  ["Line 1","Line 1 English"],
+  ["Line 2","Line 2 English"],
+  ["Line 3","Line 3 English"],
+  ["Line 4","Line 4 English"],
   ["[Your Name]"]
 ];
-
 const letterDiv=document.getElementById("letter");
-const inkTrails=[];
-for(let i=0;i<3;i++){
-  const ink=document.createElement("span");
-  ink.classList.add("ink-trail");
-  letterDiv.appendChild(ink);
-  inkTrails.push(ink);
-}
-let trailIndex=0;
-
-function writeLetter(span,letter){
-  return new Promise(resolve=>{
-    span.textContent+=letter;
-    requestAnimationFrame(()=>{
-      span.style.opacity='1';
-      const containerRect=letterDiv.getBoundingClientRect();
-      const range=document.createRange();
-      range.setStart(span.firstChild||span,span.textContent.length-1);
-      range.setEnd(span.firstChild||span,span.textContent.length);
-      const rect=range.getBoundingClientRect();
-      const ink=inkTrails[trailIndex%inkTrails.length];
-      ink.style.height=rect.height+'px';
-      ink.style.width=rect.width/2+'px';
-      ink.style.left=(rect.right-containerRect.left)+'px';
-      ink.style.top=(rect.top-containerRect.top)+'px';
-      ink.style.opacity=1;
-      trailIndex++;
-      setTimeout(()=>ink.style.opacity=0,400);
-    });
-    resolve();
-  });
-}
 
 async function showSentence(lines,delay=200){
-  const pContainer=document.createElement("p");
-  letterDiv.appendChild(pContainer);
-  if(!Array.isArray(lines)) lines=[lines];
-  const spans=lines.map(line=>{
+  const p=document.createElement("p");
+  letterDiv.appendChild(p);
+  if(!Array.isArray(lines))lines=[lines];
+  for(const line of lines){
     const span=document.createElement("span");
-    span.style.display='block';
-    span.style.marginBottom='0.2em';
-    pContainer.appendChild(span);
-    return {span,text:line};
-  });
-  const maxLength=Math.max(...lines.map(l=>l.length));
-  for(let i=0;i<maxLength;i++){
-    for(let {span,text} of spans){
-      if(i<text.length) await writeLetter(span,text[i]);
+    p.appendChild(span);
+    for(let i=0;i<line.length;i++){
+      span.textContent+=line[i];
+      await new Promise(r=>setTimeout(r,delay));
     }
-    await new Promise(r=>setTimeout(r,delay));
-    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
   }
+  letterDiv.scrollTop=letterDiv.scrollHeight;
 }
 
 async function showAllText(){
-  for(let s=0;s<sentences.length;s++){
-    await showSentence(sentences[s],300);
-    await new Promise(r=>setTimeout(r,300));
-  }
-  inkTrails.forEach(ink=>ink.style.display='none');
+  for(const s of sentences) await showSentence(s,120);
   const container=document.getElementById("container");
   container.classList.add("fade-out");
+  await new Promise(r=>setTimeout(r,2500));
+  const heartContainer=document.getElementById("heart-container");
+  heartContainer.style.display="block";
+  heartContainer.classList.add("show");
+  setTimeout(startHeartAnimation, 1000);
 }
 
-document.getElementById("startBtn").addEventListener("click",function(){
-  const container=document.getElementById("container");
-  const startContainer=document.getElementById("start-container");
-  this.disabled=true;
-  this.style.pointerEvents="none";
-  const rect=this.getBoundingClientRect();
-  const centerX=rect.left+rect.width/2;
-  const centerY=rect.top+rect.height/2;
-  for(let i=0;i<5;i++){
-    const ripple=document.createElement("span");
-    ripple.className='ripple';
-    ripple.style.left=centerX+'px';
-    ripple.style.top=centerY+'px';
-    ripple.style.animationDelay=`${i*0.3}s`;
-    document.body.appendChild(ripple);
-    ripple.addEventListener('animationend',()=>ripple.remove());
-  }
-  startContainer.classList.add('fade-out');
+document.getElementById("startBtn").addEventListener("click",()=>{
+  document.getElementById("start-container").classList.add('fade-out');
   setTimeout(()=>{
-    startContainer.style.display='none';
-    container.classList.add('show');
-    document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+    document.getElementById("container").classList.add('show');
     showAllText();
   },1800);
 });
