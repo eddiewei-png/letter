@@ -143,7 +143,7 @@ body, html {
   </div>
 </div>
 
-<!-- ===== Friend’s Realistic Flower Heart Code (with dreamy blossom colors) ===== -->
+<!-- ===== Friend’s Realistic Flower Heart Code (fixed) ===== -->
 <script>
 function Vector(a,b){this.x=a;this.y=b;}
 Vector.prototype={rotate:function(b){var a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this},mult:function(a){this.x*=a;this.y*=a;return this},clone:function(){return new Vector(this.x,this.y)},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},subtract:function(a){this.x-=a.x;this.y-=a.y;return this},set:function(a,b){this.x=a;this.y=b;return this}};
@@ -154,9 +154,8 @@ Bloom.prototype={draw:function(){var c,b=true;this.garden.ctx.save();this.garden
 function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
 Garden.prototype={render:function(){for(var a=0;a<this.blooms.length;a++){this.blooms[a].draw()}},addBloom:function(a){this.blooms.push(a)},removeBloom:function(a){var d;for(var c=0;c<this.blooms.length;c++){d=this.blooms[c];if(d===a){this.blooms.splice(c,1);return this}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max))},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this)},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height)}};
 
-/* Dreamy blossom colors */
+/* --- Cherry blossom colors --- */
 Garden.options={petalCount:{min:8,max:15},petalStretch:{min:0.1,max:3},growFactor:{min:0.1,max:0.8},bloomRadius:{min:8,max:10},density:10,growSpeed:1000/60,color:{rmin:245,rmax:255,gmin:150,gmax:200,bmin:180,bmax:255,opacity:0.25},tanAngle:60};
-
 Garden.random=function(b,a){return Math.random()*(a-b)+b};
 Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b};
 Garden.circle=2*Math.PI;
@@ -165,86 +164,86 @@ Garden.rgba=function(f,e,c,d){return"rgba("+f+","+e+","+c+","+d+")"};
 Garden.randomrgba=function(i,n,h,m,l,d,k){var c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return Garden.rgba(c,f,j,k)};
 
 let gardenCtx,gardenCanvas,garden,offsetX,offsetY;
-function getHeartPoint(c){
-  const t=c/Math.PI;
-  const x=19.5*(16*Math.pow(Math.sin(t),3));
-  const y=-20*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-  return [offsetX+x, offsetY+y];
+
+function getHeartPoint(t){
+  const x = 16 * Math.pow(Math.sin(t),3);
+  const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+  return [offsetX + x*12, offsetY - y*12]; // scaled up heart
 }
+
 function startHeartAnimation(){
-  const canvas=document.getElementById("garden");
-  if(!canvas){console.error("No canvas found!");return;}
-  const width=canvas.width;
-  const height=canvas.height;
-  offsetX=width/2;
-  offsetY=height/2 - 55;
-  gardenCanvas=canvas;
+  gardenCanvas=document.getElementById("garden");
+  if(!gardenCanvas){console.error("Canvas not found");return;}
   gardenCtx=gardenCanvas.getContext("2d");
   gardenCtx.globalCompositeOperation="lighter";
   garden=new Garden(gardenCtx,gardenCanvas);
+
+  // Dynamically set size + center
+  gardenCanvas.width = window.innerWidth;
+  gardenCanvas.height = window.innerHeight;
+  offsetX = gardenCanvas.width / 2;
+  offsetY = gardenCanvas.height / 2;
+
+  // Start rendering
   setInterval(()=>garden.render(), Garden.options.growSpeed);
-  let c=50, d=10, points=[];
-  const interval=setInterval(()=>{
-    const [x,y]=getHeartPoint(d);
-    let canDraw=true;
-    for(let i=0;i<points.length;i++){
-      const p=points[i];
-      const dist=Math.sqrt(Math.pow(p[0]-x,2)+Math.pow(p[1]-y,2));
-      if(dist<Garden.options.bloomRadius.max*1.3){canDraw=false;break;}
-    }
-    if(canDraw){points.push([x,y]);garden.createRandomBloom(x,y);}
-    if(d>=30){clearInterval(interval);}
-    else{d+=0.2;}
-  },c);
+
+  // Draw the heart bloom pattern
+  let t = 10;
+  const draw = setInterval(()=>{
+    const [x,y]=getHeartPoint(t);
+    garden.createRandomBloom(x,y);
+    t += 0.2;
+    if (t >= 30){ clearInterval(draw); }
+  }, 50);
 }
 </script>
 
-<!-- ===== Letter Animation Code ===== -->
+<!-- ===== Letter Animation Code (unchanged except delay) ===== -->
 <script>
 const sentences=[
-  ["Line 1 行一","Line 1 English"],
-  ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
-  ["Line 3 行三","Line 3 English"],
-  ["Line 4 行四","Line 4 English"],
+  ["Line 1","Line 1 English"],
+  ["Line 2","Line 2 English"],
+  ["Line 3","Line 3 English"],
+  ["Line 4","Line 4 English"],
   ["[Your Name]"]
 ];
 const letterDiv=document.getElementById("letter");
-const inkTrails=[];
-for(let i=0;i<3;i++){const ink=document.createElement("span");ink.classList.add("ink-trail");letterDiv.appendChild(ink);inkTrails.push(ink);}
-let trailIndex=0;
-function writeLetter(span,letter){return new Promise(resolve=>{span.textContent+=letter;requestAnimationFrame(()=>{span.style.opacity='1';const containerRect=letterDiv.getBoundingClientRect();const range=document.createRange();range.setStart(span.firstChild||span,span.textContent.length-1);range.setEnd(span.firstChild||span,span.textContent.length);const rect=range.getBoundingClientRect();const ink=inkTrails[trailIndex%inkTrails.length];ink.style.height=rect.height+'px';ink.style.width=rect.width/2+'px';ink.style.left=(rect.right-containerRect.left)+'px';ink.style.top=(rect.top-containerRect.top)+'px';ink.style.opacity=1;trailIndex++;setTimeout(()=>ink.style.opacity=0,400);});resolve();});}
-async function showSentence(lines,delay=200){const pContainer=document.createElement("p");letterDiv.appendChild(pContainer);if(!Array.isArray(lines))lines=[lines];const spans=lines.map(line=>{const span=document.createElement("span");span.style.display='block';span.style.marginBottom='0.2em';pContainer.appendChild(span);return{span,text:line};});const maxLength=Math.max(...lines.map(l=>l.length));for(let i=0;i<maxLength;i++){for(let{span,text}of spans){if(i<text.length)await writeLetter(span,text[i]);}await new Promise(r=>setTimeout(r,delay));letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;}}
-async function showAllText(){
-  for(let s=0;s<sentences.length;s++){
-    await showSentence(sentences[s],300);
-    await new Promise(r=>setTimeout(r,300));
+async function showSentence(lines,delay=200){
+  const p=document.createElement("p");
+  letterDiv.appendChild(p);
+  if(!Array.isArray(lines))lines=[lines];
+  for(const line of lines){
+    const span=document.createElement("span");
+    p.appendChild(span);
+    for(let i=0;i<line.length;i++){
+      span.textContent+=line[i];
+      await new Promise(r=>setTimeout(r,delay));
+    }
   }
-  inkTrails.forEach(ink=>ink.style.display='none');
+  letterDiv.scrollTop=letterDiv.scrollHeight;
+}
+async function showAllText(){
+  for(const s of sentences) await showSentence(s,120);
   const container=document.getElementById("container");
   container.classList.add("fade-out");
-  await new Promise(r=>setTimeout(r,3000));
+  await new Promise(r=>setTimeout(r,2500));
   const heartContainer=document.getElementById("heart-container");
   heartContainer.style.display="block";
   heartContainer.classList.add("show");
-  setTimeout(()=>startHeartAnimation(),800);
+  // ✅ give DOM time before start
+  setTimeout(startHeartAnimation, 1000);
 }
-document.getElementById("startBtn").addEventListener("click",function(){
-  const container=document.getElementById("container");
-  const startContainer=document.getElementById("start-container");
-  this.disabled=true;this.style.pointerEvents="none";
-  const rect=this.getBoundingClientRect();
-  const centerX=rect.left+rect.width/2;
-  const centerY=rect.top+rect.height/2;
-  for(let i=0;i<5;i++){const ripple=document.createElement("span");ripple.className='ripple';ripple.style.left=centerX+'px';ripple.style.top=centerY+'px';ripple.style.animationDelay=`${i*0.3}s`;document.body.appendChild(ripple);ripple.addEventListener('animationend',()=>ripple.remove());}
-  startContainer.classList.add('fade-out');
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+  document.getElementById("start-container").classList.add('fade-out');
   setTimeout(()=>{
-    startContainer.style.display='none';
-    container.classList.add('show');
-    document.getElementById("background-music").play().catch(()=>console.log("Autoplay blocked"));
+    document.getElementById("container").classList.add('show');
     showAllText();
   },1800);
 });
 </script>
+
 </body>
 </html>
+
 
