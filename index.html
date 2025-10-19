@@ -210,14 +210,29 @@ function initGarden(){
   setInterval(()=>garden.render(),Garden.options.growSpeed);
 }
 
-function getHeartPoint(t){
-  const w=gardenCanvas.width;
-  const h=gardenCanvas.height;
-  const scale=Math.min(w,h)/28; // heart proportionally large
-  const x=16*Math.pow(Math.sin(t),3)*scale;
-  const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scale;
-  return [w/2+x, h/2.1+y-scale*1.2]; // adjust up slightly
+function getHeartPoint(t) {
+  const w = gardenCanvas.width;
+  const h = gardenCanvas.height;
+
+  const isMobile = window.innerWidth < 768; // breakpoint for mobile
+  const baseScale = Math.min(w, h);
+
+  // Desktop: big and full
+  const scale = isMobile ? baseScale / 30 : baseScale / 26;
+
+  // Slightly narrower heart for mobile to avoid side clipping
+  const xMultiplier = isMobile ? 15 : 16;
+  const x = xMultiplier * Math.pow(Math.sin(t), 3) * scale;
+  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t)
+            - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale;
+
+  // Mobile: move up a bit more
+  const verticalAdjust = isMobile ? scale * 1.2 : scale * 0.8;
+  const verticalCenter = isMobile ? h / 2.05 : h / 2.1;
+
+  return [w / 2 + x, verticalCenter + y - verticalAdjust];
 }
+
 
 function startHeartAnimation() {
   initGarden();
@@ -298,3 +313,4 @@ $("#startBtn").on("click",function(){
 </script>
 </body>
 </html>
+
