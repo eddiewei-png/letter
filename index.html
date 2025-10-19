@@ -106,11 +106,11 @@ body, html {
   display: inline-block;
   min-width: 30px;
   text-align: center;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: transform 0.5s ease, color 0.5s ease;
 }
 
 #elapseClock .digit.pulse {
-  transform: scale(1.3);
+  transform: scale(1.2);
   color: #ff4da6; /* brighter pink for pulse */
   text-shadow: 0 0 12px rgba(255,105,180,0.8);
 }
@@ -448,7 +448,7 @@ function updateElapsedTime() {
   // Pulse the seconds digit
   const secondsDigit = elapseClock.find(".digit").last();
   secondsDigit.addClass("pulse");
-  setTimeout(() => secondsDigit.removeClass("pulse"), 200);
+  setTimeout(() => secondsDigit.removeClass("pulse"), 500);
 }
 
 /*function updateElapsedTime() {
@@ -518,6 +518,7 @@ function showMessages() {
 
 </body>
 </html>
+
 
 
 
