@@ -268,7 +268,7 @@ function showMessages(){
 }
 
   function updateTimer() {
-  const startDate = new Date("2025-10-19T22:00:00");
+  const startDate = new Date("2025-10-19T22:30:00");
   const now = new Date();
   const diff = Math.floor((now - startDate) / 1000);
 
@@ -402,8 +402,37 @@ $("#startBtn").on("click",function(){
   },1800);
 });
 </script>
+<script>
+function updateElapsedTime() {
+  const startTime = new Date("2025-10-19T22:00:00"); // start date/time
+  const now = new Date();
+  const diff = now - startTime;
+
+  if (diff < 0) {
+    document.getElementById("elapseClock").innerText = "Counting soon ❤️";
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("elapseClock").innerHTML = `
+    <span class="digit">${days}</span> days&nbsp;
+    <span class="digit">${hours}</span> hours&nbsp;
+    <span class="digit">${minutes}</span> minutes&nbsp;
+    <span class="digit">${seconds}</span> seconds
+  `;
+}
+
+setInterval(updateElapsedTime, 1000);
+updateElapsedTime();
+</script>
+
 </body>
 </html>
+
 
 
 
