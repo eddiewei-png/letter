@@ -68,7 +68,6 @@ body, html {
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   width: 100vw; height: 100vh;
-  max-width: none; max-height: none;
   z-index: 50;
   display: none;
   overflow: visible;
@@ -125,7 +124,7 @@ body, html {
 </div>
 
 <script>
-/* ===== Letter typing effect ===== */
+/* ===== Letter typing effect (same as before) ===== */
 const sentences = [
   ["Line 1 行一","Line 1 English"],
   ["Line 2 行二行二行二 Line 2 English 行二行二行二","Line 2 English 行二行二行二 Line 2 English"],
@@ -197,29 +196,7 @@ async function showAllText(){
   startHeartAnimation();
 }
 
-/* ===== Garden.js ===== */
-function Vector(a, b){this.x=a;this.y=b;}
-Vector.prototype={rotate(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this;},mult(a){this.x*=a;this.y*=a;return this;},clone(){return new Vector(this.x,this.y);},length(){return Math.sqrt(this.x*this.x+this.y*this.y);},subtract(a){this.x-=a.x;this.y-=a.y;return this;},set(a,b){this.x=a;this.y=b;return this;}};
-
-function Petal(a,f,b,e,c,d){this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;}
-Petal.prototype={draw:function(){const a=this.bloom.garden.ctx;let e,d,c,b;e=new Vector(0,this.r).rotate(Garden.degrad(this.startAngle));d=e.clone().rotate(Garden.degrad(this.angle));c=e.clone().mult(this.stretchA);b=d.clone().mult(this.stretchB);a.strokeStyle=this.bloom.c;a.beginPath();a.moveTo(e.x,e.y);a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y);a.stroke();},render:function(){if(this.r<=this.bloom.r){this.r+=this.growFactor;this.draw();}else{this.isfinished=true;}}};
-
-function Bloom(e,d,f,a,b){this.p=e;this.r=d;this.c=f;this.pc=a;this.petals=[];this.garden=b;this.init();this.garden.addBloom(this);}
-Bloom.prototype={draw:function(){let c,b=true;this.garden.ctx.save();this.garden.ctx.translate(this.p.x,this.p.y);for(let a=0;a<this.petals.length;a++){c=this.petals[a];c.render();b*=c.isfinished;}this.garden.ctx.restore();if(b)this.garden.removeBloom(this);},init:function(){const c=360/this.pc,b=Garden.randomInt(0,90);for(let a=0;a<this.pc;a++){this.petals.push(new Petal(Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),b+a*c,c,Garden.random(Garden.options.growFactor.min,Garden.options.growFactor.max),this));}}};
-
-function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
-Garden.prototype={render:function(){for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}},addBloom:function(a){this.blooms.push(a);},removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this;}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max));},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this);},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height);}};
-
-Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},growSpeed:1000/60,color:{rmin:128,rmax:255,gmin:0,gmax:128,bmin:0,bmax:128,opacity:0.3}};
-
-Garden.random=function(b,a){return Math.random()*(a-b)+b;};
-Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b;};
-Garden.circle=2*Math.PI;
-Garden.degrad=function(a){return Garden.circle/360*a;};
-Garden.rgba=function(f,e,c,d){return`rgba(${f},${e},${c},${d})`;};
-Garden.randomrgba=function(i,n,h,m,l,d,k){const c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return Garden.rgba(c,f,j,k);};
-
-/* ===== Heart Animation ===== */
+/* ===== Fixed Heart Animation ===== */
 let garden, gardenCanvas;
 function initGarden(){
   const $loveHeart=$("#loveHeart");
@@ -236,30 +213,26 @@ function initGarden(){
 function getHeartPoint(t){
   const w=gardenCanvas.width;
   const h=gardenCanvas.height;
-  const scale=Math.min(w,h)/25; // slightly larger heart
+  const scale=Math.min(w,h)/28; // heart proportionally large
   const x=16*Math.pow(Math.sin(t),3)*scale;
   const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scale;
-  return [w/2+x, h/2+y-scale*1.5]; // lift slightly for full view
+  return [w/2+x, h/2.1+y-scale*1.2]; // adjust up slightly
 }
 
 function startHeartAnimation() {
-  const interval = 20;
+  initGarden();
   let t = 0;
   const blooms = [];
+  const interval = 25;
+  const step = 0.04;
   const end = Math.PI * 2;
-
-  // make flowers smaller & more delicate
-  Garden.options.bloomRadius = {min:4, max:6};
-  // reduce density slightly for smoother drawing
-  const step = 0.035; 
 
   const anim = setInterval(() => {
     const [x, y] = getHeartPoint(t);
     let canDraw = true;
-    for (let i = 0; i < blooms.length; i++) {
-      const p = blooms[i];
-      const dist = Math.sqrt((p[0] - x) ** 2 + (p[1] - y) ** 2);
-      if (dist < Garden.options.bloomRadius.max * 1.1) {
+    for (const p of blooms) {
+      const dist = Math.sqrt((p[0]-x)**2 + (p[1]-y)**2);
+      if (dist < Garden.options.bloomRadius.max * 1.5) {
         canDraw = false;
         break;
       }
@@ -268,7 +241,6 @@ function startHeartAnimation() {
       blooms.push([x, y]);
       garden.createRandomBloom(x, y);
     }
-
     t += step;
     if (t >= end) {
       clearInterval(anim);
@@ -277,15 +249,27 @@ function startHeartAnimation() {
   }, interval);
 }
 
-window.addEventListener('resize',()=>{
-  if($("#heart-container").is(":visible")){
-    initGarden();
-    startHeartAnimation();
-  }
-});
+function showMessages(){
+  $("#messages").fadeIn(3000, ()=>$("#love-u").fadeIn(2000));
+}
 
+/* ===== Garden.js ===== */
+function Vector(a, b){this.x=a;this.y=b;}
+Vector.prototype={rotate(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this;},mult(a){this.x*=a;this.y*=a;return this;},clone(){return new Vector(this.x,this.y);}};
+function Petal(a,f,b,e,c,d){this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;}
+Petal.prototype={draw:function(){const a=this.bloom.garden.ctx;let e,d,c,b;e=new Vector(0,this.r).rotate(Garden.degrad(this.startAngle));d=e.clone().rotate(Garden.degrad(this.angle));c=e.clone().mult(this.stretchA);b=d.clone().mult(this.stretchB);a.strokeStyle=this.bloom.c;a.beginPath();a.moveTo(e.x,e.y);a.bezierCurveTo(c.x,c.y,b.x,b.y,d.x,d.y);a.stroke();},render:function(){if(this.r<=this.bloom.r){this.r+=this.growFactor;this.draw();}else{this.isfinished=true;}}};
+function Bloom(e,d,f,a,b){this.p=e;this.r=d;this.c=f;this.pc=a;this.petals=[];this.garden=b;this.init();this.garden.addBloom(this);}
+Bloom.prototype={draw:function(){let c,b=true;this.garden.ctx.save();this.garden.ctx.translate(this.p.x,this.p.y);for(let a=0;a<this.petals.length;a++){c=this.petals[a];c.render();b*=c.isfinished;}this.garden.ctx.restore();if(b)this.garden.removeBloom(this);},init:function(){const c=360/this.pc,b=Garden.randomInt(0,90);for(let a=0;a<this.pc;a++){this.petals.push(new Petal(Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),Garden.random(Garden.options.petalStretch.min,Garden.options.petalStretch.max),b+a*c,c,Garden.random(Garden.options.growFactor.min,Garden.options.growFactor.max),this));}}};
+function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
+Garden.prototype={render:function(){for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}},addBloom:function(a){this.blooms.push(a);},removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this;}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max));},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this);},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height);}};
 
-/* ===== Start Button Logic ===== */
+Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},growSpeed:1000/60,color:{rmin:128,rmax:255,gmin:0,gmax:128,bmin:0,bmax:128,opacity:0.3}};
+Garden.random=function(b,a){return Math.random()*(a-b)+b;};
+Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b;};
+Garden.degrad=function(a){return 2*Math.PI/360*a;};
+Garden.randomrgba=function(i,n,h,m,l,d,k){const c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return`rgba(${c},${f},${j},${k})`;};
+
+/* ===== Start Button ===== */
 $("#startBtn").on("click",function(){
   const container=$("#container")[0];
   const startContainer=$("#start-container");
@@ -312,7 +296,5 @@ $("#startBtn").on("click",function(){
   },1800);
 });
 </script>
-
 </body>
 </html>
-
