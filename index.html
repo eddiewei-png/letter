@@ -388,7 +388,7 @@ $("#startBtn").on("click",function(){
 </script>
 <script>
 function updateElapsedTime() {
-  const startTime = new Date("2025-10-19T22:30:00"); // start date/time
+  const startTime = new Date("2025-10-07T22:30:00"); // ✅ start from Oct 7, 2025, 22:30
   const now = new Date();
   const diff = now - startTime;
 
@@ -410,12 +410,19 @@ function updateElapsedTime() {
   `;
 }
 
-setInterval(updateElapsedTime, 1000);
-updateElapsedTime();
+// Show message + start timer when hearts appear
+function showMessages() {
+  $("#messages").fadeIn(3000, () => {
+    updateElapsedTime(); // show immediately
+    setInterval(updateElapsedTime, 1000); // keep updating
+    $("#love-u").fadeIn(2000);
+  });
+}
 </script>
 
 </body>
 </html>
+
 
 
 
