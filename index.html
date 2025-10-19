@@ -297,19 +297,6 @@ function startHeartAnimation() {
   }, interval);
 }
 
-//function showMessages(){
-//  $("#messages").fadeIn(3000, ()=>$("#love-u").fadeIn(2000));
-//}
-
-
-//function showMessages() {
-  //$("#messages").fadeIn(3000, () => {
-    //setInterval(updateTimer, 1000);
-    //updateTimer(); // Initial call so it shows immediately
-  //  $("#love-u").fadeIn(2000);
-//  });
-//}
-
 /* ===== Garden.js ===== */
 function Vector(a, b){this.x=a;this.y=b;}
 Vector.prototype={rotate(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this;},mult(a){this.x*=a;this.y*=a;return this;},clone(){return new Vector(this.x,this.y);}};
@@ -421,16 +408,41 @@ $("#startBtn").on("click",function(){
 });
 </script>
 <script>
-/* ===== Smoothly updating live timer ===== */
+function showMessages() {
+  const elapseClock = $("#elapseClock");
+
+  // Make container visible
+  $("#messages").css("opacity", 1);
+
+  // Initial style for fade-in + slide
+  elapseClock.css({
+    opacity: 0,
+    transform: "translateY(20px)",
+    display: "block"
+  });
+
+  // Animate fade-in + slide
+  elapseClock.animate({ opacity: 1 }, {
+    duration: 1500,
+    step: function(now) {
+      elapseClock.css("transform", `translateY(${20 * (1 - now)}px)`);
+    },
+    complete: function() {
+      // Start live timer after fade-in finishes
+      updateElapsedTime(); // show immediately
+      setInterval(() => {
+        updateElapsedTime();
+      }, 1000);
+    }
+  });
+}
+
 function updateElapsedTime() {
-  const startTime = new Date("2025-10-07T22:30:00"); // start date/time
+  const startTime = new Date("2025-10-07T22:30:00");
   const now = new Date();
   const diff = now - startTime;
 
-  if (diff < 0) {
-    document.getElementById("elapseClock").innerText = "Counting soon ❤️";
-    return;
-  }
+  if (diff < 0) return;
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -445,83 +457,10 @@ function updateElapsedTime() {
     <span class="digit">${seconds.toString().padStart(2,'0')}</span> seconds
   `);
 
-  // Pulse the seconds digit
+  // Gentle pulse for seconds digit only
   const secondsDigit = elapseClock.find(".digit").last();
   secondsDigit.addClass("pulse");
   setTimeout(() => secondsDigit.removeClass("pulse"), 500);
-}
-
-/*function updateElapsedTime() {
-  const startTime = new Date("2025-10-07T22:30:00"); // start from Oct 7, 2025, 22:30
-  const now = new Date();
-  const diff = now - startTime;
-
-  const elapseClock = document.getElementById("elapseClock");
-
-  if (diff < 0) {
-    elapseClock.innerText = "Counting soon ❤️";
-    return;
-  }
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-
-  // Create a softly animated transition each update
-  elapseClock.style.opacity = "0";
-  elapseClock.style.transform = "translateY(8px)";
-  setTimeout(() => {
-    elapseClock.innerHTML = `
-      <span class="digit">${days}</span> days&nbsp;
-      <span class="digit">${hours.toString().padStart(2, '0')}</span> hrs&nbsp;
-      <span class="digit">${minutes.toString().padStart(2, '0')}</span> min&nbsp;
-      <span class="digit">${seconds.toString().padStart(2, '0')}</span> sec
-    `;
-    elapseClock.style.opacity = "1";
-    elapseClock.style.transform = "translateY(0)";
-  }, 150);
-}
-*/
-
-// Make sure it starts when the heart message fades in
-/*function showMessages() {
-  $("#messages").fadeIn(2500, () => {
-    updateElapsedTime();
-    setInterval(updateElapsedTime, 1000);
-    $("#love-u").fadeIn(2000);
-  });
-}*/
-function showMessages() {
-  const elapseClock = $("#elapseClock");
-
-  // Ensure container and timer are visible
-  $("#messages").css("opacity", 1);
-  elapseClock.css({
-    opacity: 0,
-    transform: "translateY(20px) scale(1)",
-    display: "block"
-  });
-
-  // Start the live timer immediately
-  updateElapsedTime();
-  setInterval(() => {
-    updateElapsedTime();
-
-    // Gentle pulse animation for each tick
-    elapseClock.css({ transform: "scale(1.05)" });
-    setTimeout(() => {
-      elapseClock.css({ transform: "scale(1)" });
-    }, 300); // pulse duration
-  }, 1000);
-
-  // Animate fade + slide smoothly
-  elapseClock.animate({ opacity: 1 }, {
-    duration: 1500,
-    step: function(now) {
-      elapseClock.css("transform", `translateY(${20 * (1 - now)}px) scale(1)`);
-    }
-  });
 }
 
 
@@ -530,6 +469,7 @@ function showMessages() {
 
 </body>
 </html>
+
 
 
 
