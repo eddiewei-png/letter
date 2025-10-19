@@ -94,10 +94,12 @@ body, html {
 
 #elapseClock {
   font-family: 'Great Vibes', cursive;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #ff8fb1;
-  text-shadow: 0 0 10px rgba(255,192,203,0.7);
-  transition: all 0.6s ease-out;
+  text-shadow: 0 0 12px rgba(255,192,203,0.7);
+  opacity: 0; /* start hidden */
+  transition: all 1s ease-out;
+  text-align: center;
 }
 
 #elapseClock .digit {
@@ -107,7 +109,12 @@ body, html {
 }
 
 #messages {
-  animation: floatIn 2s ease-out;
+  display: none; /* start hidden, revealed by heart */
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #ff69b4;
 }
 
 @keyframes floatIn {
@@ -141,10 +148,10 @@ body, html {
     <canvas id="garden"></canvas>
     <div id="messages">
       <div id="elapseClock"></div>
-      <div id="love-u">Love U Forever</div>
     </div>
   </div>
 </div>
+
 
 <script>
 /* ===== Letter typing effect (same as before) ===== */
@@ -449,36 +456,32 @@ function updateElapsedTime() {
   });
 }*/
 function showMessages() {
-  // Fade in the messages container first
-  $("#messages").fadeIn(2500, () => {
-    // Fade in the elapseClock after the container shows
+  // Fade in the container first
+  $("#messages").fadeIn(2000, () => {
+    // Animate the timer smoothly
     const elapseClock = $("#elapseClock");
-    elapseClock.css({opacity: 0, transform: "translateY(15px)"}).show();
-    
-    // Animate it in smoothly
+    elapseClock.css({opacity: 0, transform: "translateY(20px)"}).show();
     elapseClock.animate({opacity: 1, top: '0px'}, {
-      duration: 1000,
+      duration: 1500,
       step: function(now, fx) {
-        // Optional: can also animate Y transform
-        elapseClock.css("transform", `translateY(${15 * (1-now)}px)`);
+        elapseClock.css("transform", `translateY(${20 * (1-now)}px)`);
       },
       complete: function() {
-        // Start live timer after fade-in
+        // Start the live timer
         updateElapsedTime();
         setInterval(updateElapsedTime, 1000);
       }
     });
-
-    // Then fade in "Love U Forever"
-    $("#love-u").fadeIn(2000);
   });
 }
+
 
 </script>
 
 
 </body>
 </html>
+
 
 
 
