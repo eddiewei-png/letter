@@ -277,11 +277,31 @@ Bloom.prototype={draw:function(){let c,b=true;this.garden.ctx.save();this.garden
 function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
 Garden.prototype={render:function(){for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}},addBloom:function(a){this.blooms.push(a);},removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this;}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max));},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this);},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height);}};
 
-Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},growSpeed:1000/60,color:{rmin:128,rmax:255,gmin:0,gmax:128,bmin:0,bmax:128,opacity:0.3}};
+Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},growSpeed:1000/60,color: {rmin:128, rmax:255, gmin:0, gmax:128, bmin:0, bmax:128, opacity:0.45}};
 Garden.random=function(b,a){return Math.random()*(a-b)+b;};
 Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b;};
 Garden.degrad=function(a){return 2*Math.PI/360*a;};
-Garden.randomrgba=function(i,n,h,m,l,d,k){const c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return`rgba(${c},${f},${j},${k})`;};
+Garden.randomrgba = function (rmin, rmax, gmin, gmax, bmin, bmax, opacity) {
+  const r = Math.round(Garden.random(rmin, rmax));
+  const g = Math.round(Garden.random(gmin, gmax));
+  const b = Math.round(Garden.random(bmin, bmax));
+
+  // Start invisible
+  const bloom = { r, g, b, opacity: 0 };
+  const targetOpacity = opacity;
+  const fadeDuration = 1200; // 1.2s gentle fade
+
+  const step = targetOpacity / 20;
+  const fadeStep = setInterval(() => {
+    bloom.opacity += step;
+    if (bloom.opacity >= targetOpacity) {
+      bloom.opacity = targetOpacity;
+      clearInterval(fadeStep);
+    }
+  }, fadeDuration / 20);
+
+  return `rgba(${r},${g},${b},${bloom.opacity})`;
+};
 
 /* ===== Start Button ===== */
 $("#startBtn").on("click",function(){
@@ -312,6 +332,7 @@ $("#startBtn").on("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
