@@ -409,31 +409,34 @@ $("#startBtn").on("click",function(){
 </script>
 <script>
 function showMessages() {
+  const messages = $("#messages");
   const elapseClock = $("#elapseClock");
 
-  // Make container visible
-  $("#messages").css("opacity", 1);
+  // 1️⃣ Make messages container visible
+  messages.css({ display: "block", opacity: 0 });
 
-  // Initial style for fade-in + slide
+  // 2️⃣ Set initial style for the clock
   elapseClock.css({
+    display: "inline-block",
     opacity: 0,
-    transform: "translateY(20px)",
-    display: "block"
+    transform: "translateY(20px) scale(1)"
   });
 
-  // Animate fade-in + slide
-  elapseClock.animate({ opacity: 1 }, {
-    duration: 1500,
-    step: function(now) {
-      elapseClock.css("transform", `translateY(${20 * (1 - now)}px)`);
-    },
-    complete: function() {
-      // Start live timer after fade-in finishes
-      updateElapsedTime(); // show immediately
-      setInterval(() => {
+  // 3️⃣ Fade in messages container
+  messages.animate({ opacity: 1 }, 1500, "swing", () => {
+    // After container fades in, fade in the timer with slide
+    elapseClock.animate({ opacity: 1 }, {
+      duration: 1200,
+      step: function(now) {
+        // Slide up as it fades in
+        elapseClock.css("transform", `translateY(${20 * (1 - now)}px) scale(1)`);
+      },
+      complete: function() {
+        // Start live timer immediately
         updateElapsedTime();
-      }, 1000);
-    }
+        setInterval(updateElapsedTime, 1000);
+      }
+    });
   });
 }
 
@@ -457,7 +460,7 @@ function updateElapsedTime() {
     <span class="digit">${seconds.toString().padStart(2,'0')}</span> seconds
   `);
 
-  // Gentle pulse for seconds digit only
+  // Pulse the seconds digit
   const secondsDigit = elapseClock.find(".digit").last();
   secondsDigit.addClass("pulse");
   setTimeout(() => secondsDigit.removeClass("pulse"), 500);
@@ -465,29 +468,5 @@ function updateElapsedTime() {
 
 
 </script>
-
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
