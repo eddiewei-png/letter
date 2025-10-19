@@ -267,6 +267,31 @@ function showMessages(){
   $("#messages").fadeIn(3000, ()=>$("#love-u").fadeIn(2000));
 }
 
+  function updateTimer() {
+  const startDate = new Date("2025-10-19T22:00:00");
+  const now = new Date();
+  const diff = Math.floor((now - startDate) / 1000);
+
+  const days = Math.floor(diff / (3600 * 24));
+  const hours = Math.floor((diff % (3600 * 24)) / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  const seconds = diff % 60;
+
+  const elapse = `${days} days ${hours.toString().padStart(2, '0')} hrs `
+               + `${minutes.toString().padStart(2, '0')} min `
+               + `${seconds.toString().padStart(2, '0')} sec`;
+
+  $("#elapseClock").html(elapse);
+}
+
+function showMessages() {
+  $("#messages").fadeIn(3000, () => {
+    setInterval(updateTimer, 1000);
+    updateTimer(); // Initial call so it shows immediately
+    $("#love-u").fadeIn(2000);
+  });
+}
+
 /* ===== Garden.js ===== */
 function Vector(a, b){this.x=a;this.y=b;}
 Vector.prototype={rotate(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this;},mult(a){this.x*=a;this.y*=a;return this;},clone(){return new Vector(this.x,this.y);}};
@@ -379,6 +404,7 @@ $("#startBtn").on("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
