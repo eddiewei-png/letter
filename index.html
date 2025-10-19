@@ -495,36 +495,59 @@ function updateElapsedTime() {
 function showMessages() {
   const elapseClock = $("#elapseClock");
 
-  // Ensure #messages container is visible
+  // Ensure container and timer are visible
   $("#messages").css("opacity", 1);
-
-  // Prepare the timer for animation
   elapseClock.css({
     opacity: 0,
-    transform: "translateY(20px)",
+    transform: "translateY(20px) scale(1)",
     display: "block"
   });
 
-  // Start the timer immediately
+  // Start the live timer immediately
   updateElapsedTime();
-  setInterval(updateElapsedTime, 1000);
+  setInterval(() => {
+    updateElapsedTime();
 
-  // Animate the fade + slide
-  elapseClock.animate({opacity: 1}, {
+    // Gentle pulse animation for each tick
+    elapseClock.css({ transform: "scale(1.05)" });
+    setTimeout(() => {
+      elapseClock.css({ transform: "scale(1)" });
+    }, 300); // pulse duration
+  }, 1000);
+
+  // Animate fade + slide smoothly
+  elapseClock.animate({ opacity: 1 }, {
     duration: 1500,
-    step: function(now, fx) {
-      elapseClock.css("transform", `translateY(${20 * (1 - now)}px)`);
+    step: function(now) {
+      elapseClock.css("transform", `translateY(${20 * (1 - now)}px) scale(1)`);
     }
   });
 }
 
+function updateElapsedTime() {
+  const startTime = new Date("2025-10-07T22:30:00"); // start date/time
+  const now = new Date();
+  const diff = now - startTime;
 
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  $("#elapseClock").html(`
+    <span class="digit">${days}</span> days&nbsp;
+    <span class="digit">${hours.toString().padStart(2,'0')}</span> hours&nbsp;
+    <span class="digit">${minutes.toString().padStart(2,'0')}</span> minutes&nbsp;
+    <span class="digit">${seconds.toString().padStart(2,'0')}</span> seconds
+  `);
+}
 
 </script>
 
 
 </body>
 </html>
+
 
 
 
