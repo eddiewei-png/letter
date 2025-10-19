@@ -524,29 +524,13 @@ function showMessages() {
   });
 }
 
-function updateElapsedTime() {
-  const startTime = new Date("2025-10-07T22:30:00"); // start date/time
-  const now = new Date();
-  const diff = now - startTime;
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-
-  $("#elapseClock").html(`
-    <span class="digit">${days}</span> days&nbsp;
-    <span class="digit">${hours.toString().padStart(2,'0')}</span> hours&nbsp;
-    <span class="digit">${minutes.toString().padStart(2,'0')}</span> minutes&nbsp;
-    <span class="digit">${seconds.toString().padStart(2,'0')}</span> seconds
-  `);
-}
 
 </script>
 
 
 </body>
 </html>
+
 
 
 
