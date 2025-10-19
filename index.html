@@ -83,7 +83,7 @@ body, html {
 
 <div class="start-wrapper">
   <div class="start-container" id="start-container">
-    <div id="click-hint">Click Here <br> ↓</div>
+    <div id="click-hint">Click Here! <br> ↓</div>
     <button id="startBtn"><img src="stella.png" alt="Start"></button>
   </div>
 </div>
@@ -233,7 +233,7 @@ function initGarden(){
 function getHeartPoint(t) {
   const w = gardenCanvas.width;
   const h = gardenCanvas.height;
-  const scale = Math.min(w, h) / 45; // proportional scaling
+  const scale = Math.min(w, h) / 30; // proportional scaling
   const x = 16 * Math.pow(Math.sin(t), 3) * scale;
   const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale;
   // Move slightly up to avoid cutoff at bottom
@@ -299,4 +299,5 @@ $("#startBtn").on("click",function(){
 
 </body>
 </html>
+
 
