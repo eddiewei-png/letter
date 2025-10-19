@@ -281,7 +281,7 @@ function Bloom(e, d, f, a, b) {
   this.garden = b;
   this.alpha = 0;          // current alpha multiplier (0..1)
   this.targetAlpha = 1;    // multiply by color's own opacity
-  this.alphaStep = 0.06;   // speed of fade-in (tweak to taste)
+  this.alphaStep = 0.03;   // speed of fade-in (tweak to taste)
   this.init();
   this.garden.addBloom(this);
 }
@@ -379,6 +379,7 @@ $("#startBtn").on("click",function(){
 </script>
 </body>
 </html>
+
 
 
 
