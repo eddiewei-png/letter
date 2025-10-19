@@ -98,7 +98,7 @@ body, html {
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0; /* start hidden */
-  transition: all 1s ease-out;
+  transition: opacity 1.5s ease;
   text-align: center;
 }
 
@@ -505,6 +505,7 @@ function showMessages() {
       },
       complete: function() {
         // Start the live timer
+        $("#messages").css("opacity", 1);
         updateElapsedTime();
         setInterval(updateElapsedTime, 1000);
       }
@@ -518,6 +519,7 @@ function showMessages() {
 
 </body>
 </html>
+
 
 
 
