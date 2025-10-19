@@ -94,11 +94,11 @@ body, html {
 
 #elapseClock {
   font-family: 'Great Vibes', cursive;
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0; /* start hidden */
-  transition: opacity 1.5s ease;
+  transition: opacity 1.5s ease-in-out;
   text-align: center;
 }
 
@@ -493,25 +493,31 @@ function updateElapsedTime() {
   });
 }*/
 function showMessages() {
-  // Fade in the container first
-  $("#messages").fadeIn(2000, () => {
-    // Animate the timer smoothly
-    const elapseClock = $("#elapseClock");
-    elapseClock.css({opacity: 0, transform: "translateY(20px)"}).show();
-    elapseClock.animate({opacity: 1, top: '0px'}, {
-      duration: 1500,
-      step: function(now, fx) {
-        elapseClock.css("transform", `translateY(${20 * (1-now)}px)`);
-      },
-      complete: function() {
-        // Start the live timer
-        $("#messages").css("opacity", 1);
-        updateElapsedTime();
-        setInterval(updateElapsedTime, 1000);
-      }
-    });
+  const elapseClock = $("#elapseClock");
+
+  // Ensure #messages container is visible
+  $("#messages").css("opacity", 1);
+
+  // Prepare the timer for animation
+  elapseClock.css({
+    opacity: 0,
+    transform: "translateY(20px)",
+    display: "block"
+  });
+
+  // Start the timer immediately
+  updateElapsedTime();
+  setInterval(updateElapsedTime, 1000);
+
+  // Animate the fade + slide
+  elapseClock.animate({opacity: 1}, {
+    duration: 1500,
+    step: function(now, fx) {
+      elapseClock.css("transform", `translateY(${20 * (1 - now)}px)`);
+    }
   });
 }
+
 
 
 </script>
@@ -519,6 +525,7 @@ function showMessages() {
 
 </body>
 </html>
+
 
 
 
