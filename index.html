@@ -409,26 +409,32 @@ $("#startBtn").on("click",function(){
 </script>
 <script>
 function showMessages() {
+  const messages = $("#messages");
   const elapseClock = $("#elapseClock");
 
-  // Make the messages container visible immediately
-  $("#messages").css({ opacity: 1 });
+  // Make messages container visible immediately
+  messages.css({ display: "block", opacity: 1 });
 
-  // Display the timer immediately
+  // Show the timer instantly with a tiny pop/slide
   elapseClock.css({
+    display: "block",
     opacity: 1,
-    transform: "translateY(0)",
-    display: "block"
+    transform: "translateY(0)"
   });
 
-  // Show initial elapsed time immediately
+  // Set initial elapsed time immediately
   updateElapsedTime();
 
-  // Update every second
-  setInterval(() => {
-    updateElapsedTime();
-  }, 1000);
+  // Optional: tiny scale-up pulse for pop effect
+  elapseClock.css({ transform: "scale(1.1)" });
+  setTimeout(() => {
+    elapseClock.css({ transform: "scale(1)", transition: "transform 0.2s ease-out" });
+  }, 50);
+
+  // Start live timer updates
+  setInterval(updateElapsedTime, 1000);
 }
+
 
 function updateElapsedTime() {
   const startTime = new Date("2025-10-07T22:30:00");
@@ -460,5 +466,6 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
