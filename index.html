@@ -214,18 +214,22 @@ function getHeartPoint(t) {
   const w = gardenCanvas.width;
   const h = gardenCanvas.height;
 
-  // Universal scaling — proportional to the smaller screen dimension
+  // Base scale relative to the smaller screen dimension
   const scale = Math.min(w, h) / 29;
 
-  // Heart shape formula
-  const x = 16 * Math.pow(Math.sin(t), 3) * scale;
-  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t)
-            - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale;
+  // Adjust horizontal compression on portrait (tall) screens
+  const aspectRatio = w / h;
+  const xScale = aspectRatio < 0.8 ? 0.85 : 1; // compress a bit if very tall
+  const yScale = 1.02; // slight stretch vertically to keep shape natural
 
-  // Center horizontally and vertically
-  // Slight upward shift to prevent bottom clipping
+  const x = 16 * Math.pow(Math.sin(t), 3) * scale * xScale;
+  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t)
+            - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale * yScale;
+
+  // Center perfectly and shift slightly upward to prevent bottom clipping
   return [w / 2 + x, h / 2.05 + y - scale];
 }
+
 
 
 
@@ -308,5 +312,6 @@ $("#startBtn").on("click",function(){
 </script>
 </body>
 </html>
+
 
 
