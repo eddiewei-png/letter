@@ -220,7 +220,7 @@ Garden.rgba=function(f,e,c,d){return`rgba(${f},${e},${c},${d})`;};
 Garden.randomrgba=function(i,n,h,m,l,d,k){const c=Math.round(Garden.random(i,n)),f=Math.round(Garden.random(h,m)),j=Math.round(Garden.random(l,d));return Garden.rgba(c,f,j,k);};
 
 /* ===== Heart Animation ===== */
-let garden,gardenCanvas;
+let garden, gardenCanvas;
 function initGarden(){
   const $loveHeart=$("#loveHeart");
   const $gardenCanvas=$("#garden");
@@ -236,26 +236,45 @@ function initGarden(){
 function getHeartPoint(t){
   const w=gardenCanvas.width;
   const h=gardenCanvas.height;
-  const scale=Math.min(w,h)/30; // adjust for desired size
+  const scale=Math.min(w,h)/25; // slightly larger heart
   const x=16*Math.pow(Math.sin(t),3)*scale;
   const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scale;
-  return [w/2+x,h/2+y-scale*2]; // shift up slightly
+  return [w/2+x, h/2+y-scale*1.5]; // lift slightly for full view
 }
 
-function startHeartAnimation(){
-  if(!gardenCanvas)initGarden();
-  let t=10;
-  const points=[];
-  const interval=setInterval(()=>{
-    const pt=getHeartPoint(t);
-    let canBloom=true;
-    for(let i=0;i<points.length;i++){
-      const dx=pt[0]-points[i][0],dy=pt[1]-points[i][1];
-      if(Math.hypot(dx,dy)<Garden.options.bloomRadius.max*1.3){canBloom=false;break;}
+function startHeartAnimation() {
+  const interval = 20;
+  let t = 0;
+  const blooms = [];
+  const end = Math.PI * 2;
+
+  // make flowers smaller & more delicate
+  Garden.options.bloomRadius = {min:4, max:6};
+  // reduce density slightly for smoother drawing
+  const step = 0.035; 
+
+  const anim = setInterval(() => {
+    const [x, y] = getHeartPoint(t);
+    let canDraw = true;
+    for (let i = 0; i < blooms.length; i++) {
+      const p = blooms[i];
+      const dist = Math.sqrt((p[0] - x) ** 2 + (p[1] - y) ** 2);
+      if (dist < Garden.options.bloomRadius.max * 1.1) {
+        canDraw = false;
+        break;
+      }
     }
-    if(canBloom){points.push(pt);garden.createRandomBloom(pt[0],pt[1]);}
-    if(t>=30){clearInterval(interval);$("#messages").fadeIn(5000,()=>$("#love-u").fadeIn(3000));}else t+=0.2;
-  },50);
+    if (canDraw) {
+      blooms.push([x, y]);
+      garden.createRandomBloom(x, y);
+    }
+
+    t += step;
+    if (t >= end) {
+      clearInterval(anim);
+      showMessages();
+    }
+  }, interval);
 }
 
 window.addEventListener('resize',()=>{
@@ -264,6 +283,7 @@ window.addEventListener('resize',()=>{
     startHeartAnimation();
   }
 });
+
 
 /* ===== Start Button Logic ===== */
 $("#startBtn").on("click",function(){
@@ -295,3 +315,4 @@ $("#startBtn").on("click",function(){
 
 </body>
 </html>
+
