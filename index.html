@@ -409,35 +409,25 @@ $("#startBtn").on("click",function(){
 </script>
 <script>
 function showMessages() {
-  const messages = $("#messages");
   const elapseClock = $("#elapseClock");
 
-  // 1️⃣ Make messages container visible
-  messages.css({ display: "block", opacity: 0 });
+  // Make the messages container visible immediately
+  $("#messages").css({ opacity: 1 });
 
-  // 2️⃣ Set initial style for the clock
+  // Display the timer immediately
   elapseClock.css({
-    display: "inline-block",
-    opacity: 0,
-    transform: "translateY(20px) scale(1)"
+    opacity: 1,
+    transform: "translateY(0)",
+    display: "block"
   });
 
-  // 3️⃣ Fade in messages container
-  messages.animate({ opacity: 1 }, 1500, "swing", () => {
-    // After container fades in, fade in the timer with slide
-    elapseClock.animate({ opacity: 1 }, {
-      duration: 1200,
-      step: function(now) {
-        // Slide up as it fades in
-        elapseClock.css("transform", `translateY(${20 * (1 - now)}px) scale(1)`);
-      },
-      complete: function() {
-        // Start live timer immediately
-        updateElapsedTime();
-        setInterval(updateElapsedTime, 1000);
-      }
-    });
-  });
+  // Show initial elapsed time immediately
+  updateElapsedTime();
+
+  // Update every second
+  setInterval(() => {
+    updateElapsedTime();
+  }, 1000);
 }
 
 function updateElapsedTime() {
@@ -460,7 +450,7 @@ function updateElapsedTime() {
     <span class="digit">${seconds.toString().padStart(2,'0')}</span> seconds
   `);
 
-  // Pulse the seconds digit
+  // Gentle pulse for seconds digit
   const secondsDigit = elapseClock.find(".digit").last();
   secondsDigit.addClass("pulse");
   setTimeout(() => secondsDigit.removeClass("pulse"), 500);
@@ -470,4 +460,5 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
