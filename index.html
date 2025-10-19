@@ -91,6 +91,29 @@ body, html {
   100% {opacity:0;background-color:rgba(255,182,193,0.6);filter:brightness(1.4);}
 }
 #container.fade-out {animation:fadeOutToPink 3s ease forwards;}
+
+#elapseClock {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  color: #ff8fb1;
+  text-shadow: 0 0 10px rgba(255,192,203,0.7);
+  transition: all 0.6s ease-out;
+}
+
+#elapseClock .digit {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+}
+
+#messages {
+  animation: floatIn 2s ease-out;
+}
+
+@keyframes floatIn {
+  from {opacity: 0; transform: translateY(15px);}
+  to {opacity: 1; transform: translateY(0);}
+}
 </style>
 </head>
 <body>
@@ -387,13 +410,16 @@ $("#startBtn").on("click",function(){
 });
 </script>
 <script>
+/* ===== Smoothly updating live timer ===== */
 function updateElapsedTime() {
-  const startTime = new Date("2025-10-07T22:30:00"); // ✅ start from Oct 7, 2025, 22:30
+  const startTime = new Date("2025-10-07T22:30:00"); // start from Oct 7, 2025, 22:30
   const now = new Date();
   const diff = now - startTime;
 
+  const elapseClock = document.getElementById("elapseClock");
+
   if (diff < 0) {
-    document.getElementById("elapseClock").innerText = "Counting soon ❤️";
+    elapseClock.innerText = "Counting soon ❤️";
     return;
   }
 
@@ -402,26 +428,35 @@ function updateElapsedTime() {
   const minutes = Math.floor((diff / (1000 * 60)) % 60);
   const seconds = Math.floor((diff / 1000) % 60);
 
-  document.getElementById("elapseClock").innerHTML = `
-    <span class="digit">${days}</span> days&nbsp;
-    <span class="digit">${hours}</span> hours&nbsp;
-    <span class="digit">${minutes}</span> minutes&nbsp;
-    <span class="digit">${seconds}</span> seconds
-  `;
+  // Create a softly animated transition each update
+  elapseClock.style.opacity = "0";
+  elapseClock.style.transform = "translateY(8px)";
+  setTimeout(() => {
+    elapseClock.innerHTML = `
+      <span class="digit">${days}</span> days&nbsp;
+      <span class="digit">${hours.toString().padStart(2, '0')}</span> hrs&nbsp;
+      <span class="digit">${minutes.toString().padStart(2, '0')}</span> min&nbsp;
+      <span class="digit">${seconds.toString().padStart(2, '0')}</span> sec
+    `;
+    elapseClock.style.opacity = "1";
+    elapseClock.style.transform = "translateY(0)";
+  }, 150);
 }
 
-// Show message + start timer when hearts appear
+// Make sure it starts when the heart message fades in
 function showMessages() {
-  $("#messages").fadeIn(3000, () => {
-    updateElapsedTime(); // show immediately
-    setInterval(updateElapsedTime, 1000); // keep updating
+  $("#messages").fadeIn(2500, () => {
+    updateElapsedTime();
+    setInterval(updateElapsedTime, 1000);
     $("#love-u").fadeIn(2000);
   });
 }
 </script>
 
+
 </body>
 </html>
+
 
 
 
