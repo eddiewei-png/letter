@@ -514,7 +514,7 @@ $("#startBtn").on("click",function(){
 });
 </script>
 <script>
-function showMessages() {
+/*function showMessages() {
   const messages = $("#messages");
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
@@ -537,6 +537,54 @@ function showMessages() {
     });
 
   // Step 3: Start the timer immediately (it’ll be running in the background)
+  updateElapsedTime();
+  clearInterval(window.timerInterval);
+  window.timerInterval = setInterval(updateElapsedTime, 1000);
+}
+*/
+function showMessages() {
+  const messages = $("#messages");
+  const loveMessage = $("#loveMessage");
+  const elapseClock = $("#elapseClock");
+
+  // Create or reference the final message element
+  let finalMessage = $("#finalMessage");
+  if (finalMessage.length === 0) {
+    finalMessage = $('<div id="finalMessage">Loving you forever<br>– Eddie</div>')
+      .css({
+        opacity: 0,
+        "font-size": "20px",
+        "margin-top": "25px",
+        "text-align": "center",
+      });
+    messages.append(finalMessage);
+  }
+
+  // Instantly make the container visible
+  messages.css({ display: "block", opacity: 1 });
+
+  // Step 1: Fade in "We have been together for"
+  loveMessage
+    .stop(true, true)
+    .css({ opacity: 0 })
+    .animate({ opacity: 1 }, 1200, "swing", function () {
+      // Step 2: Fade in the timer after a short delay
+      setTimeout(() => {
+        elapseClock
+          .stop(true, true)
+          .css({ opacity: 0 })
+          .animate({ opacity: 1 }, 1500, "swing", function () {
+            // Step 3: After the timer is fully visible and running for a moment, fade in the final message
+            setTimeout(() => {
+              finalMessage
+                .stop(true, true)
+                .animate({ opacity: 1 }, 2000, "swing");
+            }, 1000); // waits 1s after timer fully shown
+          });
+      }, 500);
+    });
+
+  // Step 4: Start the timer immediately
   updateElapsedTime();
   clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
@@ -574,6 +622,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
