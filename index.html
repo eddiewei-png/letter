@@ -519,32 +519,51 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Fade in main message
-  loveMessage.fadeIn(1500, () => {
-    // Fade in timer after the first message
-    elapseClock.fadeIn(1500, () => {
-      // After the timer is visible, show your final message box
-      setTimeout(() => {
-        if ($("#finalMessage").length === 0) {
-          const finalMessage = $('<div id="finalMessage">Loving you forever<br>– Eddie</div>').css({
-            "margin-top": "20px",
-            "font-size": "20px",
-            "font-family": "'Great Vibes', cursive",
-            "color": "#ff69b4",
-            "opacity": 0
-          });
-          messages.append(finalMessage);
-          finalMessage.animate({ opacity: 1 }, 2000);
-        }
-      }, 1000); // delay before showing final message
-    });
-  });
+  // Make sure the container is visible
+  messages.css({ display: "block", opacity: 1 });
 
-  // Keep your live timer updating if you have one
+  // Step 1: Fade in the main message
+  loveMessage
+    .stop(true, true)
+    .css({ opacity: 0 })
+    .animate({ opacity: 1 }, 1200, "swing", function () {
+      // Step 2: Fade in the timer after the message
+      setTimeout(() => {
+        elapseClock
+          .stop(true, true)
+          .css({ opacity: 0 })
+          .animate({ opacity: 1 }, 1500, "swing", function () {
+            // Step 3: Append and fade in final message
+            let finalMessage = $("#finalMessage");
+            if (finalMessage.length === 0) {
+              finalMessage = $(
+                '<div id="finalMessage">Loving you forever<br>– Eddie</div>'
+              )
+                .css({
+                  opacity: 0,
+                  "font-size": "20px",
+                  "text-align": "center",
+                  "margin-top": "20px",
+                  "font-family": "'Great Vibes', cursive",
+                  color: "#ff69b4",
+                })
+                .appendTo(messages);
+            }
+
+            // Fade it in gently after 1 second
+            setTimeout(() => {
+              finalMessage.animate({ opacity: 1 }, 2000, "swing");
+            }, 1000);
+          });
+      }, 500);
+    });
+
+  // Step 4: Start or continue the live timer
   updateElapsedTime();
-  if (window.timerInterval) clearInterval(window.timerInterval);
+  clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
+
 
 function updateElapsedTime() {
   const startTime = new Date("2025-10-07T22:30:00");
@@ -576,4 +595,5 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
