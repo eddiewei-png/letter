@@ -386,6 +386,7 @@ function startHeartAnimation() {
     t += step;
     if (t >= end) {
       clearInterval(anim);
+      clearInterval(renderTimer); // Stop drawing after all blooms finish
       showMessages();
       // Extra pass to fill small gaps
       let extraT = 0;
@@ -620,6 +621,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
