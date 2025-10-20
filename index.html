@@ -500,26 +500,27 @@ function showMessages() {
   const messages = $("#messages");
   const elapseClock = $("#elapseClock");
 
-  // Make messages container visible immediately
-  messages.css({ display: "block" });
+  // Make messages visible immediately
+  messages.css({ display: "block", opacity: 1 });
 
-  // Set timer content immediately
-  updateElapsedTime();
-
-  // Apply fade-in with CSS transition
+  // Prepare timer for fade-in
   elapseClock.css({
-    display: "block",
     opacity: 0,
-    transform: "translateY(20px)",
-    transition: "opacity 1s ease, transform 1s ease"
+    transform: "translateY(10px)",
+    display: "block"
   });
 
-  // Trigger fade-in on next tick
+  // Short delay (for smooth transition start)
   setTimeout(() => {
-    elapseClock.css({ opacity: 1, transform: "translateY(0)" });
-  }, 10); // tiny delay to let browser register initial styles
+    elapseClock.css({
+      transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
+      opacity: 1,
+      transform: "translateY(0)"
+    });
+  }, 200); // small pause for better visual flow
 
-  // Start live timer updates every second
+  // Start the timer immediately
+  updateElapsedTime();
   setInterval(updateElapsedTime, 1000);
 }
 
@@ -554,6 +555,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
