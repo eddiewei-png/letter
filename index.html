@@ -94,11 +94,11 @@ body, html {
 
 #elapseClock {
   font-family: 'Great Vibes', cursive;
-  font-size: 2rem;
+  font-size: clamp(24px, 6vw, 60px);
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0; /* start hidden */
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 1.2s ease, transform 1.2s ease;
   text-align: center;
 }
 
@@ -494,6 +494,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
