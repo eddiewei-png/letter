@@ -179,6 +179,7 @@ body, html {
 
 
 <script>
+let heartStarted = false;
 /* ===== Letter typing effect (same as before) ===== */
 const sentences = [
   ["Line 1 行一","Line 1 English"],
@@ -317,6 +318,8 @@ function startHeartAnimation() {
 */
 
   function startHeartAnimation() {
+  if (heartStarted) return; // ✅ Prevent double run
+  heartStarted = true;
   initGarden();
   let t = 0;
   const blooms = [];
@@ -595,6 +598,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
