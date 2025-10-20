@@ -98,7 +98,7 @@ body, html {
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0; /* start hidden */
-  transition: opacity 2s ease, transform 2s ease;
+  transition: opacity 1.5s ease, transform 1.5s ease;
   text-align: center;
 }
 
@@ -510,18 +510,29 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Make sure the container is instantly visible
+  // Instantly make the container visible
   messages.css({ display: "block", opacity: 1 });
 
-  // Smooth fade for both text and timer
-  loveMessage.stop(true, true).css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
-  elapseClock.stop(true, true).css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
+  // Step 1: Fade in the message first
+  loveMessage
+    .stop(true, true)
+    .css({ opacity: 0 })
+    .animate({ opacity: 1 }, 1200, "swing", function () {
+      // Step 2: After the message finishes fading in, fade in the timer
+      setTimeout(() => {
+        elapseClock
+          .stop(true, true)
+          .css({ opacity: 0 })
+          .animate({ opacity: 1 }, 1500, "swing");
+      }, 500);
+    });
 
-  // Start live timer immediately
+  // Step 3: Start the timer immediately (it’ll be running in the background)
   updateElapsedTime();
   clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
+
 
 
 function updateElapsedTime() {
@@ -554,6 +565,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
