@@ -510,21 +510,17 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
+  // Make sure the container is instantly visible
   messages.css({ display: "block", opacity: 1 });
 
-  // Smooth fade-in for the message
-  loveMessage.css("opacity", 0);
-  elapseClock.css("opacity", 0);
+  // Smooth fade for both text and timer
+  loveMessage.stop(true, true).css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
+  elapseClock.stop(true, true).css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
 
-  setTimeout(() => {
-    loveMessage.css("opacity", 1);
-  }, 200); // message fades in first
-
-  setTimeout(() => {
-    elapseClock.css("opacity", 1);
-    updateElapsedTime();
-    setInterval(updateElapsedTime, 1000);
-  }, 1400); // timer fades in slightly after message
+  // Start live timer immediately
+  updateElapsedTime();
+  clearInterval(window.timerInterval);
+  window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
 
 
@@ -558,6 +554,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
