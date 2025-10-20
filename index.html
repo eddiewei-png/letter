@@ -253,7 +253,7 @@ async function showAllText(){
 }
 
 /* ===== Fixed Heart Animation ===== */
-let garden, gardenCanvas;
+/*let garden, gardenCanvas;
 function initGarden(){
   const $loveHeart=$("#loveHeart");
   const $gardenCanvas=$("#garden");
@@ -265,7 +265,29 @@ function initGarden(){
   garden=new Garden(ctx,gardenCanvas);
   setInterval(()=>garden.render(),Garden.options.growSpeed);
 }
+*/
+let garden, gardenCanvas, renderTimer;
 
+function initGarden() {
+  const $loveHeart = $("#loveHeart");
+  const $gardenCanvas = $("#garden");
+  gardenCanvas = $gardenCanvas[0];
+  gardenCanvas.width = $loveHeart.width();
+  gardenCanvas.height = $loveHeart.height();
+
+  const ctx = gardenCanvas.getContext("2d");
+  ctx.globalCompositeOperation = "lighter";
+
+  garden = new Garden(ctx, gardenCanvas);
+
+  // Clear any existing render loop before starting a new one
+  if (renderTimer) clearInterval(renderTimer);
+
+  renderTimer = setInterval(() => {
+    garden.render();
+  }, Garden.options.growSpeed);
+}
+  
 function getHeartPoint(t) {
   const w = gardenCanvas.width;
   const h = gardenCanvas.height;
@@ -598,6 +620,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
