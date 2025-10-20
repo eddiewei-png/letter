@@ -408,7 +408,7 @@ $("#startBtn").on("click",function(){
 });
 </script>
 <script>
-function showMessages() {
+/*function showMessages() {
   const messages = $("#messages");
   const elapseClock = $("#elapseClock");
 
@@ -432,6 +432,34 @@ function showMessages() {
   }, 50);
 
   // Start live timer updates
+  setInterval(updateElapsedTime, 1000);
+}
+*/
+
+function showMessages() {
+  const messages = $("#messages");
+  const elapseClock = $("#elapseClock");
+
+  // Make messages container visible immediately
+  messages.css({ display: "block" });
+
+  // Set timer content immediately
+  updateElapsedTime();
+
+  // Apply fade-in with CSS transition
+  elapseClock.css({
+    display: "block",
+    opacity: 0,
+    transform: "translateY(20px)",
+    transition: "opacity 1s ease, transform 1s ease"
+  });
+
+  // Trigger fade-in on next tick
+  setTimeout(() => {
+    elapseClock.css({ opacity: 1, transform: "translateY(0)" });
+  }, 10); // tiny delay to let browser register initial styles
+
+  // Start live timer updates every second
   setInterval(updateElapsedTime, 1000);
 }
 
@@ -466,6 +494,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
