@@ -498,31 +498,22 @@ $("#startBtn").on("click",function(){
 <script>
 function showMessages() {
   const messages = $("#messages");
+  const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Make messages visible immediately
   messages.css({ display: "block", opacity: 1 });
 
-  // Prepare timer for fade-in
-  elapseClock.css({
-    opacity: 0,
-    transform: "translateY(10px)",
-    display: "block"
-  });
+  // Appear quickly but still fade smoothly
+  loveMessage.css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
 
-  // Short delay (for smooth transition start)
+  // Timer appears just after message — faster transition
   setTimeout(() => {
-    elapseClock.css({
-      transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
-      opacity: 1,
-      transform: "translateY(0)"
-    });
-  }, 200); // small pause for better visual flow
-
-  // Start the timer immediately
-  updateElapsedTime();
-  setInterval(updateElapsedTime, 1000);
+    elapseClock.css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
+    updateElapsedTime();
+    setInterval(updateElapsedTime, 1000);
+  }, 600);
 }
+
 
 
 function updateElapsedTime() {
@@ -555,6 +546,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
