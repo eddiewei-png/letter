@@ -519,30 +519,32 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Instantly make the container visible
-  messages.css({ display: "block", opacity: 1 });
-
-  // Step 1: Fade in the message first
-  loveMessage
-    .stop(true, true)
-    .css({ opacity: 0 })
-    .animate({ opacity: 1 }, 1200, "swing", function () {
-      // Step 2: After the message finishes fading in, fade in the timer
+  // Fade in main message
+  loveMessage.fadeIn(1500, () => {
+    // Fade in timer after the first message
+    elapseClock.fadeIn(1500, () => {
+      // After the timer is visible, show your final message box
       setTimeout(() => {
-        elapseClock
-          .stop(true, true)
-          .css({ opacity: 0 })
-          .animate({ opacity: 1 }, 1500, "swing");
-      }, 500);
+        if ($("#finalMessage").length === 0) {
+          const finalMessage = $('<div id="finalMessage">Loving you forever<br>– Eddie</div>').css({
+            "margin-top": "20px",
+            "font-size": "20px",
+            "font-family": "'Great Vibes', cursive",
+            "color": "#ff69b4",
+            "opacity": 0
+          });
+          messages.append(finalMessage);
+          finalMessage.animate({ opacity: 1 }, 2000);
+        }
+      }, 1000); // delay before showing final message
     });
+  });
 
-  // Step 3: Start the timer immediately (it’ll be running in the background)
+  // Keep your live timer updating if you have one
   updateElapsedTime();
-  clearInterval(window.timerInterval);
+  if (window.timerInterval) clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
-
-
 
 function updateElapsedTime() {
   const startTime = new Date("2025-10-07T22:30:00");
@@ -574,3 +576,4 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
