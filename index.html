@@ -94,7 +94,7 @@ body, html {
 
 #elapseClock {
   font-family: 'Great Vibes', cursive;
-  font-size: clamp(30px, 6vw, 60px);
+  font-size: clamp(26px, 6vw, 60px);
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0; /* start hidden */
@@ -126,7 +126,7 @@ body, html {
 }
 
 #loveMessage {
-  font-size: 2.2vw;
+  font-size: clamp(26px, 6vw, 60px);;
   opacity: 0;
   margin-bottom: 10px;
   transition: opacity 1.5s ease-in;
@@ -565,6 +565,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
