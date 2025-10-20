@@ -122,6 +122,14 @@ body, html {
   transform: translate(-50%, -50%);
   text-align: center;
   color: #ff69b4;
+  transition: opacity 1s ease;
+}
+
+#loveMessage {
+  font-size: 2.2vw;
+  opacity: 0;
+  margin-bottom: 10px;
+  transition: opacity 1.5s ease-in;
 }
 
 @keyframes floatIn {
@@ -154,6 +162,7 @@ body, html {
   <div id="loveHeart">
     <canvas id="garden"></canvas>
     <div id="messages">
+      <div id="loveMessage">We have been together for</div>
       <div id="elapseClock"></div>
     </div>
   </div>
@@ -343,7 +352,7 @@ function startHeartAnimation() {
     t += step;
     if (t >= end) {
       clearInterval(anim);
-
+      showMessages();
       // Extra pass to fill small gaps
       let extraT = 0;
       const extraStep = step / 2;
@@ -503,17 +512,20 @@ function showMessages() {
 
   messages.css({ display: "block", opacity: 1 });
 
-  // Appear quickly but still fade smoothly
-  loveMessage.css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
+  // Smooth fade-in for the message
+  loveMessage.css("opacity", 0);
+  elapseClock.css("opacity", 0);
 
-  // Timer appears just after message — faster transition
   setTimeout(() => {
-    elapseClock.css({ opacity: 0 }).animate({ opacity: 1 }, 1000);
+    loveMessage.css("opacity", 1);
+  }, 200); // message fades in first
+
+  setTimeout(() => {
+    elapseClock.css("opacity", 1);
     updateElapsedTime();
     setInterval(updateElapsedTime, 1000);
-  }, 600);
+  }, 1400); // timer fades in slightly after message
 }
-
 
 
 function updateElapsedTime() {
@@ -546,6 +558,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
