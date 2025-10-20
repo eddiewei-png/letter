@@ -123,9 +123,14 @@ body, html {
   text-align: center;
   color: #ff69b4;
   transition: opacity 1s ease;
+  font-size: clamp(16px, 2vw, 22px);
+  white-space: nowrap;
+  overflow: hidden;       /* hides overflow text if too long */
+  text-overflow: ellipsis;
 }
 
 #loveMessage {
+  font-family: 'Great Vibes', cursive;
   font-size: clamp(26px, 6vw, 60px);;
   opacity: 0;
   margin-bottom: 10px;
@@ -565,6 +570,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
