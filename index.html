@@ -547,44 +547,46 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Create or reference the final message element
-  let finalMessage = $("#finalMessage");
-  if (finalMessage.length === 0) {
-    finalMessage = $('<div id="finalMessage">Loving you forever<br>– Eddie</div>')
-      .css({
-        opacity: 0,
-        "font-size": "20px",
-        "margin-top": "25px",
-        "text-align": "center",
-      });
-    messages.append(finalMessage);
-  }
-
-  // Instantly make the container visible
+  // Ensure the main container is visible
   messages.css({ display: "block", opacity: 1 });
 
-  // Step 1: Fade in "We have been together for"
+  // --- Step 1: Fade in the first message ---
   loveMessage
     .stop(true, true)
     .css({ opacity: 0 })
     .animate({ opacity: 1 }, 1200, "swing", function () {
-      // Step 2: Fade in the timer after a short delay
+      // --- Step 2: Fade in the timer after short delay ---
       setTimeout(() => {
         elapseClock
           .stop(true, true)
           .css({ opacity: 0 })
           .animate({ opacity: 1 }, 1500, "swing", function () {
-            // Step 3: After the timer is fully visible and running for a moment, fade in the final message
+            // --- Step 3: Add and fade in final message ---
+            let finalMessage = $("#finalMessage");
+            if (finalMessage.length === 0) {
+              finalMessage = $(
+                '<div id="finalMessage">Loving you forever<br>– Eddie</div>'
+              )
+                .css({
+                  opacity: 0,
+                  "font-size": "20px",
+                  "text-align": "center",
+                  "margin-top": "20px",
+                  "font-style": "italic",
+                  "letter-spacing": "1px",
+                })
+                .appendTo(messages);
+            }
+
+            // Make sure it's visible after a small pause
             setTimeout(() => {
-              finalMessage
-                .stop(true, true)
-                .animate({ opacity: 1 }, 2000, "swing");
-            }, 1000); // waits 1s after timer fully shown
+              finalMessage.animate({ opacity: 1 }, 2000, "swing");
+            }, 1000);
           });
       }, 500);
     });
 
-  // Step 4: Start the timer immediately
+  // --- Step 4: Start live timer ---
   updateElapsedTime();
   clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
@@ -622,6 +624,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
