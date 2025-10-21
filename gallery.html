@@ -3,158 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Romantic Slideshow</title>
+<title>Our Memories 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 <style>
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: #000;
-  font-family: 'Poppins', sans-serif;
-}
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
 
-/* Slideshow container */
-#slideshow {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
+  .slideshow-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: pointer;
+  }
 
-/* Slides */
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 1s ease;
-  cursor: pointer;
-}
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 2s ease, transform 6s ease;
+  }
 
-/* Active slide with slow zoom-in animation */
-.slide.active {
-  opacity: 1;
-  animation: zoomIn 20s ease-in-out forwards;
-}
+  .slide.active {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-@keyframes zoomIn {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.1); }
-}
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0,0,0,0.25), rgba(0,0,0,0.65));
+    z-index: 1;
+  }
 
-/* Caption */
-#caption {
-  position: absolute;
-  bottom: 60px;
-  width: 100%;
-  text-align: center;
-  font-size: 2rem;
-  color: #ffc0cb;
-  text-shadow: 0 0 10px rgba(0,0,0,0.6);
-  opacity: 0;
-  transition: opacity 1s ease;
-}
+  .caption {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(26px, 4vw, 50px);
+    color: #ffe6f0;
+    text-shadow: 0 0 15px rgba(255,192,203,0.9);
+    z-index: 2;
+  }
 
-#caption.show {
-  opacity: 1;
-}
+  .controls {
+    position: absolute;
+    top: 20px; right: 20px;
+    z-index: 3;
+  }
 
-/* Original Heart-themed Play/Pause Button */
-#controls {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-}
+  .btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
 
-#pauseBtn {
-  padding: 10px 18px;
-  font-size: 18px;
-  border: none;
-  border-radius: 50%;
-  background-color: rgba(255,105,180,0.7);
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 0 12px rgba(255,20,147,0.7);
-  backdrop-filter: blur(4px);
-  transition: transform 0.2s ease;
-}
-#pauseBtn:hover {
-  transform: scale(1.1);
-}
+  .btn:hover {
+    background: rgba(255,255,255,0.4);
+  }
 </style>
 </head>
-<body>
 
-<div id="slideshow">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,1" class="slide active">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,2" class="slide">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,3" class="slide">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,4" class="slide">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,5" class="slide">
-  <img src="https://source.unsplash.com/1600x900/?romantic,couple,6" class="slide">
-  
-  <div id="caption">Our precious moments</div>
-  <div id="controls">
-    <button id="pauseBtn">Pause</button>
+<body>
+  <div class="slideshow-container" id="slideshow">
+    <!-- 🌷 Romantic sample photos -->
+    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Memory 1">
+    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 2">
+    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 4">
+    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 5">
+    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 6">
+
+    <div class="overlay"></div>
+    <div class="caption" id="caption">Our sweet moments together 💖</div>
+
+    <div class="controls">
+      <button class="btn" id="pauseBtn">⏸</button>
+    </div>
   </div>
-</div>
+
+  <audio id="bg-music" loop autoplay>
+    <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
+  </audio>
 
 <script>
-const slides = document.querySelectorAll('.slide');
-const captionDiv = document.getElementById('caption');
-const pauseBtn = document.getElementById('pauseBtn');
-const captions = [
-  "Our first meeting",
-  "A beautiful day together",
-  "Laughing together",
-  "Holding hands forever",
-  "A magical sunset",
-  "Loving you always"
-];
+  const slides = document.querySelectorAll('.slide');
+  const caption = document.getElementById('caption');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const music = document.getElementById('bg-music');
+  let current = 0;
+  let playing = true;
+  let interval;
 
-let currentIndex = 0;
-let interval = 4000;
-let paused = false;
+  const captions = [
+    "Our sweet moments together 💖",
+    "The first day we met 🌷",
+    "Your smile makes my world brighter ✨",
+    "Every hug feels like home 🫶",
+    "Love you more every single day 💞",
+    "Forever yours – Eddie 💌"
+  ];
 
-function showSlide(index) {
-  slides.forEach((slide, i) => {
-    slide.classList.remove('active');
-    slide.style.animation = 'none'; // reset previous animation
-    void slide.offsetWidth; // force reflow to restart animation
-  });
-  slides[index].classList.add('active');
-
-  // Caption fade in
-  captionDiv.classList.remove('show');
-  setTimeout(() => {
-    captionDiv.textContent = captions[index];
-    captionDiv.classList.add('show');
-  }, 200);
-}
-
-function nextSlide() {
-  if(!paused) {
-    currentIndex = (currentIndex + 1) % slides.length;
-    showSlide(currentIndex);
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+    caption.textContent = captions[index];
   }
-}
 
-let slideInterval = setInterval(nextSlide, interval);
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
 
-// Click slide to next
-slides.forEach(slide => {
-  slide.addEventListener('click', () => {
+  function startSlideshow() {
+    interval = setInterval(nextSlide, 5000);
+  }
+
+  function stopSlideshow() {
+    clearInterval(interval);
+  }
+
+  document.getElementById('slideshow').addEventListener('click', () => {
     nextSlide();
   });
-});
 
-// Pause/Play button
-pauseBtn.addEventListener('click', () => {
-  paused = !paused;
-  pauseBtn.textContent = paused ? "Play" : "Pause";
-});
+  pauseBtn.addEventListener('click', () => {
+    if (playing) {
+      stopSlideshow();
+      music.pause();
+      pauseBtn.textContent = '▶️';
+    } else {
+      startSlideshow();
+      music.play().catch(()=>{});
+      pauseBtn.textContent = '⏸';
+    }
+    playing = !playing;
+  });
+
+  startSlideshow();
 </script>
-
 </body>
 </html>
