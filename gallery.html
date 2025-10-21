@@ -187,6 +187,7 @@ function nextSlide() {
 }
 
 function startSlideshow() {
+  clearInterval(interval); // clear first, to prevent stacking
   interval = setInterval(nextSlide, 5000);
 }
 
@@ -194,9 +195,12 @@ function stopSlideshow() {
   clearInterval(interval);
 }
 
-// Click to next
+// --- FIXED CLICK HANDLER ---
 document.getElementById('slideshow').addEventListener('click', () => {
   nextSlide();
+  if (playing) {
+    startSlideshow(); // reset timer so next auto-slide starts fresh
+  }
 });
 
 // Pause/play button
