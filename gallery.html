@@ -79,6 +79,30 @@
   .btn:hover {
     background: rgba(255,255,255,0.4);
   }
+
+  .back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 4;
+}
+
+.back-btn button {
+  background: rgba(255, 182, 193, 0.6);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Great Vibes', cursive;
+  transition: background 0.3s ease;
+}
+
+.back-btn button:hover {
+  background: rgba(255, 182, 193, 0.85);
+}
+
 </style>
 </head>
 
@@ -99,6 +123,11 @@
       <button class="btn" id="pauseBtn">⏸</button>
     </div>
   </div>
+
+  <div class="back-btn">
+  <button onclick="window.location.href='index.html'">💌 Back to Letter</button>
+</div>
+
 <!--
 <audio id="bg-music" loop autoplay>
   <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
