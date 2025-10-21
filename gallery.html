@@ -13,7 +13,6 @@
     height: 100%;
     overflow: hidden;
     background: #000;
-    font-family: 'Great Vibes', cursive;
   }
 
   .slideshow-container {
@@ -32,18 +31,12 @@
     object-fit: cover;
     opacity: 0;
     transform: scale(1.05);
-    transition: opacity 2s ease;
-  }
-
-  @keyframes zoomEffect {
-    0% { transform: scale(1.05); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1.05); }
+    transition: opacity 2s ease, transform 6s ease;
   }
 
   .slide.active {
     opacity: 1;
-    animation: zoomEffect 5s ease-in-out forwards;
+    transform: scale(1);
   }
 
   .overlay {
@@ -59,6 +52,7 @@
     bottom: 10%;
     width: 100%;
     text-align: center;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(26px, 4vw, 50px);
     color: #ffe6f0;
     text-shadow: 0 0 15px rgba(255,192,203,0.9);
@@ -69,6 +63,8 @@
     position: absolute;
     top: 20px; right: 20px;
     z-index: 3;
+    display: flex;
+    gap: 10px;
   }
 
   .btn {
@@ -83,208 +79,157 @@
   }
 
   .btn:hover {
-    box-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
-    background: rgba(255,255,255,0.3);
-  }
-
-  #backBtn {
-    position: absolute;
-    top: 20px; left: 20px;
-    background: rgba(255,255,255,0.2);
-    border: none;
-    border-radius: 50%;
-    width: 50px; height: 50px;
-    color: #fff;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 3;
-    transition: opacity 0.3s ease;
+    background: rgba(255,255,255,0.4);
+    box-shadow: 0 0 15px rgba(255,192,203,0.7);
   }
 
   #backBtn:hover {
     opacity: 0.7;
   }
 
-  .progress-dots {
+  .progress {
     position: absolute;
     bottom: 5%;
-    width: 100%;
-    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
     z-index: 3;
   }
 
   .dot {
-    height: 10px;
     width: 10px;
-    margin: 0 4px;
-    background-color: rgba(255,182,193,0.5);
+    height: 10px;
+    background: rgba(255,192,203,0.5);
     border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s ease;
   }
 
   .dot.active {
-    background-color: #ffb6c1;
+    background: #ff69b4;
   }
-
-  .intro, .outro {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: clamp(28px, 5vw, 60px);
-    color: #ffe6f0;
-    text-align: center;
-    z-index: 5;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .intro.active, .outro.active {
-    animation: fadeInOut 3s forwards;
-  }
-
-  @keyframes fadeInOut {
-    0% {opacity:0;}
-    10% {opacity:1;}
-    90% {opacity:1;}
-    100% {opacity:0;}
-  }
-
 </style>
 </head>
 
 <body>
-  <div class="slideshow-container" id="slideshow">
-    <!-- Intro message -->
-    <div class="intro" id="intro">Our Journey Together 💖</div>
+<div class="slideshow-container" id="slideshow">
+  <!-- Intro Slide -->
+  <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Intro">
 
-    <!-- Slides -->
-    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Memory 1">
-    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 2">
-    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 4">
-    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 5">
-    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 6">
+  <!-- Main Slides -->
+  <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 1">
+  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 2">
+  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
+  <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 4">
+  <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 5">
 
-    <div class="overlay"></div>
-    <div class="caption" id="caption">Our sweet moments together 💖</div>
+  <!-- Closing Slide -->
+  <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Closing">
 
-    <!-- Controls -->
-    <div class="controls">
-      <button class="btn" id="pauseBtn">⏸</button>
-    </div>
-    <button id="backBtn">⬅</button>
+  <div class="overlay"></div>
+  <div class="caption" id="caption">Welcome to our memories 💖</div>
 
-    <!-- Progress dots -->
-    <div class="progress-dots" id="progressDots"></div>
-
-    <!-- Outro message -->
-    <div class="outro" id="outro">Forever and Always – Eddie 💌</div>
+  <div class="controls">
+    <button class="btn" id="pauseBtn">⏸</button>
+    <button class="btn" id="backBtn">🏠</button>
   </div>
 
-  <!-- Page turn sound effect -->
-  <audio id="pageTurn">
-    <source src="https://freesound.org/data/previews/501/501183_10236556-lq.mp3" type="audio/mpeg">
-  </audio>
+  <div class="progress" id="progress"></div>
+</div>
+
+<!-- Page turn sound -->
+<audio id="pageTurnSound">
+  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const caption = document.getElementById('caption');
-  const pauseBtn = document.getElementById('pauseBtn');
-  const backBtn = document.getElementById('backBtn');
-  const pageTurn = document.getElementById('pageTurn');
-  const intro = document.getElementById('intro');
-  const outro = document.getElementById('outro');
-  const progressDotsContainer = document.getElementById('progressDots');
+const slides = document.querySelectorAll('.slide');
+const caption = document.getElementById('caption');
+const pauseBtn = document.getElementById('pauseBtn');
+const backBtn = document.getElementById('backBtn');
+const pageTurn = document.getElementById('pageTurnSound');
 
-  let current = 0;
-  let playing = true;
-  let interval;
+let current = 0;
+let playing = true;
+let interval;
+let captions = [
+  "Welcome to our memories 💖",
+  "Our sweet moments together 🌸",
+  "The first day we met 🌷",
+  "Your smile makes my world brighter ✨",
+  "Every hug feels like home 🫶",
+  "Love you more every single day 💞",
+  "Forever yours – Eddie 💌"
+];
 
-  const captions = [
-    "Our sweet moments together 💖",
-    "The first day we met 🌷",
-    "Your smile makes my world brighter ✨",
-    "Every hug feels like home 🫶",
-    "Love you more every single day 💞",
-    "Forever yours – Eddie 💌"
-  ];
+// Progress dots
+const progressContainer = document.getElementById('progress');
+slides.forEach(()=> {
+  const dot = document.createElement('div');
+  dot.classList.add('dot');
+  progressContainer.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
 
-  // Create progress dots
-  slides.forEach((_, i) => {
-    const dot = document.createElement('span');
-    dot.classList.add('dot');
-    if(i === 0) dot.classList.add('active');
-    progressDotsContainer.appendChild(dot);
-  });
-  const dots = document.querySelectorAll('.dot');
-
-  function updateDots(index) {
-    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-  }
-
- function showSlide(index) {
+function showSlide(index) {
   slides.forEach((slide, i) => {
     slide.classList.toggle('active', i === index);
   });
   caption.textContent = captions[index];
-  updateDots(index);
-  // Only play pageTurn sound, do NOT reset animation here
-  pageTurn.currentTime = 0;
-  pageTurn.play().catch(()=>{});
-
-  // Trigger outro only after last slide completes
-  if(index === slides.length - 1) {
-    setTimeout(() => {
-      outro.classList.add('active');
-    }, 5000); // match the interval duration
-  }
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
 }
 
+function nextSlide() {
+  pageTurn.currentTime = 0;
+  pageTurn.play().catch(()=>{});
+  current = (current + 1) % slides.length;
+  showSlide(current);
+}
 
-  function nextSlide() {
-    current = (current + 1) % slides.length;
+function startSlideshow() {
+  interval = setInterval(nextSlide, 5000);
+}
+
+function stopSlideshow() {
+  clearInterval(interval);
+}
+
+// Click to next
+document.getElementById('slideshow').addEventListener('click', () => {
+  nextSlide();
+});
+
+// Pause/play button
+pauseBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (playing) {
+    stopSlideshow();
+    pauseBtn.textContent = '▶️';
+  } else {
+    startSlideshow();
+    pauseBtn.textContent = '⏸';
+  }
+  playing = !playing;
+});
+
+// Back to index.html
+backBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  window.location.href = "index.html";
+});
+
+// Intro -> start main slideshow
+function startIntro() {
+  showSlide(0);
+  setTimeout(()=>{
+    current = 1; // start main slides
     showSlide(current);
-    if(current === slides.length-1) {
-      outro.classList.add('active');
-    }
-  }
+    startSlideshow();
+  }, 3000); // 3s intro
+}
 
-  function startSlideshow() {
-    interval = setInterval(nextSlide, 5000);
-  }
-
-  function stopSlideshow() {
-    clearInterval(interval);
-  }
-
-  // Click on slide to next
-  document.getElementById('slideshow').addEventListener('click', () => {
-    nextSlide();
-  });
-
-  pauseBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // prevent slide click
-    if(playing) {
-      stopSlideshow();
-      pauseBtn.textContent = '▶️';
-    } else {
-      startSlideshow();
-      pauseBtn.textContent = '⏸';
-    }
-    playing = !playing;
-  });
-
-  backBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    window.location.href = 'index.html';
-  });
-
-  // Show intro first
-  intro.classList.add('active');
-  setTimeout(() => { intro.classList.remove('active'); startSlideshow(); }, 3000);
-
+// Start the slideshow with intro
+startIntro();
 </script>
 </body>
 </html>
