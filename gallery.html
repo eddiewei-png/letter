@@ -241,4 +241,44 @@
     current = (current + 1) % slides.length;
     showSlide(current);
     if(current === slides.length-1) {
-      outro.class
+      outro.classList.add('active');
+    }
+  }
+
+  function startSlideshow() {
+    interval = setInterval(nextSlide, 5000);
+  }
+
+  function stopSlideshow() {
+    clearInterval(interval);
+  }
+
+  // Click on slide to next
+  document.getElementById('slideshow').addEventListener('click', () => {
+    nextSlide();
+  });
+
+  pauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent slide click
+    if(playing) {
+      stopSlideshow();
+      pauseBtn.textContent = '▶️';
+    } else {
+      startSlideshow();
+      pauseBtn.textContent = '⏸';
+    }
+    playing = !playing;
+  });
+
+  backBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.href = 'index.html';
+  });
+
+  // Show intro first
+  intro.classList.add('active');
+  setTimeout(() => { intro.classList.remove('active'); startSlideshow(); }, 3000);
+
+</script>
+</body>
+</html>
