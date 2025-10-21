@@ -124,7 +124,11 @@
 
   function showSlide(index) {
     slides.forEach((slide, i) => {
-      slide.classList.toggle('active', i === index);
+      slide.classList.remove('active');
+      if (i === index) {
+        void slide.offsetWidth; // force reflow to restart CSS animation
+        slide.classList.add('active');
+      }
     });
     caption.textContent = captions[index];
   }
@@ -142,11 +146,17 @@
     clearInterval(interval);
   }
 
+  // Click to go to next slide
   document.getElementById('slideshow').addEventListener('click', () => {
     nextSlide();
+    if (playing) {
+      stopSlideshow();
+      startSlideshow(); // restart interval to sync timing
+    }
   });
 
-  pauseBtn.addEventListener('click', () => {
+  pauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent triggering slideshow click
     if (playing) {
       stopSlideshow();
       music.pause();
