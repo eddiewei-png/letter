@@ -224,26 +224,57 @@ function writeLetter(span,letter){
     resolve();
   });
 }
-async function showSentence(lines,delay=200){
-  const pContainer=document.createElement("p");
+async function showSentence(lines, totalDuration = 3000) {
+  const pContainer = document.createElement("p");
+  pContainer.style.position = "relative";
+  pContainer.style.lineHeight = "1.6";
   letterDiv.appendChild(pContainer);
-  if(!Array.isArray(lines)) lines=[lines];
-  const spans=lines.map(line=>{
-    const span=document.createElement("span");
-    span.style.display='block';
-    span.style.marginBottom='0.2em';
+  if (!Array.isArray(lines)) lines = [lines];
+
+  // Create spans for each line (English + Chinese)
+  const spans = lines.map(line => {
+    const span = document.createElement("span");
+    span.style.display = "block";
+    span.style.marginBottom = "0.3em";
     pContainer.appendChild(span);
-    return {span,text:line};
+    return { span, text: line };
   });
-  const maxLength=Math.max(...lines.map(l=>l.length));
-  for(let i=0;i<maxLength;i++){
-    for(let {span,text} of spans){
-      if(i<text.length) await writeLetter(span,text[i]);
+
+  // Ink shimmer effect
+  const shimmer = document.createElement("div");
+  shimmer.style.position = "absolute";
+  shimmer.style.height = "2px";
+  shimmer.style.background = "rgba(255,255,255,0.6)";
+  shimmer.style.width = "0%";
+  shimmer.style.bottom = "0";
+  shimmer.style.left = "0";
+  shimmer.style.boxShadow = "0 0 10px rgba(255,192,203,0.7)";
+  shimmer.style.transition = "width 0.1s linear";
+  pContainer.appendChild(shimmer);
+
+  const stepCount = 40; // smoothness
+  const stepDelay = totalDuration / stepCount;
+
+  for (let step = 0; step <= stepCount; step++) {
+    const progress = step / stepCount;
+    for (const { span, text } of spans) {
+      const charsToShow = Math.floor(text.length * progress);
+      span.textContent = text.slice(0, charsToShow);
     }
-    await new Promise(r=>setTimeout(r,delay));
-    letterDiv.parentElement.scrollTop=letterDiv.parentElement.scrollHeight;
+
+    // Animate shimmer width
+    shimmer.style.width = `${progress * 100}%`;
+
+    await new Promise(r => setTimeout(r, stepDelay));
+    letterDiv.parentElement.scrollTop = letterDiv.parentElement.scrollHeight;
   }
+
+  // Fade out the shimmer softly after finishing
+  shimmer.style.transition = "opacity 1s ease";
+  shimmer.style.opacity = "0";
+  setTimeout(() => shimmer.remove(), 1200);
 }
+
 async function showAllText(){
   for (let s=0;s<sentences.length;s++){
     await showSentence(sentences[s],300);
@@ -626,6 +657,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
