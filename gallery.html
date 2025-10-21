@@ -21,6 +21,7 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    cursor: pointer;
   }
 
   .slide {
@@ -38,16 +39,14 @@
     transform: scale(1);
   }
 
-  /* Overlay for soft romantic feel */
   .overlay {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+    background: radial-gradient(circle, rgba(0,0,0,0.25), rgba(0,0,0,0.65));
     z-index: 1;
   }
 
-  /* Caption */
   .caption {
     position: absolute;
     bottom: 10%;
@@ -60,7 +59,6 @@
     z-index: 2;
   }
 
-  /* Controls */
   .controls {
     position: absolute;
     top: 20px; right: 20px;
@@ -86,12 +84,13 @@
 
 <body>
   <div class="slideshow-container" id="slideshow">
-    <img src="https://via.placeholder.com/1200x800/ffb6c1/ffffff?text=Memory+1" class="slide active" alt="Memory 1">
-    <img src="https://via.placeholder.com/1200x800/ffc0cb/ffffff?text=Memory+2" class="slide" alt="Memory 2">
-    <img src="https://via.placeholder.com/1200x800/f8bbd0/ffffff?text=Memory+3" class="slide" alt="Memory 3">
-    <img src="https://via.placeholder.com/1200x800/f48fb1/ffffff?text=Memory+4" class="slide" alt="Memory 4">
-    <img src="https://via.placeholder.com/1200x800/f06292/ffffff?text=Memory+5" class="slide" alt="Memory 5">
-    <img src="https://via.placeholder.com/1200x800/ec407a/ffffff?text=Memory+6" class="slide" alt="Memory 6">
+    <!-- 🌷 Romantic sample photos -->
+    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Memory 1">
+    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 2">
+    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 4">
+    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 5">
+    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 6">
 
     <div class="overlay"></div>
     <div class="caption" id="caption">Our sweet moments together 💖</div>
@@ -143,12 +142,10 @@
     clearInterval(interval);
   }
 
-  // Click anywhere to skip
   document.getElementById('slideshow').addEventListener('click', () => {
     nextSlide();
   });
 
-  // Pause / Play button fix
   pauseBtn.addEventListener('click', () => {
     if (playing) {
       stopSlideshow();
