@@ -224,7 +224,7 @@ function writeLetter(span,letter){
     resolve();
   });
 }
-async function showSentence(lines, totalDuration = 3000) {
+async function showSentence(lines, totalDuration = 8000) {
   const pContainer = document.createElement("p");
   pContainer.style.position = "relative";
   pContainer.style.lineHeight = "1.6";
@@ -252,7 +252,7 @@ async function showSentence(lines, totalDuration = 3000) {
   shimmer.style.transition = "width 0.1s linear";
   pContainer.appendChild(shimmer);
 
-  const stepCount = 40; // smoothness
+  const stepCount = 80; // smoothness
   const stepDelay = totalDuration / stepCount;
 
   for (let step = 0; step <= stepCount; step++) {
@@ -657,6 +657,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
