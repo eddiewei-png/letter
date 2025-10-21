@@ -13,6 +13,7 @@
     height: 100%;
     overflow: hidden;
     background: #000;
+    font-family: 'Great Vibes', cursive;
   }
 
   .slideshow-container {
@@ -31,12 +32,18 @@
     object-fit: cover;
     opacity: 0;
     transform: scale(1.05);
-    transition: opacity 2s ease, transform 6s ease;
+    transition: opacity 2s ease;
+  }
+
+  @keyframes zoomEffect {
+    0% { transform: scale(1.05); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1.05); }
   }
 
   .slide.active {
     opacity: 1;
-    transform: scale(1);
+    animation: zoomEffect 5s ease-in-out forwards;
   }
 
   .overlay {
@@ -52,7 +59,6 @@
     bottom: 10%;
     width: 100%;
     text-align: center;
-    font-family: 'Great Vibes', cursive;
     font-size: clamp(26px, 4vw, 50px);
     color: #ffe6f0;
     text-shadow: 0 0 15px rgba(255,192,203,0.9);
@@ -73,42 +79,87 @@
     color: #fff;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .btn:hover {
-    background: rgba(255,255,255,0.4);
+    box-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
+    background: rgba(255,255,255,0.3);
   }
 
-  .back-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 4;
-}
+  #backBtn {
+    position: absolute;
+    top: 20px; left: 20px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: opacity 0.3s ease;
+  }
 
-.back-btn button {
-  background: rgba(255, 182, 193, 0.6);
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  font-family: 'Great Vibes', cursive;
-  transition: background 0.3s ease;
-}
+  #backBtn:hover {
+    opacity: 0.7;
+  }
 
-.back-btn button:hover {
-  background: rgba(255, 182, 193, 0.85);
-}
+  .progress-dots {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+    text-align: center;
+    z-index: 3;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 4px;
+    background-color: rgba(255,182,193,0.5);
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+
+  .dot.active {
+    background-color: #ffb6c1;
+  }
+
+  .intro, .outro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(28px, 5vw, 60px);
+    color: #ffe6f0;
+    text-align: center;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .intro.active, .outro.active {
+    animation: fadeInOut 3s forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% {opacity:0;}
+    10% {opacity:1;}
+    90% {opacity:1;}
+    100% {opacity:0;}
+  }
 
 </style>
 </head>
 
 <body>
   <div class="slideshow-container" id="slideshow">
-    <!-- 🌷 Romantic sample photos -->
+    <!-- Intro message -->
+    <div class="intro" id="intro">Our Journey Together 💖</div>
+
+    <!-- Slides -->
     <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Memory 1">
     <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 2">
     <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
@@ -119,78 +170,75 @@
     <div class="overlay"></div>
     <div class="caption" id="caption">Our sweet moments together 💖</div>
 
+    <!-- Controls -->
     <div class="controls">
       <button class="btn" id="pauseBtn">⏸</button>
     </div>
+    <button id="backBtn">⬅</button>
+
+    <!-- Progress dots -->
+    <div class="progress-dots" id="progressDots"></div>
+
+    <!-- Outro message -->
+    <div class="outro" id="outro">Forever and Always – Eddie 💌</div>
   </div>
 
-  <div class="back-btn">
-  <button onclick="window.location.href='index.html'">💌 Back to Letter</button>
-</div>
-
-<!--
-<audio id="bg-music" loop autoplay>
-  <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
-</audio>
--->
+  <!-- Page turn sound effect -->
+  <audio id="pageTurn">
+    <source src="https://freesound.org/data/previews/501/501183_10236556-lq.mp3" type="audio/mpeg">
+  </audio>
 
 <script>
   const slides = document.querySelectorAll('.slide');
-const caption = document.getElementById('caption');
-const pauseBtn = document.getElementById('pauseBtn');
+  const caption = document.getElementById('caption');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const backBtn = document.getElementById('backBtn');
+  const pageTurn = document.getElementById('pageTurn');
+  const intro = document.getElementById('intro');
+  const outro = document.getElementById('outro');
+  const progressDotsContainer = document.getElementById('progressDots');
 
-let current = 0;
-let playing = true;
-let interval;
+  let current = 0;
+  let playing = true;
+  let interval;
 
-const captions = [
-  "Our sweet moments together 💖",
-  "The first day we met 🌷",
-  "Your smile makes my world brighter ✨",
-  "Every hug feels like home 🫶",
-  "Love you more every single day 💞",
-  "Forever yours – Eddie 💌"
-];
+  const captions = [
+    "Our sweet moments together 💖",
+    "The first day we met 🌷",
+    "Your smile makes my world brighter ✨",
+    "Every hug feels like home 🫶",
+    "Love you more every single day 💞",
+    "Forever yours – Eddie 💌"
+  ];
 
-function showSlide(index) {
-  slides.forEach((slide, i) => {
-    slide.classList.toggle('active', i === index);
+  // Create progress dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    if(i === 0) dot.classList.add('active');
+    progressDotsContainer.appendChild(dot);
   });
-  caption.textContent = captions[index];
-}
+  const dots = document.querySelectorAll('.dot');
 
-function nextSlide() {
-  current = (current + 1) % slides.length;
-  showSlide(current);
-}
-
-function startSlideshow() {
-  interval = setInterval(nextSlide, 5000);
-}
-
-function stopSlideshow() {
-  clearInterval(interval);
-}
-
-// Click anywhere on the slideshow to advance
-document.getElementById('slideshow').addEventListener('click', () => {
-  nextSlide();
-});
-
-// Pause/Play button ONLY stops/starts the automatic slideshow
-pauseBtn.addEventListener('click', (e) => {
-  e.stopPropagation(); // Prevent the click from advancing the slide
-  if (playing) {
-    stopSlideshow();
-    pauseBtn.textContent = '▶️';
-  } else {
-    startSlideshow();
-    pauseBtn.textContent = '⏸';
+  function updateDots(index) {
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
   }
-  playing = !playing;
-});
 
-startSlideshow();
-</script>
-</body>
-</html>
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+      slide.style.animation = "none";
+      void slide.offsetWidth; // restart animation
+      if(i===index) slide.style.animation = "zoomEffect 5s ease-in-out forwards";
+    });
+    caption.textContent = captions[index];
+    updateDots(index);
+    pageTurn.currentTime = 0;
+    pageTurn.play().catch(()=>{});
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+    if(current === slides.length-1) {
+      outro.class
