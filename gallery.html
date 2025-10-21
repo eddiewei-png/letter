@@ -9,16 +9,18 @@ body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background: #000;
   font-family: 'Poppins', sans-serif;
-  background-color: #fff0f5;
 }
-#slideshow-container {
+
+/* Slideshow container */
+#slideshow {
   position: relative;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
-  cursor: pointer;
 }
+
+/* Slides */
 .slide {
   position: absolute;
   width: 100%;
@@ -26,54 +28,73 @@ body, html {
   object-fit: cover;
   opacity: 0;
   transition: opacity 1s ease;
+  cursor: pointer;
 }
+
+/* Active slide with slow zoom-in animation */
 .slide.active {
   opacity: 1;
+  animation: zoomIn 20s ease-in-out forwards;
 }
-.caption {
+
+@keyframes zoomIn {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+/* Caption */
+#caption {
   position: absolute;
-  bottom: 10%;
+  bottom: 60px;
   width: 100%;
   text-align: center;
-  color: #ff69b4;
-  font-size: clamp(24px, 3vw, 36px);
-  font-family: 'Great Vibes', cursive;
-  text-shadow: 0 0 12px rgba(255,192,203,0.7);
+  font-size: 2rem;
+  color: #ffc0cb;
+  text-shadow: 0 0 10px rgba(0,0,0,0.6);
   opacity: 0;
   transition: opacity 1s ease;
 }
-.caption.show {
+
+#caption.show {
   opacity: 1;
 }
+
+/* Original Heart-themed Play/Pause Button */
 #controls {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 10;
 }
+
 #pauseBtn {
-  padding: 8px 16px;
-  font-size: 16px;
+  padding: 10px 18px;
+  font-size: 18px;
   border: none;
-  border-radius: 8px;
+  border-radius: 50%;
   background-color: rgba(255,105,180,0.7);
   color: white;
   cursor: pointer;
+  box-shadow: 0 0 12px rgba(255,20,147,0.7);
+  backdrop-filter: blur(4px);
+  transition: transform 0.2s ease;
+}
+#pauseBtn:hover {
+  transform: scale(1.1);
 }
 </style>
 </head>
 <body>
 
-<div id="slideshow-container">
-  <img src="https://picsum.photos/id/1015/1920/1080" class="slide active" />
-  <img src="https://picsum.photos/id/1016/1920/1080" class="slide" />
-  <img src="https://picsum.photos/id/1018/1920/1080" class="slide" />
-  <img src="https://picsum.photos/id/1025/1920/1080" class="slide" />
-  <img src="https://picsum.photos/id/1024/1920/1080" class="slide" />
-  <img src="https://picsum.photos/id/1035/1920/1080" class="slide" />
-
-  <div class="caption show" id="caption">Our first memory together</div>
-
+<div id="slideshow">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,1" class="slide active">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,2" class="slide">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,3" class="slide">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,4" class="slide">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,5" class="slide">
+  <img src="https://source.unsplash.com/1600x900/?romantic,couple,6" class="slide">
+  
+  <div id="caption">Our precious moments</div>
   <div id="controls">
     <button id="pauseBtn">Pause</button>
   </div>
@@ -81,27 +102,31 @@ body, html {
 
 <script>
 const slides = document.querySelectorAll('.slide');
-const captions = [
-  "Our first memory together",
-  "That magical sunset",
-  "Laughing until dawn",
-  "Walking hand in hand",
-  "Sweet moments forever",
-  "Loving you endlessly"
-];
 const captionDiv = document.getElementById('caption');
-let current = 0;
-let intervalId = null;
+const pauseBtn = document.getElementById('pauseBtn');
+const captions = [
+  "Our first meeting",
+  "A beautiful day together",
+  "Laughing together",
+  "Holding hands forever",
+  "A magical sunset",
+  "Loving you always"
+];
+
+let currentIndex = 0;
+let interval = 4000;
 let paused = false;
 
 function showSlide(index) {
   slides.forEach((slide, i) => {
     slide.classList.remove('active');
-    captionDiv.classList.remove('show');
-    if(i === index) slide.classList.add('active');
+    slide.style.animation = 'none'; // reset previous animation
+    void slide.offsetWidth; // force reflow to restart animation
   });
+  slides[index].classList.add('active');
 
-  // delay caption fade in slightly after slide
+  // Caption fade in
+  captionDiv.classList.remove('show');
   setTimeout(() => {
     captionDiv.textContent = captions[index];
     captionDiv.classList.add('show');
@@ -109,44 +134,26 @@ function showSlide(index) {
 }
 
 function nextSlide() {
-  current = (current + 1) % slides.length;
-  showSlide(current);
+  if(!paused) {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }
 }
 
-function startSlideshow() {
-  intervalId = setInterval(() => {
+let slideInterval = setInterval(nextSlide, interval);
+
+// Click slide to next
+slides.forEach(slide => {
+  slide.addEventListener('click', () => {
     nextSlide();
-  }, 5000);
-}
-
-function stopSlideshow() {
-  clearInterval(intervalId);
-}
-
-// click anywhere on slideshow to go next
-document.getElementById('slideshow-container').addEventListener('click', () => {
-  nextSlide();
-  if(!paused){
-    stopSlideshow();
-    startSlideshow(); // reset interval so automatic timing continues smoothly
-  }
+  });
 });
 
-// pause button
-document.getElementById('pauseBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  if(paused){
-    startSlideshow();
-    e.target.textContent = "Pause";
-  } else {
-    stopSlideshow();
-    e.target.textContent = "Play";
-  }
+// Pause/Play button
+pauseBtn.addEventListener('click', () => {
   paused = !paused;
+  pauseBtn.textContent = paused ? "Play" : "Pause";
 });
-
-// start automatically
-startSlideshow();
 </script>
 
 </body>
