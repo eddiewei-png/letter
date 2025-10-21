@@ -460,6 +460,8 @@ function startHeartAnimation() {
         extraT += extraStep;
         if (extraT >= end) {
           clearInterval(extraAnim);
+          setTimeout(() => $("#messages").css({ display: "block", opacity: 1, zIndex: 10 }), 1000);
+
           //showMessages();
         }
       }, interval);
@@ -583,51 +585,50 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Make sure the container is visible
+  // Make sure message container stays on top
   messages.css({ display: "block", opacity: 1, zIndex: 10 });
 
-  // Step 1: Fade in the main message
+  // Step 1: Fade + float in "Loving you forever"
   loveMessage
     .stop(true, true)
     .css({ opacity: 0 })
-    .animate({ opacity: 1 }, 1200, "swing", function () {
-      // Step 2: Fade in the timer after the message
+    .animate({ opacity: 1 }, 1800, "swing", function () {
+      // Step 2: Fade in the "We have been together" + timer
       setTimeout(() => {
         elapseClock
           .stop(true, true)
           .css({ opacity: 0 })
-          .animate({ opacity: 1 }, 1500, "swing", function () {
-            // Step 3: Append and fade in final message
+          .animate({ opacity: 1 }, 2000, "swing", function () {
+            // Step 3: Final signature
             let finalMessage = $("#finalMessage");
             if (finalMessage.length === 0) {
-              finalMessage = $(
-                '<div id="finalMessage">Loving you forever<br>– Eddie</div>'
-              )
-                .css({
-                  opacity: 0,
-                  "font-size": clamp(26px, 2vw, 32px);,
-                  "text-align": "center",
-                  "margin-top": "20px",
-                  "font-family": "'Great Vibes', cursive",
-                  color: "#ff69b4",
-                })
-                .appendTo(messages);
+              finalMessage = $(`
+                <div id="finalMessage">
+                  Loving you forever<br>– Eddie
+                </div>
+              `).css({
+                opacity: 0,
+                fontSize: "clamp(26px, 3vw, 36px)",
+                textAlign: "center",
+                marginTop: "25px",
+                fontFamily: "'Great Vibes', cursive",
+                color: "#ff69b4",
+                textShadow: "0 0 12px rgba(255,192,203,0.7)",
+              }).appendTo(messages);
             }
 
-            // Fade it in gently after 1 second
             setTimeout(() => {
               finalMessage.animate({ opacity: 1 }, 2000, "swing");
-            }, 1000);
+            }, 800);
           });
-      }, 500);
+      }, 600);
     });
 
-  // Step 4: Start or continue the live timer
+  // Keep timer alive
   updateElapsedTime();
   clearInterval(window.timerInterval);
   window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
-
 
 function updateElapsedTime() {
   const startTime = new Date("2025-10-07T22:30:00");
@@ -659,6 +660,7 @@ function updateElapsedTime() {
 </script>
 </body>
 </html>
+
 
 
 
