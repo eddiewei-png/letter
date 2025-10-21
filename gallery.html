@@ -224,18 +224,24 @@
     dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
   }
 
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('active', i === index);
-      slide.style.animation = "none";
-      void slide.offsetWidth; // restart animation
-      if(i===index) slide.style.animation = "zoomEffect 5s ease-in-out forwards";
-    });
-    caption.textContent = captions[index];
-    updateDots(index);
-    pageTurn.currentTime = 0;
-    pageTurn.play().catch(()=>{});
+ function showSlide(index) {
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === index);
+  });
+  caption.textContent = captions[index];
+  updateDots(index);
+  // Only play pageTurn sound, do NOT reset animation here
+  pageTurn.currentTime = 0;
+  pageTurn.play().catch(()=>{});
+
+  // Trigger outro only after last slide completes
+  if(index === slides.length - 1) {
+    setTimeout(() => {
+      outro.classList.add('active');
+    }, 5000); // match the interval duration
   }
+}
+
 
   function nextSlide() {
     current = (current + 1) % slides.length;
