@@ -107,70 +107,62 @@
 
 <script>
   const slides = document.querySelectorAll('.slide');
-  const caption = document.getElementById('caption');
-  const pauseBtn = document.getElementById('pauseBtn');
-  const music = document.getElementById('bg-music');
-  let current = 0;
-  let playing = true;
-  let interval;
+const caption = document.getElementById('caption');
+const pauseBtn = document.getElementById('pauseBtn');
+// const music = document.getElementById('bg-music'); // commented out
 
-  const captions = [
-    "Our sweet moments together 💖",
-    "The first day we met 🌷",
-    "Your smile makes my world brighter ✨",
-    "Every hug feels like home 🫶",
-    "Love you more every single day 💞",
-    "Forever yours – Eddie 💌"
-  ];
+let current = 0;
+let playing = true;
+let interval;
 
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.remove('active');
-      if (i === index) {
-        void slide.offsetWidth; // force reflow to restart CSS animation
-        slide.classList.add('active');
-      }
-    });
-    caption.textContent = captions[index];
-  }
+const captions = [
+  "Our sweet moments together 💖",
+  "The first day we met 🌷",
+  "Your smile makes my world brighter ✨",
+  "Every hug feels like home 🫶",
+  "Love you more every single day 💞",
+  "Forever yours – Eddie 💌"
+];
 
-  function nextSlide() {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }
-
-  function startSlideshow() {
-    interval = setInterval(nextSlide, 5000);
-  }
-
-  function stopSlideshow() {
-    clearInterval(interval);
-  }
-
-  // Click to go to next slide
-  document.getElementById('slideshow').addEventListener('click', () => {
-    nextSlide();
-    if (playing) {
-      stopSlideshow();
-      startSlideshow(); // restart interval to sync timing
-    }
+function showSlide(index) {
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === index);
   });
+  caption.textContent = captions[index];
+}
 
-  pauseBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // prevent triggering slideshow click
-    if (playing) {
-      stopSlideshow();
-      music.pause();
-      pauseBtn.textContent = '▶️';
-    } else {
-      startSlideshow();
-      music.play().catch(()=>{});
-      pauseBtn.textContent = '⏸';
-    }
-    playing = !playing;
-  });
+function nextSlide() {
+  current = (current + 1) % slides.length;
+  showSlide(current);
+}
 
-  startSlideshow();
+function startSlideshow() {
+  interval = setInterval(nextSlide, 5000);
+}
+
+function stopSlideshow() {
+  clearInterval(interval);
+}
+
+document.getElementById('slideshow').addEventListener('click', () => {
+  nextSlide();
+});
+
+pauseBtn.addEventListener('click', () => {
+  if (playing) {
+    stopSlideshow();
+    // music.pause(); // disabled
+    pauseBtn.textContent = '▶️';
+  } else {
+    startSlideshow();
+    // music.play().catch(()=>{}); // disabled
+    pauseBtn.textContent = '⏸';
+  }
+  playing = !playing;
+});
+
+startSlideshow();
+
 </script>
 </body>
 </html>
