@@ -692,9 +692,11 @@ async function typeLine(enElement, cnElement, done) {
   enElement.textContent = "";
   cnElement.textContent = "";
 
-  const enSpeed = 120; // slower = more romantic
-  const cnSpeed = 160;
-  const pauseBetween = 700; // wait before typing Chinese
+  // Slower, smoother speed
+  const enSpeed = 180; // slower English typing
+  const cnSpeed = 220; // slower Chinese typing
+  const pauseBetween = 1000; // wait before Chinese
+  const endPause = 1500; // pause before next line
 
   // English typing
   for (let i = 0; i < enText.length; i++) {
@@ -702,7 +704,6 @@ async function typeLine(enElement, cnElement, done) {
     await new Promise((r) => setTimeout(r, enSpeed));
   }
 
-  // short pause before Chinese
   await new Promise((r) => setTimeout(r, pauseBetween));
 
   // Chinese typing
@@ -711,66 +712,15 @@ async function typeLine(enElement, cnElement, done) {
     await new Promise((r) => setTimeout(r, cnSpeed));
   }
 
-  // slight pause after finishing a line
-  await new Promise((r) => setTimeout(r, 1200));
+  // Soft pause after a full line
+  await new Promise((r) => setTimeout(r, endPause));
   done();
 }
-
-  function typeEnglish() {
-    if (i < enText.length) {
-      enElement.textContent += enText.charAt(i);
-      i++;
-      setTimeout(typeEnglish, enSpeed);
-    }
-  }
-
-  function typeChinese() {
-    if (j < cnText.length) {
-      cnElement.textContent += cnText.charAt(j);
-      j++;
-      setTimeout(typeChinese, cnSpeed);
-    } else if (j === cnText.length && i >= enText.length) {
-      if (callback) setTimeout(callback, 1500); // longer pause between lines
-    }
-  }
-
-  // type both languages simultaneously
-  typeEnglish();
-  typeChinese();
-}
-
-function startLetterTyping() {
-  const lines = document.querySelectorAll("#letter .line");
-  let index = 0;
-
-  function typeNext() {
-    if (index >= lines.length) return;
-    const line = lines[index];
-    const en = line.querySelector(".en");
-    const cn = line.querySelector(".cn");
-
-    // ensure each line fades in nicely
-    line.style.opacity = 0;
-    line.style.transition = "opacity 2s ease";
-    line.classList.add("visible");
-
-    setTimeout(() => {
-      line.style.opacity = 1;
-      typeLine(en, cn, () => {
-        index++;
-        setTimeout(typeNext, 1200);
-      });
-    }, 500);
-  }
-
-  typeNext();
-}
-
-document.addEventListener("DOMContentLoaded", startLetterTyping);
 </script>
 
 </body>
 </html>
+
 
 
 
