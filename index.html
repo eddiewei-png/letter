@@ -226,6 +226,7 @@ function writeLetter(span,letter){
     resolve();
   });
 }
+  /*
 async function showSentence(lines, totalDuration = 24000) {
   const pContainer = document.createElement("p");
   pContainer.style.position = "relative";
@@ -275,21 +276,52 @@ async function showSentence(lines, totalDuration = 24000) {
   shimmer.style.transition = "opacity 1s ease";
   shimmer.style.opacity = "0";
   setTimeout(() => shimmer.remove(), 1200);
-}
+}*/
 
-async function showAllText(){
-  for (let s=0;s<sentences.length;s++){
-    await showSentence(sentences[s],300);
-    await new Promise(r=>setTimeout(r,300));
+async function showAllText() {
+  const container = document.getElementById("container");
+  const letter = document.getElementById("letter");
+
+  for (let i = 0; i < sentences.length; i++) {
+    const [enText, cnText] = sentences[i];
+
+    // create a line container
+    const lineDiv = document.createElement("div");
+    lineDiv.classList.add("line");
+    lineDiv.style.marginBottom = "1em";
+
+    // English + Chinese spans
+    const enSpan = document.createElement("div");
+    enSpan.classList.add("en");
+    enSpan.textContent = enText;
+    const cnSpan = document.createElement("div");
+    cnSpan.classList.add("cn");
+    cnSpan.textContent = cnText;
+
+    lineDiv.appendChild(enSpan);
+    lineDiv.appendChild(cnSpan);
+    letter.appendChild(lineDiv);
+
+    // type one bilingual line before continuing
+    await new Promise((resolve) => {
+      typeLine(enSpan, cnSpan, resolve);
+    });
+
+    // small pause before next line
+    await new Promise((r) => setTimeout(r, 1000));
   }
-  inkTrails.forEach(ink=>ink.style.display='none');
-  const container=document.getElementById("container");
+
+  // after all lines
+  const bgMusic = document.getElementById("background-music");
+  bgMusic.pause();
+  inkTrails.forEach((ink) => (ink.style.display = "none"));
+
   container.classList.add("fade-out");
-  await new Promise(r=>setTimeout(r,3000));
+  await new Promise((r) => setTimeout(r, 3000));
+
   $("#heart-container").fadeIn();
   startHeartAnimation();
 }
-
 /* ===== Fixed Heart Animation ===== */
 /*let garden, gardenCanvas;
 function initGarden(){
@@ -667,9 +699,9 @@ function typeLine(enElement, cnElement, callback) {
   cnElement.textContent = "";
 
   let i = 0, j = 0;
-  const enSpeed = 180; // slower English typing speed (ms per letter)
-  const cnSpeed = 230; // slower Chinese typing speed (ms per character)
-  const fadeDelay = 800; // delay before fade-in
+  const enSpeed = 220; // slower English typing speed (ms per letter)
+  const cnSpeed = 280; // slower Chinese typing speed (ms per character)
+  const fadeDelay = 1000; // delay before fade-in
 
   // start hidden, then fade in softly
   enElement.style.opacity = 0;
@@ -737,6 +769,7 @@ document.addEventListener("DOMContentLoaded", startLetterTyping);
 
 </body>
 </html>
+
 
 
 
