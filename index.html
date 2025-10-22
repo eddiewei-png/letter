@@ -685,41 +685,33 @@ function updateElapsedTime() {
 
 </script>
 <script>
-// 🌸 Typewriter for bilingual lines
+// 🌸 Typewriter for bilingual lines (simultaneous typing)
 async function typeLine(enElement, cnElement, done) {
   const enText = enElement.textContent;
   const cnText = cnElement.textContent;
   enElement.textContent = "";
   cnElement.textContent = "";
 
-  // Slower, smoother speed
-  const enSpeed = 180; // slower English typing
-  const cnSpeed = 220; // slower Chinese typing
-  const pauseBetween = 1000; // wait before Chinese
-  const endPause = 1500; // pause before next line
+  // Typing speed (adjust for pacing)
+  const speed = 120; // lower = faster, try 150–180 for slower
+  const endPause = 1200; // pause before next line
 
-  // English typing
-  for (let i = 0; i < enText.length; i++) {
-    enElement.textContent += enText[i];
-    await new Promise((r) => setTimeout(r, enSpeed));
+  const maxLength = Math.max(enText.length, cnText.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    if (i < enText.length) enElement.textContent += enText[i];
+    if (i < cnText.length) cnElement.textContent += cnText[i];
+    await new Promise((r) => setTimeout(r, speed));
   }
 
-  await new Promise((r) => setTimeout(r, pauseBetween));
-
-  // Chinese typing
-  for (let i = 0; i < cnText.length; i++) {
-    cnElement.textContent += cnText[i];
-    await new Promise((r) => setTimeout(r, cnSpeed));
-  }
-
-  // Soft pause after a full line
+  // Pause before next line
   await new Promise((r) => setTimeout(r, endPause));
   done();
 }
 </script>
-
 </body>
 </html>
+
 
 
 
