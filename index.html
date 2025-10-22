@@ -658,7 +658,7 @@ function updateElapsedTime() {
 
 
 </script>
-  <script>
+<script>
 function typeLine(enElement, cnElement, callback) {
   const enText = enElement.textContent.trim();
   const cnText = cnElement.textContent.trim();
@@ -669,7 +669,7 @@ function typeLine(enElement, cnElement, callback) {
   const maxLen = Math.max(enText.length, cnText.length);
   let i = 0;
 
-  const speed = 130; // 🌸 slower typing for romantic effect
+  const speed = 220; // 🌸 slower typing speed (higher = slower)
   const interval = setInterval(() => {
     const enCount = Math.round((i / maxLen) * enText.length);
     const cnCount = Math.round((i / maxLen) * cnText.length);
@@ -696,12 +696,12 @@ function startLetterTyping() {
     const en = line.querySelector(".en");
     const cn = line.querySelector(".cn");
 
-    // Fade in the line before typing
+    // Fade in each line before typing
     line.classList.add("visible");
 
     typeLine(en, cn, () => {
       index++;
-      setTimeout(typeNext, 1200); // pause before next line
+      setTimeout(typeNext, 1800); // gentle pause between lines
     });
   }
 
@@ -711,8 +711,10 @@ function startLetterTyping() {
 document.addEventListener("DOMContentLoaded", startLetterTyping);
 </script>
 
+
 </body>
 </html>
+
 
 
 
