@@ -667,8 +667,20 @@ function typeLine(enElement, cnElement, callback) {
   cnElement.textContent = "";
 
   let i = 0, j = 0;
-  const enSpeed = 120; // ⌛ Typing speed for English (lower = faster)
-  const cnSpeed = 180; // ⌛ Typing speed for Chinese
+  const enSpeed = 180; // slower English typing speed (ms per letter)
+  const cnSpeed = 230; // slower Chinese typing speed (ms per character)
+  const fadeDelay = 800; // delay before fade-in
+
+  // start hidden, then fade in softly
+  enElement.style.opacity = 0;
+  cnElement.style.opacity = 0;
+  enElement.style.transition = "opacity 1.5s ease";
+  cnElement.style.transition = "opacity 1.5s ease";
+
+  setTimeout(() => {
+    enElement.style.opacity = 1;
+    cnElement.style.opacity = 1;
+  }, fadeDelay);
 
   function typeEnglish() {
     if (i < enText.length) {
@@ -684,17 +696,15 @@ function typeLine(enElement, cnElement, callback) {
       j++;
       setTimeout(typeChinese, cnSpeed);
     } else if (j === cnText.length && i >= enText.length) {
-      // Both done typing
-      if (callback) setTimeout(callback, 800);
+      if (callback) setTimeout(callback, 1500); // longer pause between lines
     }
   }
 
-  // Start both typing together
+  // type both languages simultaneously
   typeEnglish();
   typeChinese();
 }
 
-// 💕 Sequentially type each bilingual line
 function startLetterTyping() {
   const lines = document.querySelectorAll("#letter .line");
   let index = 0;
@@ -705,12 +715,18 @@ function startLetterTyping() {
     const en = line.querySelector(".en");
     const cn = line.querySelector(".cn");
 
+    // ensure each line fades in nicely
+    line.style.opacity = 0;
+    line.style.transition = "opacity 2s ease";
     line.classList.add("visible");
 
-    typeLine(en, cn, () => {
-      index++;
-      setTimeout(typeNext, 1500); // soft pause between lines
-    });
+    setTimeout(() => {
+      line.style.opacity = 1;
+      typeLine(en, cn, () => {
+        index++;
+        setTimeout(typeNext, 1200);
+      });
+    }, 500);
   }
 
   typeNext();
@@ -718,8 +734,10 @@ function startLetterTyping() {
 
 document.addEventListener("DOMContentLoaded", startLetterTyping);
 </script>
+
 </body>
 </html>
+
 
 
 
