@@ -285,15 +285,14 @@ async function showAllText() {
   for (let i = 0; i < sentences.length; i++) {
     const [enText, cnText] = sentences[i];
 
-    // create a line container
     const lineDiv = document.createElement("div");
     lineDiv.classList.add("line");
-    lineDiv.style.marginBottom = "1em";
+    lineDiv.style.marginBottom = "1.5em";
 
-    // English + Chinese spans
     const enSpan = document.createElement("div");
     enSpan.classList.add("en");
     enSpan.textContent = enText;
+
     const cnSpan = document.createElement("div");
     cnSpan.classList.add("cn");
     cnSpan.textContent = cnText;
@@ -302,26 +301,21 @@ async function showAllText() {
     lineDiv.appendChild(cnSpan);
     letter.appendChild(lineDiv);
 
-    // type one bilingual line before continuing
-    await new Promise((resolve) => {
-      typeLine(enSpan, cnSpan, resolve);
-    });
-
-    // small pause before next line
-    await new Promise((r) => setTimeout(r, 1000));
+    // 🕊️ wait until both EN + CN finish typing
+    await new Promise((resolve) => typeLine(enSpan, cnSpan, resolve));
   }
 
-  // after all lines
+  // 🎬 after typing finishes, proceed to heart animation
   const bgMusic = document.getElementById("background-music");
   bgMusic.pause();
   inkTrails.forEach((ink) => (ink.style.display = "none"));
-
   container.classList.add("fade-out");
-  await new Promise((r) => setTimeout(r, 3000));
 
+  await new Promise((r) => setTimeout(r, 3000));
   $("#heart-container").fadeIn();
   startHeartAnimation();
 }
+
 /* ===== Fixed Heart Animation ===== */
 /*let garden, gardenCanvas;
 function initGarden(){
@@ -691,28 +685,36 @@ function updateElapsedTime() {
 
 </script>
 <script>
-function typeLine(enElement, cnElement, callback) {
-  const enText = enElement.textContent.trim();
-  const cnText = cnElement.textContent.trim();
-
+// 🌸 Typewriter for bilingual lines
+async function typeLine(enElement, cnElement, done) {
+  const enText = enElement.textContent;
+  const cnText = cnElement.textContent;
   enElement.textContent = "";
   cnElement.textContent = "";
 
-  let i = 0, j = 0;
-  const enSpeed = 220; // slower English typing speed (ms per letter)
-  const cnSpeed = 280; // slower Chinese typing speed (ms per character)
-  const fadeDelay = 1000; // delay before fade-in
+  const enSpeed = 120; // slower = more romantic
+  const cnSpeed = 160;
+  const pauseBetween = 700; // wait before typing Chinese
 
-  // start hidden, then fade in softly
-  enElement.style.opacity = 0;
-  cnElement.style.opacity = 0;
-  enElement.style.transition = "opacity 1.5s ease";
-  cnElement.style.transition = "opacity 1.5s ease";
+  // English typing
+  for (let i = 0; i < enText.length; i++) {
+    enElement.textContent += enText[i];
+    await new Promise((r) => setTimeout(r, enSpeed));
+  }
 
-  setTimeout(() => {
-    enElement.style.opacity = 1;
-    cnElement.style.opacity = 1;
-  }, fadeDelay);
+  // short pause before Chinese
+  await new Promise((r) => setTimeout(r, pauseBetween));
+
+  // Chinese typing
+  for (let i = 0; i < cnText.length; i++) {
+    cnElement.textContent += cnText[i];
+    await new Promise((r) => setTimeout(r, cnSpeed));
+  }
+
+  // slight pause after finishing a line
+  await new Promise((r) => setTimeout(r, 1200));
+  done();
+}
 
   function typeEnglish() {
     if (i < enText.length) {
@@ -769,6 +771,7 @@ document.addEventListener("DOMContentLoaded", startLetterTyping);
 
 </body>
 </html>
+
 
 
 
