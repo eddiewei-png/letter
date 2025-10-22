@@ -658,8 +658,62 @@ function updateElapsedTime() {
 
 
 </script>
+  <script>
+function typeLine(enElement, cnElement, callback) {
+  const enText = enElement.textContent.trim();
+  const cnText = cnElement.textContent.trim();
+
+  enElement.textContent = "";
+  cnElement.textContent = "";
+
+  const maxLen = Math.max(enText.length, cnText.length);
+  let i = 0;
+
+  const speed = 130; // 🌸 slower typing for romantic effect
+  const interval = setInterval(() => {
+    const enCount = Math.round((i / maxLen) * enText.length);
+    const cnCount = Math.round((i / maxLen) * cnText.length);
+
+    enElement.textContent = enText.substring(0, enCount);
+    cnElement.textContent = cnText.substring(0, cnCount);
+
+    i++;
+    if (i > maxLen) {
+      clearInterval(interval);
+      if (callback) callback();
+    }
+  }, speed);
+}
+
+// 🩷 Type each bilingual line one after another
+function startLetterTyping() {
+  const lines = document.querySelectorAll("#letter .line");
+  let index = 0;
+
+  function typeNext() {
+    if (index >= lines.length) return;
+    const line = lines[index];
+    const en = line.querySelector(".en");
+    const cn = line.querySelector(".cn");
+
+    // Fade in the line before typing
+    line.classList.add("visible");
+
+    typeLine(en, cn, () => {
+      index++;
+      setTimeout(typeNext, 1200); // pause before next line
+    });
+  }
+
+  typeNext();
+}
+
+document.addEventListener("DOMContentLoaded", startLetterTyping);
+</script>
+
 </body>
 </html>
+
 
 
 
