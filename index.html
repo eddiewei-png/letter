@@ -685,10 +685,7 @@ function updateElapsedTime() {
 
 </script>
 <script>
-// 🌸 Synchronized bilingual typewriter (replace previous typeLine)
-// - Both EN and CN finish at exactly the same moment
-// - Smooth autoscroll restored
-// - Adjustable speed via baseDelay and jitter
+// 🌸 Enhanced synchronized bilingual typewriter with fade-in + smoother typing
 async function typeLine(enElement, cnElement, done) {
   const enText = enElement.textContent || "";
   const cnText = cnElement.textContent || "";
@@ -698,46 +695,56 @@ async function typeLine(enElement, cnElement, done) {
   const lenE = enText.length;
   const lenC = cnText.length;
 
-  // Controls (tweak to taste)
-  const baseDelay = 140;   // ms per step (lower -> faster)
-  const jitter = 30;       // random variance per step (adds natural feel)
-  const minSteps = 10;     // ensure a minimum number of steps for short lines
-  const endPause = 900;    // pause after finishing a line before next line
+  // Controls (tweak speed here)
+  const baseDelay = 190;    // ms per step (increase → slower)
+  const jitter = 40;        // random variance for natural rhythm
+  const fadeDuration = 800; // ms fade-in per bilingual pair
+  const minSteps = 20;      // minimum typing frames for short lines
+  const endPause = 1200;    // pause after a bilingual pair finishes
 
-  // Number of steps for the animation (both lines share these steps)
-  // We pick the larger of the two lengths and ensure a sensible minSteps.
+  // number of typing steps
   const steps = Math.max(minSteps, lenE, lenC);
-
   const wrapper = document.getElementById("letter-wrapper");
 
+  // start invisible, then fade in gently
+  enElement.style.opacity = 0;
+  cnElement.style.opacity = 0;
+  enElement.style.transition = `opacity ${fadeDuration}ms ease`;
+  cnElement.style.transition = `opacity ${fadeDuration}ms ease`;
+  requestAnimationFrame(() => {
+    enElement.style.opacity = 1;
+    cnElement.style.opacity = 1;
+  });
+
+  // typing animation
   for (let s = 1; s <= steps; s++) {
-    // compute indices proportionally so both end together
     const eIndex = Math.round((s / steps) * lenE);
     const cIndex = Math.round((s / steps) * lenC);
-
     enElement.textContent = enText.slice(0, eIndex);
     cnElement.textContent = cnText.slice(0, cIndex);
 
-    // auto-scroll as we type
+    // auto scroll
     wrapper.scrollTop = wrapper.scrollHeight;
 
-    // pause a bit (with jitter) to feel natural
+    // small random delay for a natural feel
     const delay = baseDelay + Math.round((Math.random() - 0.5) * jitter);
-    await new Promise(r => setTimeout(r, Math.max(20, delay)));
+    await new Promise(r => setTimeout(r, Math.max(30, delay)));
   }
 
-  // ensure final text is full (just in case of rounding)
+  // ensure full text shown
   enElement.textContent = enText;
   cnElement.textContent = cnText;
   wrapper.scrollTop = wrapper.scrollHeight;
 
-  // final pause before resolving
+  // small pause before next bilingual pair
   await new Promise(r => setTimeout(r, endPause));
   done();
 }
+
 </script>
 </body>
 </html>
+
 
 
 
