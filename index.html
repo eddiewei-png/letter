@@ -685,32 +685,42 @@ function updateElapsedTime() {
 
 </script>
 <script>
-// 🌸 Typewriter for bilingual lines (simultaneous typing)
+// 🌸 Slow, synchronized bilingual typewriter with smooth scroll
 async function typeLine(enElement, cnElement, done) {
   const enText = enElement.textContent;
   const cnText = cnElement.textContent;
   enElement.textContent = "";
   cnElement.textContent = "";
 
-  // Typing speed (adjust for pacing)
-  const speed = 120; // lower = faster, try 150–180 for slower
-  const endPause = 1200; // pause before next line
+  // Slower and smoother speed — adjustable
+  const baseSpeed = 180;   // ms per character
+  const variance = 40;     // random jitter for natural typing
+  const endPause = 1600;   // pause before next line
 
   const maxLength = Math.max(enText.length, cnText.length);
 
   for (let i = 0; i < maxLength; i++) {
     if (i < enText.length) enElement.textContent += enText[i];
     if (i < cnText.length) cnElement.textContent += cnText[i];
-    await new Promise((r) => setTimeout(r, speed));
+
+    // Auto-scroll as letters appear
+    const wrapper = document.getElementById("letter-wrapper");
+    wrapper.scrollTop = wrapper.scrollHeight;
+
+    // Slightly vary typing rhythm
+    const delay = baseSpeed + Math.random() * variance;
+    await new Promise(r => setTimeout(r, delay));
   }
 
-  // Pause before next line
-  await new Promise((r) => setTimeout(r, endPause));
+  // Pause before the next line starts
+  await new Promise(r => setTimeout(r, endPause));
   done();
 }
 </script>
+
 </body>
 </html>
+
 
 
 
