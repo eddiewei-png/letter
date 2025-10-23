@@ -685,41 +685,60 @@ function updateElapsedTime() {
 
 </script>
 <script>
-// 🌸 Slow, synchronized bilingual typewriter with smooth scroll
+// 🌸 Synchronized bilingual typewriter (replace previous typeLine)
+// - Both EN and CN finish at exactly the same moment
+// - Smooth autoscroll restored
+// - Adjustable speed via baseDelay and jitter
 async function typeLine(enElement, cnElement, done) {
-  const enText = enElement.textContent;
-  const cnText = cnElement.textContent;
+  const enText = enElement.textContent || "";
+  const cnText = cnElement.textContent || "";
   enElement.textContent = "";
   cnElement.textContent = "";
 
-  // Slower and smoother speed — adjustable
-  const baseSpeed = 180;   // ms per character
-  const variance = 40;     // random jitter for natural typing
-  const endPause = 1600;   // pause before next line
+  const lenE = enText.length;
+  const lenC = cnText.length;
 
-  const maxLength = Math.max(enText.length, cnText.length);
+  // Controls (tweak to taste)
+  const baseDelay = 140;   // ms per step (lower -> faster)
+  const jitter = 30;       // random variance per step (adds natural feel)
+  const minSteps = 10;     // ensure a minimum number of steps for short lines
+  const endPause = 900;    // pause after finishing a line before next line
 
-  for (let i = 0; i < maxLength; i++) {
-    if (i < enText.length) enElement.textContent += enText[i];
-    if (i < cnText.length) cnElement.textContent += cnText[i];
+  // Number of steps for the animation (both lines share these steps)
+  // We pick the larger of the two lengths and ensure a sensible minSteps.
+  const steps = Math.max(minSteps, lenE, lenC);
 
-    // Auto-scroll as letters appear
-    const wrapper = document.getElementById("letter-wrapper");
+  const wrapper = document.getElementById("letter-wrapper");
+
+  for (let s = 1; s <= steps; s++) {
+    // compute indices proportionally so both end together
+    const eIndex = Math.round((s / steps) * lenE);
+    const cIndex = Math.round((s / steps) * lenC);
+
+    enElement.textContent = enText.slice(0, eIndex);
+    cnElement.textContent = cnText.slice(0, cIndex);
+
+    // auto-scroll as we type
     wrapper.scrollTop = wrapper.scrollHeight;
 
-    // Slightly vary typing rhythm
-    const delay = baseSpeed + Math.random() * variance;
-    await new Promise(r => setTimeout(r, delay));
+    // pause a bit (with jitter) to feel natural
+    const delay = baseDelay + Math.round((Math.random() - 0.5) * jitter);
+    await new Promise(r => setTimeout(r, Math.max(20, delay)));
   }
 
-  // Pause before the next line starts
+  // ensure final text is full (just in case of rounding)
+  enElement.textContent = enText;
+  cnElement.textContent = cnText;
+  wrapper.scrollTop = wrapper.scrollHeight;
+
+  // final pause before resolving
   await new Promise(r => setTimeout(r, endPause));
   done();
 }
 </script>
-
 </body>
 </html>
+
 
 
 
