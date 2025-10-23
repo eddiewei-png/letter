@@ -685,7 +685,7 @@ function updateElapsedTime() {
 
 </script>
 <script>
-// 🌸 Enhanced synchronized bilingual typewriter with fade-in + smoother typing
+// 💖 Ink Glow Typewriter — smooth, natural, synchronized bilingual fade-in
 async function typeLine(enElement, cnElement, done) {
   const enText = enElement.textContent || "";
   const cnText = cnElement.textContent || "";
@@ -695,55 +695,75 @@ async function typeLine(enElement, cnElement, done) {
   const lenE = enText.length;
   const lenC = cnText.length;
 
-  // Controls (tweak speed here)
-  const baseDelay = 190;    // ms per step (increase → slower)
-  const jitter = 40;        // random variance for natural rhythm
-  const fadeDuration = 800; // ms fade-in per bilingual pair
-  const minSteps = 20;      // minimum typing frames for short lines
-  const endPause = 1200;    // pause after a bilingual pair finishes
+  // 🌿 Timing controls (tweak to your liking)
+  const baseDelay = 110;     // delay between characters (higher = slower)
+  const jitter = 35;         // natural variation
+  const endPause = 1200;     // wait before next line
 
-  // number of typing steps
-  const steps = Math.max(minSteps, lenE, lenC);
   const wrapper = document.getElementById("letter-wrapper");
 
-  // start invisible, then fade in gently
-  enElement.style.opacity = 0;
-  cnElement.style.opacity = 0;
-  enElement.style.transition = `opacity ${fadeDuration}ms ease`;
-  cnElement.style.transition = `opacity ${fadeDuration}ms ease`;
-  requestAnimationFrame(() => {
-    enElement.style.opacity = 1;
-    cnElement.style.opacity = 1;
-  });
+  // Helper to create glowing span for each character
+  const createSpan = (char) => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.style.opacity = 0;
+    span.style.transition = "opacity 0.6s ease, text-shadow 0.6s ease";
+    span.style.textShadow = "0 0 6px rgba(255, 255, 255, 0)";
+    return span;
+  };
 
-  // typing animation
-  for (let s = 1; s <= steps; s++) {
+  // Prepare span containers
+  const enSpans = [...enText].map(createSpan);
+  const cnSpans = [...cnText].map(createSpan);
+  enSpans.forEach((s) => enElement.appendChild(s));
+  cnSpans.forEach((s) => cnElement.appendChild(s));
+
+  // Both languages sync to finish together
+  const steps = Math.max(lenE, lenC);
+  for (let s = 0; s < steps; s++) {
     const eIndex = Math.round((s / steps) * lenE);
     const cIndex = Math.round((s / steps) * lenC);
-    enElement.textContent = enText.slice(0, eIndex);
-    cnElement.textContent = cnText.slice(0, cIndex);
 
-    // auto scroll
+    // Animate English character glow
+    if (enSpans[eIndex]) {
+      const span = enSpans[eIndex];
+      span.style.opacity = 1;
+      span.style.textShadow = "0 0 8px rgba(255, 182, 193, 0.8)";
+      setTimeout(() => (span.style.textShadow = "0 0 0 rgba(255,255,255,0)"), 400);
+    }
+
+    // Animate Chinese character glow
+    if (cnSpans[cIndex]) {
+      const span = cnSpans[cIndex];
+      span.style.opacity = 1;
+      span.style.textShadow = "0 0 8px rgba(255, 182, 193, 0.8)";
+      setTimeout(() => (span.style.textShadow = "0 0 0 rgba(255,255,255,0)"), 400);
+    }
+
     wrapper.scrollTop = wrapper.scrollHeight;
-
-    // small random delay for a natural feel
-    const delay = baseDelay + Math.round((Math.random() - 0.5) * jitter);
-    await new Promise(r => setTimeout(r, Math.max(30, delay)));
+    const delay = baseDelay + Math.random() * jitter;
+    await new Promise((r) => setTimeout(r, delay));
   }
 
-  // ensure full text shown
-  enElement.textContent = enText;
-  cnElement.textContent = cnText;
+  // Ensure all visible
+  enSpans.forEach((s) => {
+    s.style.opacity = 1;
+    s.style.textShadow = "0 0 0 rgba(255,255,255,0)";
+  });
+  cnSpans.forEach((s) => {
+    s.style.opacity = 1;
+    s.style.textShadow = "0 0 0 rgba(255,255,255,0)";
+  });
   wrapper.scrollTop = wrapper.scrollHeight;
 
-  // small pause before next bilingual pair
-  await new Promise(r => setTimeout(r, endPause));
+  await new Promise((r) => setTimeout(r, endPause));
   done();
 }
 
 </script>
 </body>
 </html>
+
 
 
 
