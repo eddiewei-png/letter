@@ -9,6 +9,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
+/* (Your original CSS - unchanged except a couple of safe pointer-events rules) */
 body, html {
   margin: 0; padding: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -32,7 +33,7 @@ body, html {
 #click-hint { font-size: 2.4rem; color: #ff69b4; text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493; animation: beat 1.2s infinite; pointer-events: none; }
 @keyframes beat {0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
 @keyframes wiggle {0%,100%{transform:rotate(0deg);}15%{transform:rotate(-8deg);}30%{transform:rotate(6deg);}45%{transform:rotate(-6deg);}60%{transform:rotate(5deg);}75%{transform:rotate(-3deg);} }
-#startBtn { cursor: pointer; border: none; background: none; width: 160px; height: 160px; }
+#startBtn { cursor: pointer; border: none; background: none; width: 160px; height: 160px; z-index:10000; } /* ensure it's topmost */
 #startBtn img { width: 100%; height: 100%; border-radius: 50%; filter: drop-shadow(0 0 12px rgba(255,105,180,0.7)); animation: wiggle 1.5s infinite ease-in-out; }
 .fade-out {animation: fadeOut 1.8s forwards ease-in-out;}
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
@@ -103,6 +104,7 @@ body, html {
   z-index: 50;
   display: none;
   overflow: visible;
+  pointer-events: none; /* never block clicks when hidden/visible */
 }
 #heart-container.show { display: block; }
 #loveHeart { position: relative; width: 100%; height: 100%; }
@@ -377,54 +379,56 @@ function startHeartAnimation() {
 
     t += step;
     if (t >= end) {
-  clearInterval(anim);
+      clearInterval(anim);
 
-  // ⛔ Don't clear the renderTimer immediately — wait a little
-  setTimeout(() => {
-    clearInterval(renderTimer);
-  }, 500); // give the last blooms time to settle
-
-  // ✅ Make sure heart-container stays visible before showing messages
-  $("#heart-container").css({ display: "block", opacity: 1, zIndex: 50 });
-
-  // ✅ Wait just a bit to let the last blooms finish rendering
-  setTimeout(() => {
-    $("#messages").css({ display: "block", opacity: 0 }); // ensure it's present
-    showMessages(); // show your love message + timer smoothly
-  }, 800);
-
-  // 🌸 Extra pass to fill small gaps
-  let extraT = 0;
-  const extraStep = step / 2;
-  const extraAnim = setInterval(() => {
-    const [ex, ey] = getHeartPoint(extraT);
-    let canDrawExtra = true;
-
-    for (const p of blooms) {
-      const dist = Math.sqrt((p[0] - ex) ** 2 + (p[1] - ey) ** 2);
-      if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
-        canDrawExtra = false;
-        break;
-      }
-    }
-
-    if (canDrawExtra) {
-      blooms.push([ex, ey]);
-      garden.createRandomBloom(ex, ey);
-    }
-
-    extraT += extraStep;
-    if (extraT >= end) {
-      clearInterval(extraAnim);
-
-      // ✅ Reveal "Our Moments" button slightly after message appears
+      // ⛔ Don't clear the renderTimer immediately — wait a little
       setTimeout(() => {
-        const btn = document.getElementById("momentsBtn");
-        if (btn) btn.classList.add("visible");
-      }, 3000);
+        clearInterval(renderTimer);
+      }, 500); // give the last blooms time to settle
+
+      // ✅ Make sure heart-container stays visible before showing messages
+      $("#heart-container").css({ display: "block", opacity: 1, zIndex: 50 });
+
+      // ✅ Wait just a bit to let the last blooms finish rendering
+      setTimeout(() => {
+        $("#messages").css({ display: "block", opacity: 0 }); // ensure it's present
+        showMessages(); // show your love message + timer smoothly
+      }, 800);
+
+      // 🌸 Extra pass to fill small gaps
+      let extraT = 0;
+      const extraStep = step / 2;
+      const extraAnim = setInterval(() => {
+        const [ex, ey] = getHeartPoint(extraT);
+        let canDrawExtra = true;
+
+        for (const p of blooms) {
+          const dist = Math.sqrt((p[0] - ex) ** 2 + (p[1] - ey) ** 2);
+          if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
+            canDrawExtra = false;
+            break;
+          }
+        }
+
+        if (canDrawExtra) {
+          blooms.push([ex, ey]);
+          garden.createRandomBloom(ex, ey);
+        }
+
+        extraT += extraStep;
+        if (extraT >= end) {
+          clearInterval(extraAnim);
+
+          // ✅ Reveal "Our Moments" button slightly after message appears
+          setTimeout(() => {
+            const btn = document.getElementById("momentsBtn");
+            if (btn) btn.classList.add("visible");
+          }, 3000);
+        }
+      }, interval);
     }
   }, interval);
-}
+} /* <<<--- THIS closing brace for startHeartAnimation was missing before; added now */
 
 /* Garden implementation (unchanged) */
 function Vector(a, b){this.x=a;this.y=b;}
@@ -487,33 +491,44 @@ Garden.randomrgba = function(i, n, h, m, l, d, k) {
   return `rgba(${r},${g},${b},${k})`;
 };
 
-/* ===== Start Button ===== */
-$("#startBtn").on("click",function(){
-  const container=$("#container")[0];
-  const startContainer=$("#start-container");
-  this.disabled=true;
-  this.style.pointerEvents="none";
-  const rect=this.getBoundingClientRect();
-  const centerX=rect.left+rect.width/2;
-  const centerY=rect.top+rect.height/2;
-  for(let i=0;i<5;i++){
-    const ripple=document.createElement("span");
-    ripple.className='ripple';
-    ripple.style.left=centerX+'px';
-    ripple.style.top=centerY+'px';
-    ripple.style.animationDelay=`${i*0.3}s`;
-    document.body.appendChild(ripple);
-    ripple.addEventListener('animationend',()=>ripple.remove());
-  }
-  startContainer.addClass('fade-out');
-  setTimeout(()=>{
-    startContainer.hide();
-    $(container).addClass('show');
-    $("#background-music")[0].play().catch(()=>console.log("Autoplay blocked"));
-    showAllText();
-  },1800);
+/* ===== DOM-ready bindings =====
+   Wrap event bindings in jQuery ready so they attach even if scripts are parsed quickly.
+*/
+$(function() {
+  // Ensure the start button binding exists and is reliable
+  $("#startBtn").on("click",function(){
+    const container=$("#container")[0];
+    const startContainer=$("#start-container");
+    this.disabled=true;
+    this.style.pointerEvents="none";
+    const rect=this.getBoundingClientRect();
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+    for(let i=0;i<5;i++){
+      const ripple=document.createElement("span");
+      ripple.className='ripple';
+      ripple.style.left=centerX+'px';
+      ripple.style.top=centerY+'px';
+      ripple.style.animationDelay=`${i*0.3}s`;
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend',()=>ripple.remove());
+    }
+    startContainer.addClass('fade-out');
+    setTimeout(()=>{
+      startContainer.hide();
+      $(container).addClass('show');
+      $("#background-music")[0].play().catch(()=>console.log("Autoplay blocked"));
+      showAllText();
+    },1800);
+  });
+
+  // Optional: allow clicking the Our Moments link anytime after it becomes visible
+  $("#momentsBtn").on("click", function(e){
+    // default will navigate to gallery.html; if you want a different behavior, intercept here
+  });
 });
 </script>
+
 <script>
 function showMessages() {
   const messages = $("#messages");
@@ -591,6 +606,7 @@ function updateElapsedTime() {
   setTimeout(() => secondsDigit.removeClass("pulse"), 500);
 }
 </script>
+
 <script>
 // 💖 Ink Glow Typewriter — smooth, natural, synchronized bilingual fade-in (speeded up)
 async function typeLine(enElement, cnElement, done) {
@@ -669,5 +685,3 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
-
-
