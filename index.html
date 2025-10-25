@@ -22,7 +22,11 @@ body, html {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 100;
+  z-index: 9999;
+}
+.start-wrapper.fade-out,
+.start-container.fade-out {
+  pointer-events: none; /* disable clicks only during fade out */
 }
 .start-container { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 #click-hint { font-size: 2.4rem; color: #ff69b4; text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff1493; animation: beat 1.2s infinite; pointer-events: none; }
@@ -665,4 +669,5 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
