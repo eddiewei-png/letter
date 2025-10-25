@@ -307,7 +307,7 @@ async function showAllText() {
   preInk.style.opacity = 0;
 
   // Heartbeat animation: fade in/out twice
-  for (let i = 0; i < 6; i++) { // 4 steps: in, out, in, out
+  for (let i = 0; i < 5; i++) { // 4 steps: in, out, in, out
     preInk.style.transition = "opacity 0.25s ease-in-out, transform 0.25s ease-in-out";
     preInk.style.opacity = 1;
     preInk.style.transform = "translate(-50%,-15%) scale(1.2)";
@@ -736,5 +736,6 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
