@@ -353,16 +353,34 @@ function startHeartAnimation() {
       blooms.push([x, y]);
       const radius = Garden.randomInt(Garden.options.bloomRadius.min, Garden.options.bloomRadius.max + 2);
       const petals = Garden.randomInt(Garden.options.petalCount.min, Garden.options.petalCount.max + 2);
-      garden.createBloom(x, y, radius, Garden.randomrgba(Garden.options.color.rmin, Garden.options.color.rmax, Garden.options.color.gmin, Garden.options.color.gmax, Garden.options.color.bmin, Garden.options.color.bmax, Garden.options.color.opacity), petals);
+      garden.createBloom(
+        x,
+        y,
+        radius,
+        Garden.randomrgba(
+          Garden.options.color.rmin,
+          Garden.options.color.rmax,
+          Garden.options.color.gmin,
+          Garden.options.color.gmax,
+          Garden.options.color.bmin,
+          Garden.options.color.bmax,
+          Garden.options.color.opacity
+        ),
+        petals
+      );
     }
 
     t += step;
     if (t >= end) {
       clearInterval(anim);
       clearInterval(renderTimer);
-      showMessages();
 
-      // Extra pass to fill small gaps
+      // ✅ Wait just a bit to let the last blooms finish rendering
+      setTimeout(() => {
+        showMessages(); // show your love message + timer smoothly
+      }, 800);
+
+      // 🌸 Extra pass to fill small gaps
       let extraT = 0;
       const extraStep = step / 2;
       const extraAnim = setInterval(() => {
@@ -370,7 +388,7 @@ function startHeartAnimation() {
         let canDrawExtra = true;
 
         for (const p of blooms) {
-          const dist = Math.sqrt((p[0]-ex)**2 + (p[1]-ey)**2);
+          const dist = Math.sqrt((p[0] - ex) ** 2 + (p[1] - ey) ** 2);
           if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
             canDrawExtra = false;
             break;
@@ -386,15 +404,11 @@ function startHeartAnimation() {
         if (extraT >= end) {
           clearInterval(extraAnim);
 
-          // show heart messages
-          setTimeout(() => $("#messages").css({ display: "block", opacity: 1, zIndex: 10 }), 1000);
-
-          // **REVEAL "Our Moments" button AFTER HEART FINISHES**
-          // small delay so it appears after the heart finishes filling
+          // ✅ Reveal "Our Moments" button slightly after message appears
           setTimeout(() => {
-            const btn = document.getElementById('momentsBtn');
-            if (btn) btn.classList.add('visible');
-          }, 1400);
+            const btn = document.getElementById("momentsBtn");
+            if (btn) btn.classList.add("visible");
+          }, 3000);
         }
       }, interval);
     }
@@ -644,3 +658,4 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
