@@ -642,9 +642,9 @@ async function typeLine(enElement, cnElement, done) {
   const lenC = cnText.length;
 
   // Tuned for slightly faster typing but still smooth
-  const baseDelay = 70;   // was 110 -> faster
-  const jitter = 18;      // less jitter for steadier rhythm
-  const endPause = 900;   // shorter pause after each line
+  const baseDelay = 110;   // was 110 -> faster
+  const jitter = 20;      // less jitter for steadier rhythm
+  const endPause = 1100;   // shorter pause after each line
 
   const wrapper = document.getElementById("letter-wrapper");
 
@@ -708,6 +708,7 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
 
