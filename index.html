@@ -33,17 +33,17 @@ body, html {
 @keyframes fadeOut {from{opacity:1;transform:scale(1);} to{opacity:0; transform:scale(0.8);} }
 
 /* ===== Letter ===== */
+/* slightly larger container across devices but responsive */
 #container {
   opacity: 0;
   pointer-events: none;
-  width: 90vw;
-  max-width: 360px;
-  aspect-ratio: 360 / 650;
+  width: min(94vw, 520px);        /* increased max width */
+  aspect-ratio: 360 / 650;        /* keep original letter aspect */
   margin: 20px auto;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(250,50,120,0.2);
+  box-shadow: 0 6px 25px rgba(250,50,120,0.2);
   background: url("stellalou-letter-bg.png") no-repeat center top;
-  background-size: 100% 100%;
+  background-size: cover; /* cover to keep image looking right */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -53,11 +53,37 @@ body, html {
 }
 #container.show { opacity:1; pointer-events:auto; }
 
-#letter-wrapper { flex:1; overflow-y:auto; padding:40px; box-sizing:border-box; scrollbar-width:none; }
+/* letter wrapper: padding responsive */
+#letter-wrapper { flex:1; overflow-y:auto; padding: clamp(20px, 4.6vw, 44px); box-sizing:border-box; scrollbar-width:none; }
 #letter-wrapper::-webkit-scrollbar { display:none; }
-#letter { font-family:'Georgia', serif; font-size:1.4rem; color:#E8C1E5; white-space:pre-wrap; position:relative; }
-#letter p { margin:1.2em 0; position:relative; }
-.ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.3s ease-out; width:4px; height:1.8rem; }
+
+/* Slightly reduced letter text size and tuned line-height */
+#letter { font-family:'Georgia', serif; font-size: clamp(1rem, 1.6vw, 1.18rem); color:#E8C1E5; white-space:pre-wrap; position:relative; line-height:1.6; }
+#letter p { margin:1.1em 0; position:relative; }
+
+/* ink trail styling (a little bigger for visibility) */
+.ink-trail { position:absolute; border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(255,105,180,0.6) 0%, rgba(255,105,180,0) 60%); opacity:0; transition:all 0.35s ease-out; width:6px; height:1.2rem; transform:translate(-50%,-15%); }
+
+/* ===== Our Moments button (initially hidden) ===== */
+#momentsBtn {
+  display:inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,105,180,0.9);
+  background: rgba(255, 255, 255, 0.03);
+  color: #ff4da6;
+  font-weight:700;
+  text-decoration:none;
+  font-family: 'Poppins', sans-serif;
+  cursor:pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 900ms cubic-bezier(.2,.9,.2,1), transform 600ms ease;
+  box-shadow: 0 6px 18px rgba(255,105,180,0.06);
+  margin-top: 14px;
+  pointer-events: none;
+}
+#momentsBtn.visible { opacity:1; transform: translateY(0); pointer-events: auto; }
 
 /* ===== Ripple effect ===== */
 .ripple { position:fixed; border-radius:50%; background:radial-gradient(circle, rgba(255,20,147,0.8) 0%, rgba(255,20,147,0.3) 70%); width:40px; height:40px; transform:translate(-50%,-50%) scale(1); animation:ripple-anim 4s ease-out forwards; pointer-events:none; z-index:9; }
@@ -76,16 +102,6 @@ body, html {
 #heart-container.show { display: block; }
 #loveHeart { position: relative; width: 100%; height: 100%; }
 #garden { width: 100%; height: 100%; display: block; }
-/*#messages {
-  display: none;
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: #ff69b4;
-}
-*/
-#love-u { display: none; font-size: 2rem; margin-top: 10px; }
 
 @keyframes fadeOutToPink {
   0% {opacity:1;background-color:transparent;filter:brightness(1);}
@@ -94,59 +110,34 @@ body, html {
 }
 #container.fade-out {animation:fadeOutToPink 3s ease forwards;}
 
+/* timer text */
 #elapseClock {
   font-family: 'Great Vibes', cursive;
   font-size: clamp(26px, 6vw, 60px);
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
-  opacity: 0; /* start hidden */
+  opacity: 0;
   transition: opacity 1.5s ease, transform 1.5s ease;
   text-align: center;
 }
+#elapseClock .digit { display:inline-block; min-width:30px; text-align:center; transition: transform 0.5s ease, color 0.5s ease; font-weight:700; font-family:'Poppins',sans-serif; }
+#elapseClock .digit.pulse { transform: scale(1.2); color:#ff4da6; text-shadow:0 0 12px rgba(255,105,180,0.8); }
 
-#elapseClock .digit {
-  display: inline-block;
-  min-width: 30px;
-  text-align: center;
-  transition: transform 0.5s ease, color 0.5s ease;
-  font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+/* small screens tweaks */
+@media (max-width: 480px) {
+  #container { width: 96vw; max-width: 460px; }
+  #letter { font-size: clamp(0.98rem, 2.6vw, 1.06rem); }
+  #momentsBtn { padding: 8px 14px; }
 }
 
-#elapseClock .digit.pulse {
-  transform: scale(1.2);
-  color: #ff4da6; /* brighter pink for pulse */
-  text-shadow: 0 0 12px rgba(255,105,180,0.8);
+/* larger desktops */
+@media (min-width: 1000px) {
+  #container { width: min(72vw, 760px); aspect-ratio: 360/650; }
+  #letter { font-size: clamp(1.05rem, 1.2vw, 1.35rem); }
 }
 
-#messages {
-  display: none; /* start hidden, revealed by heart */
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: #ff69b4;
-  transition: opacity 1s ease;
-  font-size: clamp(16px, 2vw, 22px);
-  overflow: hidden;       /* hides overflow text if too long */
-  text-overflow: ellipsis;
-   z-index: 10; /* ✅ Keep above canvas */
-  pointer-events: none; /* So clicks pass through */
-}
-
-#loveMessage {
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(20px, 6vw, 56px);;
-  opacity: 0;
-  margin-bottom: 10px;
-  transition: opacity 1.5s ease-in;
-  white-space: nowrap;
-}
-
-@keyframes floatIn {
-  from {opacity: 0; transform: translateY(15px);}
-  to {opacity: 1; transform: translateY(0);}
-}
+/* final small polish for Great Vibes text inside heart messages */
+#loveMessage { font-family: 'Great Vibes', cursive; font-size: clamp(20px, 6vw, 56px); opacity: 0; margin-bottom: 10px; transition: opacity 1.5s ease-in; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -160,9 +151,15 @@ body, html {
 
 <div id="container">
   <div id="letter-wrapper">
-    <h1>To 静柔</h1>
+    <h1 style="font-family:'Great Vibes', cursive; margin:0 0 .6em 0; font-size: clamp(28px,6vw,40px); color:#ff69b4;">To 静柔</h1>
     <div id="letter"></div>
+
+    <!-- Our Moments button (will be revealed after heart finishes drawing) -->
+    <div style="text-align:center; margin-top:12px;">
+      <a id="momentsBtn" href="gallery.html" role="button" aria-label="Our Moments">Our Moments</a>
+    </div>
   </div>
+
   <audio id="background-music" loop>
     <source src="https://github.com/eddiewei-png/letter/raw/refs/heads/main/piano%20music.mp3" type="audio/mpeg">
   </audio>
@@ -182,7 +179,8 @@ body, html {
 
 <script>
 let heartStarted = false;
-/* ===== Letter typing effect (same as before) ===== */
+
+/* ===== The bilingual lines ===== */
 const sentences = [
   ["It's less than 2 months when we first met ","不到两个月前我们才第一次见面"],
   ["Yet it felt like we have known each other for years now","却感觉好像已经认识你好多年了"],
@@ -195,7 +193,10 @@ const sentences = [
   ["Let's make more wonderful memories together!","一起创造更多美好的回忆吧"],
   ["- Eddie"]
 ];
+
 const letterDiv = document.getElementById("letter");
+
+/* precreate ink trails */
 const inkTrails = [];
 for(let i=0;i<3;i++){
   const ink=document.createElement("span");
@@ -204,6 +205,34 @@ for(let i=0;i<3;i++){
   inkTrails.push(ink);
 }
 let trailIndex = 0;
+
+/* helper: show ink under a DOM character span */
+function showInkUnderSpan(charSpan) {
+  if (!charSpan) return;
+  const ink = inkTrails[trailIndex % inkTrails.length];
+  trailIndex++;
+  const containerRect = letterDiv.getBoundingClientRect();
+  const rect = charSpan.getBoundingClientRect();
+
+  // position the ink roughly under the character center and slightly below baseline
+  const left = rect.left + rect.width / 2;
+  const top = rect.top + rect.height * 0.78; // a bit below middle to sit under char
+
+  ink.style.left = (left - containerRect.left) + 'px';
+  ink.style.top = (top - containerRect.top) + 'px';
+  ink.style.height = Math.max(10, rect.height * 1.0) + 'px';
+  ink.style.width = Math.max(6, rect.width * 0.6) + 'px';
+
+  ink.style.opacity = 1;
+  ink.style.transform = "translate(-50%,-15%) scale(1)";
+  // fade out a bit after showing
+  setTimeout(()=> {
+    ink.style.opacity = 0;
+    ink.style.transform = "translate(-50%,-15%) scale(1.12)";
+  }, 420);
+}
+
+/* retire unused writeLetter (kept for backwards compatibility) */
 function writeLetter(span,letter){
   return new Promise(resolve=>{
     span.textContent+=letter;
@@ -226,58 +255,8 @@ function writeLetter(span,letter){
     resolve();
   });
 }
-  /*
-async function showSentence(lines, totalDuration = 24000) {
-  const pContainer = document.createElement("p");
-  pContainer.style.position = "relative";
-  pContainer.style.lineHeight = "1.6";
-  letterDiv.appendChild(pContainer);
-  if (!Array.isArray(lines)) lines = [lines];
 
-  // Create spans for each line (English + Chinese)
-  const spans = lines.map(line => {
-    const span = document.createElement("span");
-    span.style.display = "block";
-    span.style.marginBottom = "0.3em";
-    pContainer.appendChild(span);
-    return { span, text: line };
-  });
-
-  // Ink shimmer effect
-  const shimmer = document.createElement("div");
-  shimmer.style.position = "absolute";
-  shimmer.style.height = "2px";
-  shimmer.style.background = "rgba(255,255,255,0.6)";
-  shimmer.style.width = "0%";
-  shimmer.style.bottom = "0";
-  shimmer.style.left = "0";
-  shimmer.style.boxShadow = "0 0 10px rgba(255,192,203,0.7)";
-  shimmer.style.transition = "width 0.1s linear";
-  pContainer.appendChild(shimmer);
-
-  const stepCount = 120; // smoothness
-  const stepDelay = totalDuration / stepCount;
-
-  for (let step = 0; step <= stepCount; step++) {
-    const progress = step / stepCount;
-    for (const { span, text } of spans) {
-      const charsToShow = Math.floor(text.length * progress);
-      span.textContent = text.slice(0, charsToShow);
-    }
-
-    // Animate shimmer width
-    shimmer.style.width = `${progress * 100}%`;
-
-    await new Promise(r => setTimeout(r, stepDelay));
-    letterDiv.parentElement.scrollTop = letterDiv.parentElement.scrollHeight;
-  }
-
-  // Fade out the shimmer softly after finishing
-  shimmer.style.transition = "opacity 1s ease";
-  shimmer.style.opacity = "0";
-  setTimeout(() => shimmer.remove(), 1200);
-}*/
-
+/* ===== Show all text & typing ===== */
 async function showAllText() {
   const container = document.getElementById("container");
   const letter = document.getElementById("letter");
@@ -301,13 +280,14 @@ async function showAllText() {
     lineDiv.appendChild(cnSpan);
     letter.appendChild(lineDiv);
 
-    // 🕊️ wait until both EN + CN finish typing
+    // wait until both EN + CN finish typing
     await new Promise((resolve) => typeLine(enSpan, cnSpan, resolve));
   }
 
-  // 🎬 after typing finishes, proceed to heart animation
+  // After typing, pause briefly then fade to heart
   const bgMusic = document.getElementById("background-music");
   bgMusic.pause();
+  // hide ink trails (they'll be reused later if user restarts)
   inkTrails.forEach((ink) => (ink.style.display = "none"));
   container.classList.add("fade-out");
 
@@ -316,20 +296,7 @@ async function showAllText() {
   startHeartAnimation();
 }
 
-/* ===== Fixed Heart Animation ===== */
-/*let garden, gardenCanvas;
-function initGarden(){
-  const $loveHeart=$("#loveHeart");
-  const $gardenCanvas=$("#garden");
-  gardenCanvas=$gardenCanvas[0];
-  gardenCanvas.width=$loveHeart.width();
-  gardenCanvas.height=$loveHeart.height();
-  const ctx=gardenCanvas.getContext("2d");
-  ctx.globalCompositeOperation="lighter";
-  garden=new Garden(ctx,gardenCanvas);
-  setInterval(()=>garden.render(),Garden.options.growSpeed);
-}
-*/
+/* ===== Garden / Heart code (kept intact, only minor add) ===== */
 let garden, gardenCanvas, renderTimer;
 
 function initGarden() {
@@ -344,80 +311,36 @@ function initGarden() {
 
   garden = new Garden(ctx, gardenCanvas);
 
-  // Clear any existing render loop before starting a new one
   if (renderTimer) clearInterval(renderTimer);
-
-  renderTimer = setInterval(() => {
-    garden.render();
-  }, Garden.options.growSpeed);
+  renderTimer = setInterval(() => garden.render(), Garden.options.growSpeed);
 }
-  
+
 function getHeartPoint(t) {
   const w = gardenCanvas.width;
   const h = gardenCanvas.height;
-
-  // Base scale relative to the smaller screen dimension
   const scale = Math.min(w, h) / 29;
-
-  // Adjust horizontal compression on portrait (tall) screens
   const aspectRatio = w / h;
-  const xScale = aspectRatio < 0.8 ? 0.85 : 1; // compress a bit if very tall
-  const yScale = 1.02; // slight stretch vertically to keep shape natural
-
+  const xScale = aspectRatio < 0.8 ? 0.85 : 1;
+  const yScale = 1.02;
   const x = 16 * Math.pow(Math.sin(t), 3) * scale * xScale;
-  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t)
-            - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale * yScale;
-
-  // Center perfectly and shift slightly upward to prevent bottom clipping
+  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale * yScale;
   return [w / 2 + x, h / 2.05 + y - scale];
 }
-/*
+
 function startHeartAnimation() {
-  initGarden();
-  let t = 0;
-  const blooms = [];
-  const interval = 15;
-  const step = 0.02;
-  const end = Math.PI * 2;
-
-  const anim = setInterval(() => {
-    const [x, y] = getHeartPoint(t);
-    let canDraw = true;
-    for (const p of blooms) {
-      const dist = Math.sqrt((p[0]-x)**2 + (p[1]-y)**2);
-      if (dist < Garden.options.bloomRadius.max * 1.5) {
-        canDraw = false;
-        break;
-      }
-    }
-    if (canDraw) {
-      blooms.push([x, y]);
-      garden.createRandomBloom(x, y);
-    }
-    t += step;
-    if (t >= end) {
-      clearInterval(anim);
-      showMessages();
-    }
-  }, interval);
-}
-*/
-
-  function startHeartAnimation() {
-  if (heartStarted) return; // ✅ Prevent double run
+  if (heartStarted) return;
   heartStarted = true;
   initGarden();
   let t = 0;
   const blooms = [];
   const interval = 20;
-  const step = 0.02;             // smaller step → more points along the curve
-  const minDistMultiplier = 0.75;  // allows blooms to be closer
+  const step = 0.02;
+  const minDistMultiplier = 0.75;
   const end = Math.PI * 2;
 
   const anim = setInterval(() => {
     const [x, y] = getHeartPoint(t);
     let canDraw = true;
-
     for (const p of blooms) {
       const dist = Math.sqrt((p[0]-x)**2 + (p[1]-y)**2);
       if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
@@ -428,39 +351,26 @@ function startHeartAnimation() {
 
     if (canDraw) {
       blooms.push([x, y]);
-
-      // Randomize radius for more natural bloom sizes
       const radius = Garden.randomInt(Garden.options.bloomRadius.min, Garden.options.bloomRadius.max + 2);
       const petals = Garden.randomInt(Garden.options.petalCount.min, Garden.options.petalCount.max + 2);
-
-      garden.createBloom(
-        x,
-        y,
-        radius,
-        Garden.randomrgba(
-          Garden.options.color.rmin, Garden.options.color.rmax,
-          Garden.options.color.gmin, Garden.options.color.gmax,
-          Garden.options.color.bmin, Garden.options.color.bmax,
-          Garden.options.color.opacity
-        ),
-        petals
-      );
+      garden.createBloom(x, y, radius, Garden.randomrgba(Garden.options.color.rmin, Garden.options.color.rmax, Garden.options.color.gmin, Garden.options.color.gmax, Garden.options.color.bmin, Garden.options.color.bmax, Garden.options.color.opacity), petals);
     }
 
     t += step;
     if (t >= end) {
       clearInterval(anim);
-      clearInterval(renderTimer); // Stop drawing after all blooms finish
+      clearInterval(renderTimer);
       showMessages();
+
       // Extra pass to fill small gaps
       let extraT = 0;
       const extraStep = step / 2;
       const extraAnim = setInterval(() => {
-        const [x, y] = getHeartPoint(extraT);
+        const [ex, ey] = getHeartPoint(extraT);
         let canDrawExtra = true;
 
         for (const p of blooms) {
-          const dist = Math.sqrt((p[0]-x)**2 + (p[1]-y)**2);
+          const dist = Math.sqrt((p[0]-ex)**2 + (p[1]-ey)**2);
           if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
             canDrawExtra = false;
             break;
@@ -468,34 +378,30 @@ function startHeartAnimation() {
         }
 
         if (canDrawExtra) {
-          blooms.push([x, y]);
-          const radius = Garden.randomInt(Garden.options.bloomRadius.min, Garden.options.bloomRadius.max + 2);
-          const petals = Garden.randomInt(Garden.options.petalCount.min, Garden.options.petalCount.max + 2);
-          garden.createBloom(
-            x, y, radius,
-            Garden.randomrgba(
-              Garden.options.color.rmin, Garden.options.color.rmax,
-              Garden.options.color.gmin, Garden.options.color.gmax,
-              Garden.options.color.bmin, Garden.options.color.bmax,
-              Garden.options.color.opacity
-            ),
-            petals
-          );
+          blooms.push([ex, ey]);
+          garden.createRandomBloom(ex, ey);
         }
 
         extraT += extraStep;
         if (extraT >= end) {
           clearInterval(extraAnim);
+
+          // show heart messages
           setTimeout(() => $("#messages").css({ display: "block", opacity: 1, zIndex: 10 }), 1000);
 
-          //showMessages();
+          // **REVEAL "Our Moments" button AFTER HEART FINISHES**
+          // small delay so it appears after the heart finishes filling
+          setTimeout(() => {
+            const btn = document.getElementById('momentsBtn');
+            if (btn) btn.classList.add('visible');
+          }, 1400);
         }
       }, interval);
     }
   }, interval);
 }
 
-/* ===== Garden.js ===== */
+/* Garden implementation (unchanged) */
 function Vector(a, b){this.x=a;this.y=b;}
 Vector.prototype={rotate(b){const a=this.x,c=this.y;this.x=Math.cos(b)*a-Math.sin(b)*c;this.y=Math.sin(b)*a+Math.cos(b)*c;return this;},mult(a){this.x*=a;this.y*=a;return this;},clone(){return new Vector(this.x,this.y);}};
 function Petal(a,f,b,e,c,d){this.stretchA=a;this.stretchB=f;this.startAngle=b;this.angle=e;this.bloom=d;this.growFactor=c;this.r=1;this.isfinished=false;}
@@ -503,69 +409,48 @@ Petal.prototype={draw:function(){const a=this.bloom.garden.ctx;let e,d,c,b;e=new
 function Bloom(e, d, f, a, b) {
   this.p = e;
   this.r = d;
-  this.c = f;      // color string with final opacity
+  this.c = f;
   this.pc = a;
   this.petals = [];
   this.garden = b;
-  this.alpha = 0;          // current alpha multiplier (0..1)
-  this.targetAlpha = 1;    // multiply by color's own opacity
-  this.alphaStep = 0.03;   // speed of fade-in (tweak to taste)
+  this.alpha = 0;
+  this.targetAlpha = 1;
+  this.alphaStep = 0.03;
   this.init();
   this.garden.addBloom(this);
 }
-
 Bloom.prototype = {
   draw: function () {
     var allFinished = true;
     var ctx = this.garden.ctx;
-
-    // Fade-in logic
     if (this.alpha < this.targetAlpha) {
       this.alpha = Math.min(this.targetAlpha, this.alpha + this.alphaStep);
     }
-
     ctx.save();
     ctx.translate(this.p.x, this.p.y);
-
-    // apply bloom alpha by multiplying globalAlpha
     var prevAlpha = ctx.globalAlpha;
     ctx.globalAlpha = prevAlpha * this.alpha;
-
     for (var i = 0; i < this.petals.length; i++) {
       var petal = this.petals[i];
       petal.render();
       allFinished = allFinished && petal.isfinished;
     }
-
     ctx.globalAlpha = prevAlpha;
     ctx.restore();
-
     if (allFinished) {
       this.garden.removeBloom(this);
     }
   },
-
   init: function () {
     var angleUnit = 360 / this.pc;
     var base = Garden.randomInt(0, 90);
     for (var i = 0; i < this.pc; i++) {
-      this.petals.push(
-        new Petal(
-          Garden.random(Garden.options.petalStretch.min, Garden.options.petalStretch.max),
-          Garden.random(Garden.options.petalStretch.min, Garden.options.petalStretch.max),
-          base + i * angleUnit,
-          angleUnit,
-          Garden.random(Garden.options.growFactor.min, Garden.options.growFactor.max),
-          this
-        )
-      );
+      this.petals.push(new Petal(Garden.random(Garden.options.petalStretch.min, Garden.options.petalStretch.max), Garden.random(Garden.options.petalStretch.min, Garden.options.petalStretch.max), base + i * angleUnit, angleUnit, Garden.random(Garden.options.growFactor.min, Garden.options.growFactor.max), this));
     }
   }
 };
-
 function Garden(a,b){this.blooms=[];this.element=b;this.ctx=a;}
 Garden.prototype={render:function(){for(let a=0;a<this.blooms.length;a++){this.blooms[a].draw();}},addBloom:function(a){this.blooms.push(a);},removeBloom:function(a){for(let c=0;c<this.blooms.length;c++){if(this.blooms[c]===a){this.blooms.splice(c,1);return this;}}},createRandomBloom:function(a,b){this.createBloom(a,b,Garden.randomInt(Garden.options.bloomRadius.min,Garden.options.bloomRadius.max),Garden.randomrgba(Garden.options.color.rmin,Garden.options.color.rmax,Garden.options.color.gmin,Garden.options.color.gmax,Garden.options.color.bmin,Garden.options.color.bmax,Garden.options.color.opacity),Garden.randomInt(Garden.options.petalCount.min,Garden.options.petalCount.max));},createBloom:function(a,f,d,e,b){new Bloom(new Vector(a,f),d,e,b,this);},clear:function(){this.blooms=[];this.ctx.clearRect(0,0,this.element.width,this.element.height);}};
-
 Garden.options={petalCount:{min:8,max:12},petalStretch:{min:0.1,max:1.5},growFactor:{min:0.1,max:0.6},bloomRadius:{min:5,max:8},growSpeed:1000/60,color: {rmin:128, rmax:255, gmin:0, gmax:128, bmin:0, bmax:128, opacity:0.45}};
 Garden.random=function(b,a){return Math.random()*(a-b)+b;};
 Garden.randomInt=function(b,a){return Math.floor(Math.random()*(a-b+1))+b;};
@@ -576,7 +461,6 @@ Garden.randomrgba = function(i, n, h, m, l, d, k) {
   const b = Math.round(Garden.random(l, d));
   return `rgba(${r},${g},${b},${k})`;
 };
-
 
 /* ===== Start Button ===== */
 $("#startBtn").on("click",function(){
@@ -628,7 +512,7 @@ function showMessages() {
             // Step 3: Final signature
             let finalMessage = $("#finalMessage");
             if (finalMessage.length === 0) {
-              finalMessage = $(`
+              finalMessage = $(` 
                 <div id="finalMessage">
                   Loving you forever<br>– Eddie
                 </div>
@@ -681,11 +565,9 @@ function updateElapsedTime() {
   secondsDigit.addClass("pulse");
   setTimeout(() => secondsDigit.removeClass("pulse"), 500);
 }
-
-
 </script>
 <script>
-// 💖 Ink Glow Typewriter — smooth, natural, synchronized bilingual fade-in
+// 💖 Ink Glow Typewriter — smooth, natural, synchronized bilingual fade-in (speeded up)
 async function typeLine(enElement, cnElement, done) {
   const enText = enElement.textContent || "";
   const cnText = cnElement.textContent || "";
@@ -695,71 +577,70 @@ async function typeLine(enElement, cnElement, done) {
   const lenE = enText.length;
   const lenC = cnText.length;
 
-  // 🌿 Timing controls (tweak to your liking)
-  const baseDelay = 110;     // delay between characters (higher = slower)
-  const jitter = 35;         // natural variation
-  const endPause = 1200;     // wait before next line
+  // Tuned for slightly faster typing but still smooth
+  const baseDelay = 70;   // was 110 -> faster
+  const jitter = 18;      // less jitter for steadier rhythm
+  const endPause = 900;   // shorter pause after each line
 
   const wrapper = document.getElementById("letter-wrapper");
 
-  // Helper to create glowing span for each character
+  // create per-character spans
   const createSpan = (char) => {
     const span = document.createElement("span");
     span.textContent = char;
     span.style.opacity = 0;
-    span.style.transition = "opacity 0.6s ease, text-shadow 0.6s ease";
-    span.style.textShadow = "0 0 6px rgba(255, 255, 255, 0)";
+    span.style.transition = "opacity 0.55s ease, text-shadow 0.45s ease";
     return span;
   };
 
-  // Prepare span containers
   const enSpans = [...enText].map(createSpan);
   const cnSpans = [...cnText].map(createSpan);
-  enSpans.forEach((s) => enElement.appendChild(s));
-  cnSpans.forEach((s) => cnElement.appendChild(s));
+  enSpans.forEach(s => enElement.appendChild(s));
+  cnSpans.forEach(s => cnElement.appendChild(s));
 
-  // Both languages sync to finish together
-  const steps = Math.max(lenE, lenC);
+  // steps chosen so both finish together
+  const steps = Math.max(6, lenE, lenC);
+
   for (let s = 0; s < steps; s++) {
-    const eIndex = Math.round((s / steps) * lenE);
-    const cIndex = Math.round((s / steps) * lenC);
+    const eIndex = Math.round((s / (steps - 1 || 1)) * lenE);
+    const cIndex = Math.round((s / (steps - 1 || 1)) * lenC);
 
-    // Animate English character glow
-    if (enSpans[eIndex]) {
-      const span = enSpans[eIndex];
-      span.style.opacity = 1;
-      span.style.textShadow = "0 0 8px rgba(255, 182, 193, 0.8)";
-      setTimeout(() => (span.style.textShadow = "0 0 0 rgba(255,255,255,0)"), 400);
+    // reveal english up to eIndex
+    for (let i = 0; i < eIndex; i++) {
+      if (enSpans[i] && enSpans[i].style.opacity === "0") {
+        enSpans[i].style.opacity = 1;
+        enSpans[i].style.textShadow = '0 0 7px rgba(255,182,193,0.85)';
+        setTimeout(()=> enSpans[i].style.textShadow = '0 0 0 rgba(0,0,0,0)', 380);
+        showInkUnderSpan(enSpans[i]);
+      }
     }
 
-    // Animate Chinese character glow
-    if (cnSpans[cIndex]) {
-      const span = cnSpans[cIndex];
-      span.style.opacity = 1;
-      span.style.textShadow = "0 0 8px rgba(255, 182, 193, 0.8)";
-      setTimeout(() => (span.style.textShadow = "0 0 0 rgba(255,255,255,0)"), 400);
+    // reveal chinese up to cIndex
+    for (let j = 0; j < cIndex; j++) {
+      if (cnSpans[j] && cnSpans[j].style.opacity === "0") {
+        cnSpans[j].style.opacity = 1;
+        cnSpans[j].style.textShadow = '0 0 7px rgba(255,182,193,0.85)';
+        setTimeout(()=> cnSpans[j].style.textShadow = '0 0 0 rgba(0,0,0,0)', 380);
+        showInkUnderSpan(cnSpans[j]);
+      }
     }
 
+    // autoscroll
     wrapper.scrollTop = wrapper.scrollHeight;
-    const delay = baseDelay + Math.random() * jitter;
-    await new Promise((r) => setTimeout(r, delay));
+
+    // small randomized delay for natural pacing
+    const delay = Math.max(20, baseDelay + (Math.random() - 0.5) * jitter);
+    await new Promise(r => setTimeout(r, delay));
   }
 
-  // Ensure all visible
-  enSpans.forEach((s) => {
-    s.style.opacity = 1;
-    s.style.textShadow = "0 0 0 rgba(255,255,255,0)";
-  });
-  cnSpans.forEach((s) => {
-    s.style.opacity = 1;
-    s.style.textShadow = "0 0 0 rgba(255,255,255,0)";
-  });
-  wrapper.scrollTop = wrapper.scrollHeight;
+  // ensure fully visible
+  enSpans.forEach(s => { s.style.opacity = 1; s.style.textShadow = '0 0 0 rgba(0,0,0,0)'; });
+  cnSpans.forEach(s => { s.style.opacity = 1; s.style.textShadow = '0 0 0 rgba(0,0,0,0)'; });
 
-  await new Promise((r) => setTimeout(r, endPause));
+  wrapper.scrollTop = wrapper.scrollHeight;
+  await new Promise(r => setTimeout(r, endPause));
   done();
 }
-
 </script>
 </body>
 </html>
