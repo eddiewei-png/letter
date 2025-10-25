@@ -373,45 +373,51 @@ function startHeartAnimation() {
 
     t += step;
     if (t >= end) {
-      clearInterval(anim);
-      clearInterval(renderTimer);
+  clearInterval(anim);
 
-      // ✅ Wait just a bit to let the last blooms finish rendering
+  // ⛔ Don't clear the renderTimer immediately — wait a little
+  setTimeout(() => {
+    clearInterval(renderTimer);
+  }, 500); // give the last blooms time to settle
+
+  // ✅ Make sure heart-container stays visible before showing messages
+  $("#heart-container").css({ display: "block", opacity: 1, zIndex: 50 });
+
+  // ✅ Wait just a bit to let the last blooms finish rendering
+  setTimeout(() => {
+    $("#messages").css({ display: "block", opacity: 0 }); // ensure it's present
+    showMessages(); // show your love message + timer smoothly
+  }, 800);
+
+  // 🌸 Extra pass to fill small gaps
+  let extraT = 0;
+  const extraStep = step / 2;
+  const extraAnim = setInterval(() => {
+    const [ex, ey] = getHeartPoint(extraT);
+    let canDrawExtra = true;
+
+    for (const p of blooms) {
+      const dist = Math.sqrt((p[0] - ex) ** 2 + (p[1] - ey) ** 2);
+      if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
+        canDrawExtra = false;
+        break;
+      }
+    }
+
+    if (canDrawExtra) {
+      blooms.push([ex, ey]);
+      garden.createRandomBloom(ex, ey);
+    }
+
+    extraT += extraStep;
+    if (extraT >= end) {
+      clearInterval(extraAnim);
+
+      // ✅ Reveal "Our Moments" button slightly after message appears
       setTimeout(() => {
-        showMessages(); // show your love message + timer smoothly
-      }, 800);
-
-      // 🌸 Extra pass to fill small gaps
-      let extraT = 0;
-      const extraStep = step / 2;
-      const extraAnim = setInterval(() => {
-        const [ex, ey] = getHeartPoint(extraT);
-        let canDrawExtra = true;
-
-        for (const p of blooms) {
-          const dist = Math.sqrt((p[0] - ex) ** 2 + (p[1] - ey) ** 2);
-          if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
-            canDrawExtra = false;
-            break;
-          }
-        }
-
-        if (canDrawExtra) {
-          blooms.push([ex, ey]);
-          garden.createRandomBloom(ex, ey);
-        }
-
-        extraT += extraStep;
-        if (extraT >= end) {
-          clearInterval(extraAnim);
-
-          // ✅ Reveal "Our Moments" button slightly after message appears
-          setTimeout(() => {
-            const btn = document.getElementById("momentsBtn");
-            if (btn) btn.classList.add("visible");
-          }, 3000);
-        }
-      }, interval);
+        const btn = document.getElementById("momentsBtn");
+        if (btn) btn.classList.add("visible");
+      }, 3000);
     }
   }, interval);
 }
@@ -659,3 +665,4 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
