@@ -165,6 +165,7 @@ body, html {
   z-index: 2000; /* higher than canvas */
   width: 100%;
   pointer-events: none;
+  transition: opacity 0.8s ease-in;
 }
 </style>
 </head>
@@ -414,7 +415,7 @@ function startHeartAnimation() {
       setTimeout(() => {
         $("#messages").css({ display: "block", opacity: 0 }); // ensure it's present
         showMessages(); // show your love message + timer smoothly
-      }, 800);
+      }, 500);
 
       // 🌸 Extra pass to fill small gaps
       let extraT = 0;
@@ -706,5 +707,6 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
