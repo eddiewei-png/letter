@@ -399,7 +399,9 @@ function getHeartPoint(t) {
 function startHeartAnimation() {
   if (heartStarted) return;
   heartStarted = true;
+
   initGarden();
+
   let t = 0;
   const blooms = [];
   const interval = 20;
@@ -410,8 +412,9 @@ function startHeartAnimation() {
   const anim = setInterval(() => {
     const [x, y] = getHeartPoint(t);
     let canDraw = true;
+
     for (const p of blooms) {
-      const dist = Math.sqrt((p[0]-x)**2 + (p[1]-y)**2);
+      const dist = Math.sqrt((p[0] - x) ** 2 + (p[1] - y) ** 2);
       if (dist < Garden.options.bloomRadius.max * minDistMultiplier) {
         canDraw = false;
         break;
@@ -440,24 +443,27 @@ function startHeartAnimation() {
     }
 
     t += step;
+
     if (t >= end) {
       clearInterval(anim);
 
-      // ⛔ Don't clear the renderTimer immediately — wait a little
-      setTimeout(() => {
-        clearInterval(renderTimer);
-      }, 500); // give the last blooms time to settle
+      // stop the render timer after a short delay
+      setTimeout(() => clearInterval(renderTimer), 500);
 
-      // ✅ Make sure heart-container stays visible before showing messages
+      // show heart container
       $("#heart-container").css({ display: "block", opacity: 1, zIndex: 50 });
 
-      // ✅ Wait just a bit to let the last blooms finish rendering
+      // show messages
       setTimeout(() => {
-        $("#messages").css({ display: "block", opacity: 0 }); // ensure it's present
-        showMessages(); // show your love message + timer smoothly
-      }, 500);
+        $("#messages").css({ display: "block", opacity: 0 });
+        showMessages();
+      }, 800);
 
-      // 🌸 Extra pass to fill small gaps
+      // show "Our Moments" button immediately after main heart
+      const btn = document.getElementById("momentsBtn");
+      if (btn) btn.classList.add("visible");
+
+      // optional: extra bloom pass to fill gaps (does NOT block button)
       let extraT = 0;
       const extraStep = step / 2;
       const extraAnim = setInterval(() => {
@@ -478,19 +484,11 @@ function startHeartAnimation() {
         }
 
         extraT += extraStep;
-        if (extraT >= end) {
-          clearInterval(extraAnim);
-
-          // ✅ Reveal "Our Moments" button slightly after message appears
-          setTimeout(() => {
-            const btn = document.getElementById("momentsBtn");
-            if (btn) btn.classList.add("visible");
-          }, 1000);
-        }
+        if (extraT >= end) clearInterval(extraAnim);
       }, interval);
     }
   }, interval);
-} /* <<<--- THIS closing brace for startHeartAnimation was missing before; added now */
+}
 
 /* Garden implementation (unchanged) */
 function Vector(a, b){this.x=a;this.y=b;}
@@ -748,6 +746,7 @@ async function typeLine(enElement, cnElement, done) {
   <a id="momentsBtn" href="gallery.html" role="button" aria-label="Our Moments">Our Moments</a>
 </body>
 </html>
+
 
 
 
