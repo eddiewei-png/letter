@@ -17,6 +17,7 @@ body, html {
 }
 
 /* ===== Start Page ===== */
+/* (unchanged) */
 .start-wrapper {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
@@ -509,15 +510,20 @@ function showMessages() {
   const loveMessage = $("#loveMessage");
   const elapseClock = $("#elapseClock");
 
-  // Make sure message container stays on top
-  messages.css({ display: "block", opacity: 1, zIndex: 10 });
+  // Ensure messages are on top of canvas and visible
+  messages.css({ display: "block", opacity: 1, zIndex: 1001, pointerEvents: "none" });
 
-  // Step 1: Fade + float in "Loving you forever"
+  // Make sure timer content is populated before we animate it
+  updateElapsedTime();
+  clearInterval(window.timerInterval);
+  window.timerInterval = setInterval(updateElapsedTime, 1000);
+
+  // Step 1: Fade + float in the "We have been together" text (using your Great Vibes)
   loveMessage
     .stop(true, true)
     .css({ opacity: 0 })
     .animate({ opacity: 1 }, 1800, "swing", function () {
-      // Step 2: Fade in the "We have been together" + timer
+      // Step 2: Fade in the timer after the love message
       setTimeout(() => {
         elapseClock
           .stop(true, true)
@@ -547,11 +553,6 @@ function showMessages() {
           });
       }, 600);
     });
-
-  // Keep timer alive
-  updateElapsedTime();
-  clearInterval(window.timerInterval);
-  window.timerInterval = setInterval(updateElapsedTime, 1000);
 }
 
 function updateElapsedTime() {
@@ -658,4 +659,3 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
-
