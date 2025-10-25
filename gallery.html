@@ -152,7 +152,7 @@ const pageTurn = document.getElementById('pageTurnSound');
 let current = 0;
 let playing = true;
 let interval;
-let captions = [
+const captions = [
   "Welcome to our memories 💖",
   "Our sweet moments together 🌸",
   "The first day we met 🌷",
@@ -172,22 +172,30 @@ slides.forEach(()=> {
 const dots = document.querySelectorAll('.dot');
 
 function showSlide(index) {
-  slides.forEach((slide, i) => {
-    slide.classList.toggle('active', i === index);
-  });
+  slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
   caption.textContent = captions[index];
   dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
 }
 
-function nextSlide() {
+function playPageTurnSound() {
   pageTurn.currentTime = 0;
   pageTurn.play().catch(()=>{});
+}
+
+function nextSlide() {
+  playPageTurnSound();
   current = (current + 1) % slides.length;
   showSlide(current);
 }
 
+function prevSlide() {
+  playPageTurnSound();
+  current = (current - 1 + slides.length) % slides.length;
+  showSlide(current);
+}
+
 function startSlideshow() {
-  clearInterval(interval); // clear first, to prevent stacking
+  clearInterval(interval);
   interval = setInterval(nextSlide, 5000);
 }
 
@@ -195,11 +203,29 @@ function stopSlideshow() {
   clearInterval(interval);
 }
 
-// --- FIXED CLICK HANDLER ---
-document.getElementById('slideshow').addEventListener('click', () => {
-  nextSlide();
-  if (playing) {
-    startSlideshow(); // reset timer so next auto-slide starts fresh
+// --- CLICK NAVIGATION ---
+document.getElementById('slideshow').addEventListener('click', (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  if (x < rect.width / 2) {
+    prevSlide();
+  } else {
+    nextSlide();
+  }
+  if (playing) startSlideshow();
+});
+
+// --- KEYBOARD NAVIGATION ---
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') {
+    prevSlide();
+    if (playing) startSlideshow();
+  } else if (e.key === 'ArrowRight') {
+    nextSlide();
+    if (playing) startSlideshow();
+  } else if (e.key === ' ') { // Spacebar pause/play
+    e.preventDefault();
+    pauseBtn.click();
   }
 });
 
@@ -226,13 +252,13 @@ backBtn.addEventListener('click', (e) => {
 function startIntro() {
   showSlide(0);
   setTimeout(()=>{
-    current = 1; // start main slides
+    current = 1;
     showSlide(current);
     startSlideshow();
   }, 3000); // 3s intro
 }
 
-// Start the slideshow with intro
+// Start the slideshow
 startIntro();
 </script>
 </body>
