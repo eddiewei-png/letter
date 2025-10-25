@@ -48,7 +48,7 @@ body, html {
   margin: 20px auto;
   border-radius: 12px;
   box-shadow: 0 6px 25px rgba(250,50,120,0.2);
-  background: url("stellalou-letter-bg.png") no-repeat center top;
+  background: url("stellalou-letter-bg.png") no-repeat center;
   background-size: cover; /* cover to keep image looking right */
   display: flex;
   flex-direction: column;
@@ -64,7 +64,7 @@ body, html {
 #letter-wrapper::-webkit-scrollbar { display:none; }
 
 /* Slightly reduced letter text size and tuned line-height */
-#letter { font-family:'Georgia', serif; font-size: clamp(1rem, 1.6vw, 1.18rem); color:#E8C1E5; white-space:pre-wrap; position:relative; line-height:1.6; }
+#letter { font-family:'Georgia', serif; font-size: clamp(1rem, 1.6vw, 1.18rem); color:#000000 white-space:pre-wrap; position:relative; line-height:1.6; }
 #letter p { margin:1.1em 0; position:relative; }
 
 /* ink trail styling (a little bigger for visibility) */
@@ -130,7 +130,7 @@ body, html {
 /* timer text */
 #elapseClock {
   font-family: 'Great Vibes', cursive;
-  font-size: clamp(26px, 6vw, 60px);
+  font-size: clamp(20px, 6vw, 60px);
   color: #ff8fb1;
   text-shadow: 0 0 12px rgba(255,192,203,0.7);
   opacity: 0;
@@ -708,6 +708,7 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
 
