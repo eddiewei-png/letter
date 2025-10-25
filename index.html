@@ -98,14 +98,24 @@ body, html {
 /* ===== Heart Canvas ===== */
 #heart-container {
   position: fixed;
-  left: 50%; top: 50%;
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
-  width: 100vw; height: 100vh;
-  z-index: 50;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000; /* raise it above container */
   display: none;
   overflow: visible;
-  pointer-events: none; /* never block clicks when hidden/visible */
+  pointer-events: none;
+  opacity: 0; /* start fully invisible */
+  transition: opacity 1.5s ease-in;
 }
+
+#heart-container.show {
+  display: block;
+  opacity: 1; /* fade in smoothly */
+}
+
 #heart-container.show { display: block; }
 #loveHeart { position: relative; width: 100%; height: 100%; }
 #garden { width: 100%; height: 100%; display: block; }
@@ -299,8 +309,8 @@ async function showAllText() {
   container.classList.add("fade-out");
 
   await new Promise((r) => setTimeout(r, 3000));
-  $("#heart-container").fadeIn();
-  startHeartAnimation();
+ $("#heart-container").addClass("show");
+ startHeartAnimation();
 }
 
 /* ===== Garden / Heart code (kept intact, only minor add) ===== */
@@ -685,3 +695,4 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
