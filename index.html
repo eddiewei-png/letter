@@ -290,10 +290,39 @@ function writeLetter(span,letter){
 async function showAllText() {
   const container = document.getElementById("container");
   const letter = document.getElementById("letter");
+  const wrapper = document.getElementById("letter-wrapper");
 
+  // Create a temporary ink dot at the top-left (or wherever you want it to appear)
+  const preInk = document.createElement("span");
+  preInk.classList.add("ink-trail");
+  letter.appendChild(preInk);
+
+  // Position it roughly at the top-left padding
+  const paddingTop = 20; // same as letter wrapper padding
+  const paddingLeft = 20;
+  preInk.style.left = paddingLeft + "px";
+  preInk.style.top = paddingTop + "px";
+  preInk.style.width = "6px";
+  preInk.style.height = "12px";
+  preInk.style.opacity = 0;
+
+  // Heartbeat animation: fade in/out twice
+  for (let i = 0; i < 4; i++) { // 4 steps: in, out, in, out
+    preInk.style.transition = "opacity 0.25s ease-in-out, transform 0.25s ease-in-out";
+    preInk.style.opacity = 1;
+    preInk.style.transform = "translate(-50%,-15%) scale(1.2)";
+    await new Promise(r => setTimeout(r, 250));
+    preInk.style.opacity = 0;
+    preInk.style.transform = "translate(-50%,-15%) scale(1)";
+    await new Promise(r => setTimeout(r, 250));
+  }
+
+  // Remove the temporary pre-ink
+  preInk.remove();
+
+  // Start the letter typing
   for (let i = 0; i < sentences.length; i++) {
     const [enText, cnText] = sentences[i];
-
     const lineDiv = document.createElement("div");
     lineDiv.classList.add("line");
     lineDiv.style.marginBottom = "1.5em";
@@ -310,20 +339,19 @@ async function showAllText() {
     lineDiv.appendChild(cnSpan);
     letter.appendChild(lineDiv);
 
-    // wait until both EN + CN finish typing
     await new Promise((resolve) => typeLine(enSpan, cnSpan, resolve));
+    wrapper.scrollTop = wrapper.scrollHeight;
   }
 
-  // After typing, pause briefly then fade to heart
+  // Fade to heart animation after typing
   const bgMusic = document.getElementById("background-music");
   bgMusic.pause();
-  // hide ink trails (they'll be reused later if user restarts)
   inkTrails.forEach((ink) => (ink.style.display = "none"));
   container.classList.add("fade-out");
 
   await new Promise((r) => setTimeout(r, 3000));
- $("#heart-container").addClass("show");
- startHeartAnimation();
+  $("#heart-container").addClass("show");
+  startHeartAnimation();
 }
 
 /* ===== Garden / Heart code (kept intact, only minor add) ===== */
@@ -708,3 +736,4 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
