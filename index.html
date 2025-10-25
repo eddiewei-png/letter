@@ -212,6 +212,7 @@ let heartStarted = false;
 
 /* ===== The bilingual lines ===== */
 const sentences = [
+  ["To 静柔"],
   ["It's less than 2 months when we first met ","不到两个月前我们才第一次见面"],
   ["Yet it felt like we have known each other for years now","却感觉好像已经认识你好多年了"],
   ["I still remember the first time when we met","我还记得我们初次相遇的那一刻"],
@@ -293,6 +294,7 @@ async function showAllText() {
 
   for (let i = 0; i < sentences.length; i++) {
     const [enText, cnText] = sentences[i];
+    const isHeader = i === 0;
 
     const lineDiv = document.createElement("div");
     lineDiv.classList.add("line");
@@ -642,7 +644,7 @@ async function typeLine(enElement, cnElement, done) {
   const lenC = cnText.length;
 
   // Tuned for slightly faster typing but still smooth
-  const baseDelay = 110;   // was 110 -> faster
+  const baseDelay = isHeader ? 110 : 70;  // was 110 -> faster
   const jitter = 20;      // less jitter for steadier rhythm
   const endPause = 1100;   // shorter pause after each line
 
@@ -708,6 +710,7 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
 
