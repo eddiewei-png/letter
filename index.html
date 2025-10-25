@@ -569,13 +569,13 @@ function showMessages() {
   loveMessage
     .stop(true, true)
     .css({ opacity: 0 })
-    .animate({ opacity: 1 }, 1800, "swing", function () {
+    .animate({ opacity: 1 }, 1200, "swing", function () {
       // Step 2: Fade in the timer after the love message
       setTimeout(() => {
         elapseClock
           .stop(true, true)
           .css({ opacity: 0 })
-          .animate({ opacity: 1 }, 2000, "swing", function () {
+          .animate({ opacity: 1 }, 1400, "swing", function () {
             // Step 3: Final signature
             let finalMessage = $("#finalMessage");
             if (finalMessage.length === 0) {
@@ -595,10 +595,10 @@ function showMessages() {
             }
 
             setTimeout(() => {
-              finalMessage.animate({ opacity: 1 }, 2000, "swing");
-            }, 800);
+              finalMessage.animate({ opacity: 1 }, 1400, "swing");
+            }, 400);
           });
-      }, 600);
+      }, 300);
     });
 }
 
@@ -707,6 +707,7 @@ async function typeLine(enElement, cnElement, done) {
 </script>
 </body>
 </html>
+
 
 
 
