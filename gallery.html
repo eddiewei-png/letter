@@ -137,6 +137,7 @@
   <div class="controls">
     <button class="btn" id="pauseBtn">⏸</button>
     <button class="btn" id="backBtn">🏠</button>
+    <button class="btn" id="musicBtn">🎵</button>
   </div>
 
   <div class="progress" id="progress"></div>
@@ -208,6 +209,32 @@ function stopSlideshow() {
   clearInterval(interval);
 }
 
+const bgMusic = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+let musicPlaying = false;
+
+// Music control toggle
+musicBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (musicPlaying) {
+    bgMusic.pause();
+    musicBtn.textContent = '🔇';
+  } else {
+    bgMusic.play().catch(()=>{});
+    musicBtn.textContent = '🎵';
+  }
+  musicPlaying = !musicPlaying;
+});
+
+// Try to start music after first user interaction (required by browsers)
+document.body.addEventListener('click', () => {
+  if (!musicPlaying) {
+    bgMusic.play().catch(()=>{});
+    musicBtn.textContent = '🎵';
+    musicPlaying = true;
+  }
+}, { once: true });
+
 // --- CLICK NAVIGATION ---
 document.getElementById('slideshow').addEventListener('click', (e) => {
   const rect = e.currentTarget.getBoundingClientRect();
@@ -266,5 +293,8 @@ function startIntro() {
 // Start the slideshow
 startIntro();
 </script>
+<audio id="bgMusic" loop preload="auto">
+  <source src="your-music-file.mp3" type="audio/mpeg">
+</audio>  
 </body>
 </html>
