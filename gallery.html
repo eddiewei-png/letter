@@ -26,20 +26,17 @@
 
 .slide {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain; /* Ensures no stretch, keeps proportions */
-  transform: translate(-50%, -50%) scale(1.05);
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fills the screen while preserving ratio */
   opacity: 0;
+  transform: scale(1.05);
   transition: opacity 2s ease, transform 6s ease;
-  background: #000; /* optional, avoids white bars on some images */
 }
 
 .slide.active {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: scale(1);
 }
 
   .overlay {
