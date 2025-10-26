@@ -28,17 +28,13 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  max-width: 85vw;
-  max-height: 80vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain; /* Ensures no stretch, keeps proportions */
   transform: translate(-50%, -50%) scale(1.05);
-  border: 8px solid rgba(255,192,203,0.25);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(255,182,193,0.4);
   opacity: 0;
   transition: opacity 2s ease, transform 6s ease;
+  background: #000; /* optional, avoids white bars on some images */
 }
 
 .slide.active {
