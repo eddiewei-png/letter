@@ -113,6 +113,36 @@
   .dot.active {
     background: #ff69b4;
   }
+#musicOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+  transition: opacity 1s ease;
+}
+
+#musicText {
+  font-family: 'Great Vibes', cursive;
+  color: #ffb6c1;
+  font-size: clamp(28px, 5vw, 50px);
+  text-shadow: 0 0 15px rgba(255,192,203,0.9);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+#musicOverlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
 </style>
 </head>
 
@@ -149,7 +179,11 @@
 </audio>
 <audio id="bgMusic" loop preload="auto">
   <source src="YisaYu-LiXian.mp3" type="audio/mpeg">
-</audio>  
+</audio>
+  <!-- Tap-to-start overlay -->
+<div id="musicOverlay">
+  <div id="musicText">Tap to start the music 🎵</div>
+</div>
 <script>
 const slides = document.querySelectorAll('.slide');
 const caption = document.getElementById('caption');
@@ -229,14 +263,14 @@ musicBtn.addEventListener('click', (e) => {
 });
 
 // Try to start music after first user interaction (required by browsers)
-document.body.addEventListener('click', () => {
+/*document.body.addEventListener('click', () => {
   if (!musicPlaying) {
     bgMusic.play().catch(()=>{});
     musicBtn.textContent = '🎵';
     musicPlaying = true;
   }
 }, { once: true });
-
+*/
 // --- CLICK NAVIGATION ---
 document.getElementById('slideshow').addEventListener('click', (e) => {
   const rect = e.currentTarget.getBoundingClientRect();
@@ -294,6 +328,22 @@ function startIntro() {
 
 // Start the slideshow
 startIntro();
+
+// Music overlay behavior
+const overlay = document.getElementById('musicOverlay');
+overlay.addEventListener('click', () => {
+  overlay.classList.add('fade-out');
+  setTimeout(() => overlay.remove(), 1000); // remove after fade-out
+
+  // Start music safely
+  bgMusic.play().catch(()=>{});
+  musicBtn.textContent = '🎵';
+  musicPlaying = true;
+
+  // Start intro slideshow after music begins
+  startIntro();
+}, { once: true });
+
 </script>
 </body>
 </html>
