@@ -185,6 +185,8 @@
   <div id="musicText">Tap to start the music 🎵</div>
 </div>
 <script>
+  stopSlideshow();
+
 const slides = document.querySelectorAll('.slide');
 const caption = document.getElementById('caption');
 const pauseBtn = document.getElementById('pauseBtn');
@@ -327,7 +329,7 @@ function startIntro() {
 }
 
 // Start the slideshow
-startIntro();
+//startIntro();
 
 // Music overlay behavior
 const overlay = document.getElementById('musicOverlay');
