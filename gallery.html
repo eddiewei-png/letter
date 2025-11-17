@@ -183,7 +183,7 @@
   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Intro">
 
   <!-- Main Slides -->
-  <img src="https://github.com/ninomiyashina/letter/raw/main/my-gallery/img2.jpg" class="slide small-slide" alt="Memory 1">
+  <img src="https://github.com/ninomiyashina/letter/raw/main/my-gallery/img2.jpg" class="slide" alt="Memory 1">
   <img src="https://github.com/ninomiyashina/letter/raw/main/my-gallery/img3.jpg" class="slide" alt="Memory 2">
   <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" class="slide" alt="Memory 3">
   <img src="https://github.com/ninomiyashina/letter/raw/main/my-gallery/img4.jpg" class="slide" alt="Memory 4">
@@ -221,6 +221,19 @@
 <script>
 
 const slides = document.querySelectorAll('.slide');
+  // Detect portrait vs landscape and assign correct class
+slides.forEach(slide => {
+  slide.addEventListener('load', () => {
+    if (slide.naturalWidth > slide.naturalHeight) {
+      slide.classList.add('landscape');
+      slide.classList.remove('portrait');
+    } else {
+      slide.classList.add('portrait');
+      slide.classList.remove('landscape');
+    }
+  });
+});
+
 const caption = document.getElementById('caption');
 const pauseBtn = document.getElementById('pauseBtn');
 const backBtn = document.getElementById('backBtn');
