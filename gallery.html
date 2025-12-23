@@ -176,6 +176,14 @@
   pointer-events: none;
 }
 
+  #fireworksCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  display: none;
+}
+
 </style>
 </head>
 
@@ -269,6 +277,18 @@ function showSlide(index) {
   slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
   caption.textContent = captions[index];
   dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+
+  if (index === slides.length - 1) {
+  fwCanvas.style.display = 'block';
+
+  // alternating normal + heart fireworks
+  fireworkInterval = setInterval(() => {
+    launchFirework(Math.random() > 0.5);
+  }, 1100);
+
+  animateFireworks();
+  stopSlideshow();
+}
 }
 
 function playPageTurnSound() {
@@ -392,10 +412,100 @@ overlay.addEventListener('click', () => {
   musicBtn.textContent = '🎵';
   musicPlaying = true;
 
+  stopSlideshow();
+
   // Start intro slideshow after music begins
   startIntro();
 }, { once: true });
 
+  const fwCanvas = document.getElementById('fireworksCanvas');
+const fwCtx = fwCanvas.getContext('2d');
+fwCanvas.width = window.innerWidth;
+fwCanvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  fwCanvas.width = window.innerWidth;
+  fwCanvas.height = window.innerHeight;
+});
+
+let fireworks = [];
+
+function launchFirework(isHeart = false) {
+  const cx = Math.random() * fwCanvas.width;
+  const cy = Math.random() * fwCanvas.height * 0.45;
+
+  const count = isHeart ? 120 : 80;
+
+  for (let i = 0; i < count; i++) {
+    let angle, speed;
+
+    if (isHeart) {
+      // parametric heart shape
+      const t = Math.random() * Math.PI * 2;
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y =
+        -(13 * Math.cos(t) -
+          5 * Math.cos(2 * t) -
+          2 * Math.cos(3 * t) -
+          Math.cos(4 * t));
+
+      angle = Math.atan2(y, x);
+      speed = Math.random() * 2 + 1;
+    } else {
+      angle = Math.random() * Math.PI * 2;
+      speed = Math.random() * 4 + 1;
+    }
+
+    fireworks.push({
+      x: cx,
+      y: cy,
+      angle,
+      speed,
+      radius: Math.random() * 2 + 1.8,
+      life: 120,
+      color: `hsl(${Math.random() * 360},100%,65%)`,
+      alpha: 1
+    });
+  }
+}
+
+function animateFireworks() {
+  fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+  fireworks.forEach((p, i) => {
+    p.x += Math.cos(p.angle) * p.speed;
+    p.y += Math.sin(p.angle) * p.speed;
+    p.life--;
+    p.alpha -= 0.008;
+
+    fwCtx.fillStyle = p.color;
+    fwCtx.globalAlpha = Math.max(p.alpha, 0);
+    fwCtx.beginPath();
+    fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    fwCtx.fill();
+
+    if (p.life <= 0) fireworks.splice(i, 1);
+  });
+
+  fwCtx.globalAlpha = 1;
+  requestAnimationFrame(animateFireworks);
+}
+  
+  function stopFireworksAfter(ms = 15000) {
+  setTimeout(() => {
+    clearInterval(fireworkInterval);
+    fwCanvas.style.opacity = 0;
+    fwCanvas.style.transition = 'opacity 3s ease';
+
+    setTimeout(() => {
+      fwCanvas.style.display = 'none';
+      fwCanvas.style.opacity = 1;
+    }, 3000);
+  }, ms);
+}
+
+
 </script>
+  <canvas id="fireworksCanvas"></canvas>
 </body>
 </html>
