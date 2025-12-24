@@ -188,6 +188,7 @@
 </head>
 
 <body>
+<canvas id="fireworksCanvas"></canvas>
 <div class="slideshow-container" id="slideshow">
   <!-- Intro Slide -->
   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Intro">
@@ -252,6 +253,9 @@ const pageTurn = document.getElementById('pageTurnSound');
 let current = 0;
 let playing = true;
 let interval;
+let fireworkInterval = null;   // ✅ 
+let fireworksStarted = false; // ✅ 
+
 const captions = [
   "Hi dear, made this specially for our love story 💖",
   "23/08/2025 - Still remember the first day when we met? It was my happiest day that time",
@@ -278,16 +282,18 @@ function showSlide(index) {
   caption.textContent = captions[index];
   dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
 
-  if (index === slides.length - 1) {
+  if (index === slides.length - 1 && !fireworksStarted) {
+  fireworksStarted = true;
+
   fwCanvas.style.display = 'block';
 
-  // alternating normal + heart fireworks
   fireworkInterval = setInterval(() => {
     launchFirework(Math.random() > 0.5);
   }, 1100);
 
   animateFireworks();
   stopSlideshow();
+  stopFireworksAfter(18000);   // auto fade out after 18s
 }
 }
 
@@ -506,6 +512,6 @@ function animateFireworks() {
 
 
 </script>
-  <canvas id="fireworksCanvas"></canvas>
+  
 </body>
 </html>
