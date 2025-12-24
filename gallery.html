@@ -287,9 +287,9 @@ function showSlide(index) {
 
   fwCanvas.style.display = 'block';
 
-  fireworkInterval = setInterval(() => {
-    launchFirework(Math.random() > 0.5);
-  }, 1100);
+ fireworkInterval = setInterval(() => {
+  launchRocket(Math.random() > 0.5);
+}, 900);
 
   animateFireworks();
   stopSlideshow();
@@ -435,6 +435,8 @@ window.addEventListener('resize', () => {
 });
 
 let fireworks = [];
+let rockets = [];
+
 
 function launchFirework(isHeart = false) {
   const cx = Math.random() * fwCanvas.width;
@@ -474,15 +476,44 @@ function launchFirework(isHeart = false) {
     });
   }
 }
+  
+  function launchRocket(isHeart = false) {
+  rockets.push({
+    x: Math.random() * fwCanvas.width,
+    y: fwCanvas.height,
+    vy: Math.random() * -8 - 10,
+    explodeAt: Math.random() * fwCanvas.height * 0.4 + fwCanvas.height * 0.15,
+    isHeart
+  });
+}
+
 
 function animateFireworks() {
   fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
 
+  // 🚀 Draw & move rockets
+  rockets.forEach((r, i) => {
+    r.y += r.vy;
+    r.vy += 0.15; // gravity
+
+    fwCtx.fillStyle = "white";
+    fwCtx.beginPath();
+    fwCtx.arc(r.x, r.y, 2, 0, Math.PI * 2);
+    fwCtx.fill();
+
+    // explode
+    if (r.y <= r.explodeAt) {
+      launchFirework(r.isHeart);
+      rockets.splice(i, 1);
+    }
+  });
+
+  // 💥 Draw particles
   fireworks.forEach((p, i) => {
     p.x += Math.cos(p.angle) * p.speed;
-    p.y += Math.sin(p.angle) * p.speed;
+    p.y += Math.sin(p.angle) * p.speed + 0.3;
     p.life--;
-    p.alpha -= 0.008;
+    p.alpha -= 0.01;
 
     fwCtx.fillStyle = p.color;
     fwCtx.globalAlpha = Math.max(p.alpha, 0);
@@ -496,6 +527,7 @@ function animateFireworks() {
   fwCtx.globalAlpha = 1;
   requestAnimationFrame(animateFireworks);
 }
+
   
   function stopFireworksAfter(ms = 15000) {
   setTimeout(() => {
