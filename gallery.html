@@ -478,15 +478,15 @@ function launchFirework(isHeart = false) {
 }
   
  function launchRocket(isHeart = false) {
-  const peak = Math.random() * fwCanvas.height * 0.4 + fwCanvas.height * 0.15;
-
   rockets.push({
     x: Math.random() * fwCanvas.width,
-    y: fwCanvas.height,
-    vy: Math.random() * -10 - 12,
-    explodeAt: peak,
+    y: fwCanvas.height + 20,   // start off-screen bottom
+    vy: Math.random() * -12 - 10,
+    gravity: 0.15,
+    explodeY: Math.random() * fwCanvas.height * 0.35 + fwCanvas.height * 0.15,
+    exploded: false,
     isHeart,
-    trailHue: Math.random() * 360
+    hue: Math.random() * 360
   });
 }
 
@@ -494,32 +494,33 @@ function animateFireworks() {
   fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
 
   // 🚀 Rockets
-  rockets.forEach((r, i) => {
-    r.y += r.vy;
-    r.vy += 0.18;
+rockets.forEach((r, i) => {
+  r.y += r.vy;
+  r.vy += r.gravity;
 
-    // trail
-    sparkles.push({
-      x: r.x,
-      y: r.y,
-      vx: (Math.random() - 0.5) * 1.5,
-      vy: Math.random() * 1.5,
-      life: 30,
-      color: `hsl(${r.trailHue},100%,70%)`
-    });
-
-    // rocket dot
-    fwCtx.fillStyle = "white";
-    fwCtx.beginPath();
-    fwCtx.arc(r.x, r.y, 2, 0, Math.PI * 2);
-    fwCtx.fill();
-
-    // explode exactly at peak
-    if (r.vy >= 0) {
-      launchFirework(r.isHeart);
-      rockets.splice(i, 1);
-    }
+  // glowing trail
+  sparkles.push({
+    x: r.x,
+    y: r.y,
+    vx: (Math.random() - 0.5) * 1.5,
+    vy: Math.random() * 2,
+    life: 25,
+    color: `hsl(${r.hue},100%,70%)`
   });
+
+  // rocket head
+  fwCtx.fillStyle = "white";
+  fwCtx.beginPath();
+  fwCtx.arc(r.x, r.y, 2.5, 0, Math.PI * 2);
+  fwCtx.fill();
+
+  // explode when it reaches its target height OR starts falling
+  if (!r.exploded && (r.y <= r.explodeY || r.vy >= 0)) {
+    launchFirework(r.isHeart);
+    r.exploded = true;
+    rockets.splice(i, 1);
+  }
+});
 
   // ✨ Sparkles
   sparkles.forEach((s, i) => {
