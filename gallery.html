@@ -188,7 +188,6 @@
 </head>
 
 <body>
-<canvas id="fireworksCanvas"></canvas>
 <div class="slideshow-container" id="slideshow">
   <!-- Intro Slide -->
   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" class="slide active" alt="Intro">
@@ -229,6 +228,8 @@
 <div id="musicOverlay">
   <div id="musicText">Tap to begin~ 😊</div>
 </div>
+  <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+
 <script>
 
 const slides = document.querySelectorAll('.slide');
@@ -249,6 +250,20 @@ const caption = document.getElementById('caption');
 const pauseBtn = document.getElementById('pauseBtn');
 const backBtn = document.getElementById('backBtn');
 const pageTurn = document.getElementById('pageTurnSound');
+// ---- Fireworks.js CDN instance ----
+const fwContainer = document.body;   // full screen
+const fwLib = new Fireworks.default(fwContainer, {
+  autoresize: true,
+  opacity: 0.9,
+  acceleration: 1.05,
+  gravity: 1.2,
+  particles: 140,
+  traceLength: 4,
+  traceSpeed: 6,
+  brightness: { min: 50, max: 80 },
+  decay: { min: 0.015, max: 0.03 }
+});
+
 
 let current = 0;
 let playing = true;
@@ -282,18 +297,16 @@ function showSlide(index) {
   caption.textContent = captions[index];
   dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
 
-  if (index === slides.length - 1 && !fireworksStarted) {
+ if (index === slides.length - 1 && !fireworksStarted) {
   fireworksStarted = true;
 
-  fwCanvas.style.display = 'block';
+  stopSlideshow();   // pause on final photo
+  fw.start();        // 🎆 start library fireworks
 
- fireworkInterval = setInterval(() => {
-  launchRocket(Math.random() > 0.5);
-}, 900);
-
-  animateFireworks();
-  stopSlideshow();
-  stopFireworksAfter(18000);   // auto fade out after 18s
+  // stop after 18s
+  setTimeout(() => {
+    fw.stop();
+  }, 18000);
 }
 }
 
@@ -423,167 +436,6 @@ overlay.addEventListener('click', () => {
   // Start intro slideshow after music begins
   startIntro();
 }, { once: true });
-
-  const fwCanvas = document.getElementById('fireworksCanvas');
-const fwCtx = fwCanvas.getContext('2d');
-fwCanvas.width = window.innerWidth;
-fwCanvas.height = window.innerHeight;
-
-window.addEventListener('resize', () => {
-  fwCanvas.width = window.innerWidth;
-  fwCanvas.height = window.innerHeight;
-});
-
-let fireworks = [];
-let rockets = [];
-let sparkles = [];
-
-function launchFirework(isHeart = false) {
-  const cx = Math.random() * fwCanvas.width;
-  const cy = Math.random() * fwCanvas.height * 0.45;
-
-  const count = isHeart ? 120 : 80;
-
-  for (let i = 0; i < count; i++) {
-    let angle, speed;
-
-    if (isHeart) {
-      // parametric heart shape
-      const t = Math.random() * Math.PI * 2;
-      const x = 16 * Math.pow(Math.sin(t), 3);
-      const y =
-        -(13 * Math.cos(t) -
-          5 * Math.cos(2 * t) -
-          2 * Math.cos(3 * t) -
-          Math.cos(4 * t));
-
-      angle = Math.atan2(y, x);
-      speed = Math.random() * 2 + 1;
-    } else {
-      angle = Math.random() * Math.PI * 2;
-      speed = Math.random() * 4 + 1;
-    }
-
-    fireworks.push({
-      x: cx,
-      y: cy,
-      angle,
-      speed,
-      radius: Math.random() * 2 + 1.8,
-      life: 120,
-      color: `hsl(${Math.random() * 360},100%,65%)`,
-      alpha: 1
-    });
-  }
-}
-  
- function launchRocket(isHeart = false) {
-  rockets.push({
-    x: Math.random() * fwCanvas.width,
-    y: fwCanvas.height + 20,   // start off-screen bottom
-    vy: Math.random() * -12 - 10,
-    gravity: 0.15,
-    explodeY: Math.random() * fwCanvas.height * 0.35 + fwCanvas.height * 0.15,
-    exploded: false,
-    isHeart,
-    hue: Math.random() * 360
-  });
-}
-
-function animateFireworks() {
-  fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
-
-  // 🚀 Rockets
-rockets.forEach((r, i) => {
-  r.y += r.vy;
-  r.vy += r.gravity;
-
-  // glowing trail
-  sparkles.push({
-    x: r.x,
-    y: r.y,
-    vx: (Math.random() - 0.5) * 1.5,
-    vy: Math.random() * 2,
-    life: 25,
-    color: `hsl(${r.hue},100%,70%)`
-  });
-
-  // rocket head
-  fwCtx.fillStyle = "white";
-  fwCtx.beginPath();
-  fwCtx.arc(r.x, r.y, 2.5, 0, Math.PI * 2);
-  fwCtx.fill();
-
-  // explode when it reaches its target height OR starts falling
-  if (!r.exploded && (r.y <= r.explodeY || r.vy >= 0)) {
-    launchFirework(r.isHeart);
-    r.exploded = true;
-    rockets.splice(i, 1);
-  }
-});
-
-  // ✨ Sparkles
-  sparkles.forEach((s, i) => {
-    s.x += s.vx;
-    s.y += s.vy;
-    s.life--;
-
-    fwCtx.globalAlpha = s.life / 30;
-    fwCtx.fillStyle = s.color;
-    fwCtx.beginPath();
-    fwCtx.arc(s.x, s.y, 2, 0, Math.PI * 2);
-    fwCtx.fill();
-
-    if (s.life <= 0) sparkles.splice(i, 1);
-  });
-
-  // 💥 Firework particles
-  fireworks.forEach((p, i) => {
-    p.x += Math.cos(p.angle) * p.speed;
-    p.y += Math.sin(p.angle) * p.speed + 0.4;
-    p.life--;
-    p.alpha -= 0.01;
-
-    fwCtx.fillStyle = p.color;
-    fwCtx.globalAlpha = Math.max(p.alpha, 0);
-    fwCtx.beginPath();
-    fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    fwCtx.fill();
-
-    if (p.life <= 0) fireworks.splice(i, 1);
-  });
-
-  fwCtx.globalAlpha = 1;
-  requestAnimationFrame(animateFireworks);
-}
-
-  function finalHeartExplosion() {
-  const cx = fwCanvas.width / 2;
-  const cy = fwCanvas.height * 0.4;
-
-  for (let i = 0; i < 6; i++) {
-    setTimeout(() => {
-      launchFirework(true);
-    }, i * 600);
-  }
-}  
-  
-  function stopFireworksAfter(ms = 15000) {
-  setTimeout(() => {
-    finalHeartExplosion();
-
-    setTimeout(() => {
-      clearInterval(fireworkInterval);
-      fwCanvas.style.opacity = 0;
-      fwCanvas.style.transition = 'opacity 3s ease';
-
-      setTimeout(() => {
-        fwCanvas.style.display = 'none';
-        fwCanvas.style.opacity = 1;
-      }, 3000);
-    }, 4000);
-  }, ms);
-}
 
 </script>
   
