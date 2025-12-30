@@ -297,15 +297,15 @@ function showSlide(index) {
   caption.textContent = captions[index];
   dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
 
- if (index === slides.length - 1 && !fireworksStarted) {
+if (index === slides.length - 1 && !fireworksStarted) {
   fireworksStarted = true;
 
-  stopSlideshow();   // pause on final photo
-  fw.start();        // 🎆 start library fireworks
+  stopSlideshow();     // pause on final photo
+  fwLib.start();       // 🎆 start library fireworks
 
   // stop after 18s
   setTimeout(() => {
-    fw.stop();
+    fwLib.stop();
   }, 18000);
 }
 }
